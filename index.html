@@ -14,6 +14,37 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+
+<!-- ===== Firebase (cloud saves + Google sign-in) ===== -->
+<!-- Compat CDN build: no bundler needed, exposes a global `firebase`. -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+  // Little Acre's Firebase project config. These values are meant to be public in
+  // front-end code; player data is protected by Firestore security rules, not by hiding this.
+  window.LITTLE_ACRE_FIREBASE = {
+    apiKey: "AIzaSyDlbchOHpnUInTSdMfNyQwYR3CrTVxsecE",
+    authDomain: "little-acre-9a56b.firebaseapp.com",
+    projectId: "little-acre-9a56b",
+    storageBucket: "little-acre-9a56b.firebasestorage.app",
+    messagingSenderId: "686540796976",
+    appId: "1:686540796976:web:de335e95d3829eab7b29f5"
+  };
+  // Initialize defensively — if Firebase fails to load (offline, blocked), the game
+  // still runs fully on local saves. CLOUD stays null and all cloud calls no-op.
+  window.CLOUD = null;
+  try {
+    if (window.firebase && window.firebase.initializeApp) {
+      firebase.initializeApp(window.LITTLE_ACRE_FIREBASE);
+      window.CLOUD = {
+        auth: firebase.auth(),
+        db: firebase.firestore(),
+        provider: new firebase.auth.GoogleAuthProvider()
+      };
+    }
+  } catch (e) { console.warn('Firebase init skipped:', e && e.message); window.CLOUD = null; }
+</script>
 <style>
   :root{
     --grass:#7cb342; --grass-dk:#558b2f;
@@ -188,6 +219,17 @@
     gap:2px;background:rgba(60,50,40,.78);color:#ffe39a;border-radius:13px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:14px}
 
   .actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:18px}
+  .cloudbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:22px;padding:12px 14px;
+    background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.12);border-radius:16px}
+  .cloud-status{font-family:'Fredoka',sans-serif;font-weight:600;font-size:13.5px;color:#cfe3cb;flex:1;min-width:160px}
+  .cloud-status.synced{color:#9fe07e}
+  .cloud-status.syncing{color:#ffd98a}
+  .cloud-status.err{color:#ff9b8a}
+  .btn.cloud{background:linear-gradient(180deg,#fff,#eef1f4);color:#2b3138;box-shadow:0 3px 0 #b9c2cc;
+    display:inline-flex;align-items:center;gap:8px}
+  .btn.cloud::before{content:'';width:16px;height:16px;flex:0 0 16px;background-size:contain;background-repeat:no-repeat;
+    background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><path fill="%23EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.9 2.4 30.4 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.2 17.7 9.5 24 9.5z"/><path fill="%234285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.5 3-2.2 5.5-4.7 7.2l7.3 5.7c4.3-3.9 6.8-9.7 6.8-17.4z"/><path fill="%23FBBC05" d="M10.5 28.3c-.5-1.4-.7-2.9-.7-4.3s.3-3 .7-4.3l-7.9-6.1C1 16.9 0 20.3 0 24s1 7.1 2.6 10.4l7.9-6.1z"/><path fill="%2334A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.3-5.7c-2 1.4-4.7 2.3-8.6 2.3-6.3 0-11.6-3.7-13.5-9.1l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>')}
+  .btn.cloud-out{font-size:13px}
   .btn{font-family:'Fredoka',sans-serif;font-weight:600;font-size:15px;border:0;cursor:pointer;border-radius:14px;padding:11px 18px;
     color:#fff;background:var(--grass);box-shadow:0 4px 0 var(--grass-dk);transition:transform .1s}
   .btn:hover{filter:brightness(1.05)}.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--grass-dk)}
@@ -545,6 +587,12 @@
   </section>
   </div>
 
+  <div class="cloudbar" id="cloudbar">
+    <span class="cloud-status" id="cloudStatus">☁️ Cloud saves: not signed in</span>
+    <button class="btn cloud" id="cloudSignIn">Sign in with Google</button>
+    <button class="btn ghost cloud-out" id="cloudSignOut" style="display:none">Sign out</button>
+  </div>
+
   <div class="actions">
     <button class="btn" id="collectAll">Collect all</button>
     <button class="btn ghost" id="restore">Restore backup</button>
@@ -795,7 +843,7 @@
   const TAX_RATE=0.20;                        // 20% of gross yearly earnings
   const CAPGAINS_RATE=0.25;                   // 25% tax on PROFIT from stock & property sales
   const DEBT_DAILY_INTEREST=0.10;             // 10% compounding daily while in debt
-  const SAVE_KEY='littleacre:save'; const VERSION=17;
+  const SAVE_KEY='littleacre:save'; const VERSION=18;
   const BACKUP_KEY='littleacre:save:backup';   // last-known-good snapshot ("save folder")
   const MIN_MIGRATABLE=13;                       // saves at/after this version migrate forward instead of resetting
   // Storage backend. Priority: artifact sandbox > IndexedDB+localStorage mirror > localStorage > none.
@@ -931,7 +979,74 @@
   let saveTimer=null;
   // Debounced save of the whole game state to storage.
   function save(){ if(!hasStore) return; state.savedAt=Date.now(); clearTimeout(saveTimer);
-    saveTimer=setTimeout(()=>{ try{ STORE.set(SAVE_KEY, JSON.stringify(state)); }catch(e){} },250); }
+    saveTimer=setTimeout(()=>{ try{ STORE.set(SAVE_KEY, JSON.stringify(state)); }catch(e){} },250);
+    cloudPush(); }
+
+  // ---------- cloud saves (Firebase, optional) ----------
+  // All cloud code is guarded by window.CLOUD; if Firebase didn't load, every call no-ops
+  // and the game runs purely on local storage. Cloud is a SYNC layer on top of local.
+  let cloudUser=null, cloudTimer=null, cloudReady=false;
+  function cloudOn(){ return !!(window.CLOUD && cloudUser); }
+  function cloudDoc(){ return window.CLOUD.db.collection('saves').doc(cloudUser.uid); }
+  function setCloudStatus(text, cls){ const el=document.getElementById('cloudStatus');
+    if(!el) return; el.textContent=text; el.className='cloud-status'+(cls?' '+cls:''); }
+  // Push the current state up to Firestore (debounced; only when signed in).
+  function cloudPush(){ if(!cloudOn()) return; clearTimeout(cloudTimer);
+    cloudTimer=setTimeout(async()=>{ try{
+        setCloudStatus('☁️ Saving to cloud…','syncing');
+        await cloudDoc().set({ save: JSON.stringify(state), savedAt: state.savedAt||Date.now(),
+          version: VERSION, updated: Date.now() });
+        setCloudStatus('☁️ Synced as '+(cloudUser.displayName||cloudUser.email||'player'),'synced');
+      }catch(e){ setCloudStatus('☁️ Cloud save failed (still saved locally)','err'); console.warn('cloudPush',e); }
+    }, 800); }
+  // Pull the cloud save and reconcile with local: newer savedAt wins.
+  async function cloudPullAndMerge(){ if(!cloudOn()) return;
+    try{
+      setCloudStatus('☁️ Loading your cloud farm…','syncing');
+      const snap=await cloudDoc().get();
+      const localAt=state.savedAt||0;
+      if(snap.exists){
+        const data=snap.data();
+        let cloudState=null; try{ cloudState=JSON.parse(data.save); }catch(e){}
+        const cloudAt=(cloudState&&cloudState.savedAt)||data.savedAt||0;
+        if(cloudState && cloudAt>localAt){
+          // cloud is newer → adopt it (migrates forward if needed)
+          state=adopt(cloudState);
+          buildGrid(); render();
+          setCloudStatus('☁️ Loaded newer cloud save ✓','synced');
+        } else {
+          // local is newer or same → keep local, push it up
+          setCloudStatus('☁️ Local farm is newest — syncing up…','syncing');
+        }
+      }
+      // ensure cloud has the current (possibly local-newer) state
+      await cloudDoc().set({ save: JSON.stringify(state), savedAt: state.savedAt||Date.now(),
+        version: VERSION, updated: Date.now() });
+      setCloudStatus('☁️ Synced as '+(cloudUser.displayName||cloudUser.email||'player'),'synced');
+    }catch(e){ setCloudStatus('☁️ Couldn\'t reach cloud (playing locally)','err'); console.warn('cloudPull',e); }
+  }
+  // Wire the sign-in / sign-out buttons and react to auth changes.
+  function initCloud(){
+    const signInBtn=document.getElementById('cloudSignIn');
+    const signOutBtn=document.getElementById('cloudSignOut');
+    if(!window.CLOUD){ setCloudStatus('☁️ Cloud saves unavailable (offline)','err');
+      if(signInBtn) signInBtn.style.display='none'; return; }
+    signInBtn.addEventListener('click', async()=>{ try{
+        setCloudStatus('☁️ Opening Google sign-in…','syncing');
+        await window.CLOUD.auth.signInWithPopup(window.CLOUD.provider);
+      }catch(e){ setCloudStatus('☁️ Sign-in cancelled or failed','err'); console.warn('signIn',e); } });
+    signOutBtn.addEventListener('click', async()=>{ try{ await window.CLOUD.auth.signOut(); }catch(e){} });
+    window.CLOUD.auth.onAuthStateChanged(async(user)=>{
+      cloudUser=user||null;
+      if(user){
+        signInBtn.style.display='none'; signOutBtn.style.display='';
+        await cloudPullAndMerge();
+      } else {
+        signInBtn.style.display=''; signOutBtn.style.display='none';
+        setCloudStatus('☁️ Cloud saves: not signed in','');
+      }
+    });
+  }
 
   // Take a loaded save and migrate it forward to the current VERSION (or reset if too old).
   function adopt(saved){
@@ -1915,6 +2030,7 @@
       const from=state._migratedFrom; delete state._migratedFrom; save();
       setTimeout(()=>toast('✅ Save carried over from v'+from+' — coins & resources kept',3200),600);
     }
+    initCloud();   // wire up Google sign-in + cloud sync (no-ops if Firebase unavailable)
     setInterval(tick,200);
   })();
 })();
