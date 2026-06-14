@@ -89,6 +89,20 @@
 
   /* ===== HUD ===== */
   .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  /* sync/backup status banner */
+  .sync-banner{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:12px;margin-bottom:10px;
+    font-family:'Fredoka',sans-serif;font-weight:600;font-size:12.5px;line-height:1.3;
+    border:2px solid transparent;animation:sbpulse 2.6s ease-in-out infinite}
+  .sync-banner.warn{background:rgba(230,160,30,.16);border-color:rgba(240,180,60,.5);color:#ffe0a3}
+  .sync-banner.offline{background:rgba(210,60,45,.18);border-color:rgba(255,110,90,.55);color:#ffc2b5}
+  @keyframes sbpulse{0%,100%{box-shadow:0 0 0 0 rgba(255,200,80,0)}50%{box-shadow:0 0 10px 0 rgba(255,200,80,.25)}}
+  .sync-banner.offline{animation:none}
+  .sb-icon{font-size:15px;flex:0 0 auto}
+  .sb-text{flex:1}
+  .sb-action{flex:0 0 auto;font-family:'Fredoka',sans-serif;font-weight:700;font-size:12px;cursor:pointer;border:0;
+    border-radius:999px;padding:6px 13px;color:#3a2410;background:linear-gradient(180deg,#ffe7a8,#e9b94a);box-shadow:0 2px 0 #b88a2a}
+  .sb-action:active{transform:translateY(1px)}
+  .sb-action.hidden{display:none}
   .title{font-family:'Fredoka',sans-serif;font-weight:700;font-size:clamp(26px,6.5vw,38px);color:var(--cream);
     margin:0;text-shadow:0 2px 0 var(--grass-dk),0 4px 6px rgba(0,0,0,.22)}
   .hud{display:flex;align-items:center;gap:9px}
@@ -633,6 +647,11 @@
 <div id="rain"></div>
 
 <div class="game">
+  <div class="sync-banner" id="syncBanner" style="display:none">
+    <span class="sb-icon" id="sbIcon">⚠️</span>
+    <span class="sb-text" id="sbText"></span>
+    <button class="sb-action" id="sbAction">Sign in</button>
+  </div>
   <div class="topbar">
     <h1 class="title">Little Acre 🌻</h1>
     <div class="hud">
@@ -1193,7 +1212,7 @@
   const TAX_RATE=0.20;                        // 20% of gross yearly earnings
   const CAPGAINS_RATE=0.25;                   // 25% tax on PROFIT from stock & property sales
   const DEBT_DAILY_INTEREST=0.10;             // 10% compounding daily while in debt
-  const SAVE_KEY='littleacre:save'; const VERSION=31;
+  const SAVE_KEY='littleacre:save'; const VERSION=32;
   const BACKUP_KEY='littleacre:save:backup';   // last-known-good snapshot ("save folder")
   const MIN_MIGRATABLE=13;                       // saves at/after this version migrate forward instead of resetting
   // Leaderboard sanity cap: scores above this are clamped before submission. This is a
@@ -1356,6 +1375,28 @@
     if(acctName)   acctName.textContent     = name;
     if(cloudSignIn) cloudSignIn.style.display = signedIn?'none':'';
     if(cloudSignOut) cloudSignOut.style.display = signedIn?'':'none';
+    updateSyncBanner();
+  }
+  // Top banner that warns about progress safety. Two states:
+  //  • offline (no internet): red — changes won't reach the cloud until reconnected.
+  //  • not signed in: amber — progress is local-only and lost if the browser data is cleared.
+  // Hidden entirely when signed in AND online (the fully-safe state).
+  function updateSyncBanner(){
+    const banner=document.getElementById('syncBanner'); if(!banner) return;
+    const icon=document.getElementById('sbIcon'), text=document.getElementById('sbText'), action=document.getElementById('sbAction');
+    const online = (typeof navigator!=='undefined' && 'onLine' in navigator) ? navigator.onLine : true;
+    const signedIn=!!cloudUser;
+    if(!online){
+      banner.style.display='flex'; banner.className='sync-banner offline';
+      icon.textContent='📡'; text.textContent='You\'re offline — progress is saved on this device but won\'t back up to the cloud until you reconnect.';
+      action.classList.add('hidden');
+    } else if(!signedIn){
+      banner.style.display='flex'; banner.className='sync-banner warn';
+      icon.textContent='⚠️'; text.textContent='Not backed up — your farm lives only on this device. If you close or clear it, progress is lost. Sign in to save it to the cloud.';
+      action.classList.remove('hidden'); action.textContent='Sign in';
+    } else {
+      banner.style.display='none';   // signed in + online = safe, no banner
+    }
   }
   // Push the current state up to Firestore (debounced; only when signed in).
   function cloudPush(){ if(!cloudOn()) return; clearTimeout(cloudTimer);
@@ -1596,11 +1637,25 @@
     // Hook up all four buttons (top chip + bottom bar), if present.
     ['cloudSignIn','acctSignIn'].forEach(id=>{ const b=document.getElementById(id); if(b) b.addEventListener('click',doSignIn); });
     ['cloudSignOut','acctSignOut'].forEach(id=>{ const b=document.getElementById(id); if(b) b.addEventListener('click',doSignOut); });
+    // banner's own "Sign in" button uses the same flow
+    { const sb=document.getElementById('sbAction'); if(sb) sb.addEventListener('click',doSignIn); }
 
     if(!window.CLOUD){ setCloudStatus('☁️ Cloud saves unavailable (offline)','err');
       const a=document.getElementById('acctSignIn'); if(a) a.style.display='none';
       const c=document.getElementById('cloudSignIn'); if(c) c.style.display='none';
+      // no cloud at all → warn that progress is local-only, but hide the (dead) sign-in button
+      const banner=document.getElementById('syncBanner');
+      if(banner){ banner.style.display='flex'; banner.className='sync-banner warn';
+        document.getElementById('sbIcon').textContent='⚠️';
+        document.getElementById('sbText').textContent='Not backed up — cloud saving isn\'t available here, so progress lives only on this device.';
+        document.getElementById('sbAction').classList.add('hidden'); }
       return; }
+
+    // React to the device going on/offline so the banner flips in real time.
+    if(typeof window.addEventListener==='function'){
+      window.addEventListener('online', updateSyncBanner);
+      window.addEventListener('offline', updateSyncBanner);
+    }
 
     // If we returned from a redirect sign-in, complete it.
     if(window.CLOUD.auth.getRedirectResult){ window.CLOUD.auth.getRedirectResult().catch(()=>{}); }
@@ -1611,6 +1666,28 @@
       if(user){ await cloudPullAndMerge(); pushLeaderboard(); maybePromptNickname(); }
       else { setCloudStatus('☁️ Cloud saves: not signed in',''); }
     });
+
+    // Safety-net auto-sync: every 5 minutes, force a cloud save so progress is backed up
+    // even during long idle stretches or if a debounced save was missed. Only runs when
+    // signed in; skips if nothing changed since the last sync to avoid pointless writes.
+    let lastSyncedAt=0;
+    setInterval(()=>{
+      if(!cloudOn()) return;
+      if((state.savedAt||0)<=lastSyncedAt) return;      // nothing new to push
+      lastSyncedAt=state.savedAt||Date.now();
+      cloudPushNow();
+    }, 5*60*1000);
+  }
+  // Immediate (non-debounced) cloud write — used by the 5-minute auto-sync.
+  function cloudPushNow(){ if(!cloudOn()) return;
+    (async()=>{ try{
+      setCloudStatus('☁️ Auto-syncing…','syncing');
+      await cloudDoc().set({ save: JSON.stringify(state), savedAt: state.savedAt||Date.now(),
+        version: VERSION, updated: Date.now() });
+      setCloudStatus('☁️ Auto-synced ✓ ('+(cloudUser.displayName||cloudUser.email||'player')+')','synced');
+    }catch(e){ setCloudStatus('☁️ Auto-sync failed (saved locally)','err'); console.warn('cloudPushNow',e); }
+      pushLeaderboard();
+    })();
   }
 
   // Take a loaded save and migrate it forward to the current VERSION (or reset if too old).
@@ -3022,6 +3099,7 @@
       setTimeout(()=>toast('✅ Save carried over from v'+from+' — coins & resources kept',3200),600);
     }
     initCloud();   // wire up Google sign-in + cloud sync (no-ops if Firebase unavailable)
+    updateSyncBanner();   // show backup/offline status right away
     setInterval(tick,200);
   })();
 })();
