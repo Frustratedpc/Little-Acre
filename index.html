@@ -1395,7 +1395,7 @@
   const TAX_RATE=0.20;                        // 20% of gross yearly earnings
   const CAPGAINS_RATE=0.25;                   // 25% tax on PROFIT from stock & property sales
   const DEBT_DAILY_INTEREST=0.10;             // 10% compounding daily while in debt
-  const SAVE_KEY='littleacre:save'; const VERSION=46;
+  const SAVE_KEY='littleacre:save'; const VERSION=47;
   const BACKUP_KEY='littleacre:save:backup';   // last-known-good snapshot ("save folder")
   const MIN_MIGRATABLE=13;                       // saves at/after this version migrate forward instead of resetting
   // Leaderboard sanity cap: scores above this are clamped before submission. This is a
@@ -3084,7 +3084,16 @@
     else toast('Nothing ready yet');
   });
   document.getElementById('reset').addEventListener('click',()=>{
-    if(confirm('Start a brand-new farm? All progress will be cleared.')){ state=freshState(); selected='carrot'; rollWeather(); save(); render(); }
+    if(confirm('Start a brand-new farm? All progress will be cleared.\n\nYour nickname and leaderboard spot stay with your account.')){
+      // New farm = reset the FARM, but keep your identity (nickname is permanently bound to
+      // your account, so it survives a reset and stays tied to the leaderboard).
+      const keepNick=state.nickname, keepNickKey=state.nickKey;
+      state=freshState();
+      if(keepNick){ state.nickname=keepNick; state.nickKey=keepNickKey; }
+      selected='carrot'; rollWeather(); save(); render();
+      // push the reset farm (coins back to 50) up under the SAME name so the board reflects it
+      if(cloudOn()) pushLeaderboard();
+    }
   });
   document.getElementById('restore').addEventListener('click',async()=>{
     const b=await loadBackup();
