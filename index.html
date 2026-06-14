@@ -464,6 +464,19 @@
   .cask .collect[disabled]{opacity:.45;cursor:not-allowed;box-shadow:none}
 
   @media (prefers-reduced-motion:reduce){*{animation:none !important}}
+  /* ===== top-bar account chip (cloud sign-in/out) ===== */
+  .acct{display:flex;align-items:center}
+  .acct-signin{font-family:'Fredoka',sans-serif;font-weight:600;font-size:13px;cursor:pointer;border:0;border-radius:999px;
+    padding:7px 14px;color:#2b3138;background:linear-gradient(180deg,#fff,#eef1f4);box-shadow:0 3px 0 #b9c2cc;
+    display:inline-flex;align-items:center;gap:7px;animation:acctpulse 2s ease-in-out infinite}
+  .acct-signin:active{transform:translateY(1px)}
+  @keyframes acctpulse{0%,100%{box-shadow:0 3px 0 #b9c2cc}50%{box-shadow:0 3px 0 #b9c2cc,0 0 10px rgba(255,255,255,.6)}}
+  .acct-info{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border-radius:999px;padding:4px 5px 4px 12px}
+  .acct-name{font-family:'Fredoka',sans-serif;font-weight:600;font-size:12.5px;color:#dff0db;max-width:120px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .acct-signout{font-family:'Fredoka',sans-serif;font-weight:600;font-size:11.5px;cursor:pointer;border:0;border-radius:999px;
+    padding:5px 11px;color:#fff;background:rgba(0,0,0,.28)}
+  .acct-signout:active{transform:translateY(1px)}
 </style>
 
 <div class="sky-layer" id="sky-morning"></div>
@@ -495,6 +508,13 @@
       <span class="xptext" id="xpText">0 / 25 XP</span>
     </div>
     <div class="wpill" id="wpill">☀️ Sunny · Day</div>
+    <div class="acct" id="acct">
+      <button class="acct-signin" id="acctSignIn">☁️ Sign in</button>
+      <div class="acct-info" id="acctInfo" style="display:none">
+        <span class="acct-name" id="acctName">player</span>
+        <button class="acct-signout" id="acctSignOut">Sign out</button>
+      </div>
+    </div>
   </div>
 
   <div class="tabbar" id="tabbar">
@@ -588,9 +608,7 @@
   </div>
 
   <div class="cloudbar" id="cloudbar">
-    <span class="cloud-status" id="cloudStatus">☁️ Cloud saves: not signed in</span>
-    <button class="btn cloud" id="cloudSignIn">Sign in with Google</button>
-    <button class="btn ghost cloud-out" id="cloudSignOut" style="display:none">Sign out</button>
+    <span class="cloud-status" id="cloudStatus">☁️ Cloud saves: not signed in — tap “Sign in” at the top to sync across devices</span>
   </div>
 
   <div class="actions">
@@ -843,7 +861,7 @@
   const TAX_RATE=0.20;                        // 20% of gross yearly earnings
   const CAPGAINS_RATE=0.25;                   // 25% tax on PROFIT from stock & property sales
   const DEBT_DAILY_INTEREST=0.10;             // 10% compounding daily while in debt
-  const SAVE_KEY='littleacre:save'; const VERSION=18;
+  const SAVE_KEY='littleacre:save'; const VERSION=19;
   const BACKUP_KEY='littleacre:save:backup';   // last-known-good snapshot ("save folder")
   const MIN_MIGRATABLE=13;                       // saves at/after this version migrate forward instead of resetting
   // Storage backend. Priority: artifact sandbox > IndexedDB+localStorage mirror > localStorage > none.
@@ -989,7 +1007,20 @@
   function cloudOn(){ return !!(window.CLOUD && cloudUser); }
   function cloudDoc(){ return window.CLOUD.db.collection('saves').doc(cloudUser.uid); }
   function setCloudStatus(text, cls){ const el=document.getElementById('cloudStatus');
-    if(!el) return; el.textContent=text; el.className='cloud-status'+(cls?' '+cls:''); }
+    if(el){ el.textContent=text; el.className='cloud-status'+(cls?' '+cls:''); } }
+  // Reflect signed-in/out state in BOTH the top-bar chip and the bottom cloud bar.
+  function updateAccountUI(){
+    const signedIn=!!cloudUser;
+    const name=cloudUser?(cloudUser.displayName||cloudUser.email||'player'):'';
+    const acctSignIn=document.getElementById('acctSignIn'), acctInfo=document.getElementById('acctInfo'),
+          acctName=document.getElementById('acctName'),
+          cloudSignIn=document.getElementById('cloudSignIn'), cloudSignOut=document.getElementById('cloudSignOut');
+    if(acctSignIn) acctSignIn.style.display = signedIn?'none':'inline-flex';
+    if(acctInfo)   acctInfo.style.display   = signedIn?'flex':'none';
+    if(acctName)   acctName.textContent     = name;
+    if(cloudSignIn) cloudSignIn.style.display = signedIn?'none':'';
+    if(cloudSignOut) cloudSignOut.style.display = signedIn?'':'none';
+  }
   // Push the current state up to Firestore (debounced; only when signed in).
   function cloudPush(){ if(!cloudOn()) return; clearTimeout(cloudTimer);
     cloudTimer=setTimeout(async()=>{ try{
@@ -1025,26 +1056,36 @@
       setCloudStatus('☁️ Synced as '+(cloudUser.displayName||cloudUser.email||'player'),'synced');
     }catch(e){ setCloudStatus('☁️ Couldn\'t reach cloud (playing locally)','err'); console.warn('cloudPull',e); }
   }
-  // Wire the sign-in / sign-out buttons and react to auth changes.
+  // Wire the sign-in / sign-out buttons (top chip + bottom bar) and react to auth changes.
   function initCloud(){
-    const signInBtn=document.getElementById('cloudSignIn');
-    const signOutBtn=document.getElementById('cloudSignOut');
-    if(!window.CLOUD){ setCloudStatus('☁️ Cloud saves unavailable (offline)','err');
-      if(signInBtn) signInBtn.style.display='none'; return; }
-    signInBtn.addEventListener('click', async()=>{ try{
+    const doSignIn=async()=>{ try{
         setCloudStatus('☁️ Opening Google sign-in…','syncing');
         await window.CLOUD.auth.signInWithPopup(window.CLOUD.provider);
-      }catch(e){ setCloudStatus('☁️ Sign-in cancelled or failed','err'); console.warn('signIn',e); } });
-    signOutBtn.addEventListener('click', async()=>{ try{ await window.CLOUD.auth.signOut(); }catch(e){} });
+      }catch(e){
+        // Popup blocked (common on mobile/standalone) → fall back to full-page redirect sign-in.
+        if(e && (e.code==='auth/popup-blocked'||e.code==='auth/cancelled-popup-request'||e.code==='auth/operation-not-supported-in-this-environment')){
+          try{ await window.CLOUD.auth.signInWithRedirect(window.CLOUD.provider); return; }catch(e2){ console.warn('redirect',e2); }
+        }
+        setCloudStatus('☁️ Sign-in cancelled or failed','err'); console.warn('signIn',e);
+      } };
+    const doSignOut=async()=>{ try{ await window.CLOUD.auth.signOut(); }catch(e){} };
+    // Hook up all four buttons (top chip + bottom bar), if present.
+    ['cloudSignIn','acctSignIn'].forEach(id=>{ const b=document.getElementById(id); if(b) b.addEventListener('click',doSignIn); });
+    ['cloudSignOut','acctSignOut'].forEach(id=>{ const b=document.getElementById(id); if(b) b.addEventListener('click',doSignOut); });
+
+    if(!window.CLOUD){ setCloudStatus('☁️ Cloud saves unavailable (offline)','err');
+      const a=document.getElementById('acctSignIn'); if(a) a.style.display='none';
+      const c=document.getElementById('cloudSignIn'); if(c) c.style.display='none';
+      return; }
+
+    // If we returned from a redirect sign-in, complete it.
+    if(window.CLOUD.auth.getRedirectResult){ window.CLOUD.auth.getRedirectResult().catch(()=>{}); }
+
     window.CLOUD.auth.onAuthStateChanged(async(user)=>{
       cloudUser=user||null;
-      if(user){
-        signInBtn.style.display='none'; signOutBtn.style.display='';
-        await cloudPullAndMerge();
-      } else {
-        signInBtn.style.display=''; signOutBtn.style.display='none';
-        setCloudStatus('☁️ Cloud saves: not signed in','');
-      }
+      updateAccountUI();
+      if(user){ await cloudPullAndMerge(); }
+      else { setCloudStatus('☁️ Cloud saves: not signed in',''); }
     });
   }
 
