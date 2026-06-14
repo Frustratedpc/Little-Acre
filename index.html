@@ -279,6 +279,26 @@
   .tbtn.buy{background:var(--grass);box-shadow:0 3px 0 var(--grass-dk)}
   .tbtn.sell{background:#d98a3d;box-shadow:0 3px 0 #a9692a}
   .tbtn[disabled]{opacity:.4;cursor:not-allowed;box-shadow:none;transform:none}
+  /* buyers' market deals */
+  .deal{background:var(--cream);border:3px solid #e7d6bf;border-radius:16px;padding:11px;box-shadow:0 4px 0 #e0cdb2}
+  .deal-top{display:flex;align-items:center;gap:10px}
+  .deal-e{font-size:30px;line-height:1;flex:0 0 auto}
+  .deal-info{display:flex;flex-direction:column;gap:1px;min-width:0}
+  .deal-buyer{font-family:'Fredoka',sans-serif;font-weight:600;font-size:13px;color:var(--ink-soft)}
+  .deal-want{font-family:'Fredoka',sans-serif;font-weight:700;font-size:15.5px;color:var(--ink)}
+  .deal-prem{font-weight:600;font-size:12px;color:#2e8b40}
+  .deal-prog{height:7px;background:#e7d6bf;border-radius:5px;overflow:hidden;margin:9px 0 8px}
+  .deal-prog i{display:block;height:100%;background:linear-gradient(90deg,#9acb5a,#5a9c39);transition:width .3s}
+  .deal-row{display:flex;align-items:center;gap:9px}
+  .deal-have{font-family:'Nunito',sans-serif;font-weight:700;font-size:12.5px;color:var(--ink-soft);flex:1}
+  .deal-pay{font-family:'Fredoka',sans-serif;font-weight:700;font-size:16px;color:var(--ink);flex:1}
+  .deal-row .tbtn{flex:0 0 auto;min-width:96px}
+  .deal.buffdeal{background:linear-gradient(180deg,#fff7e0,#ffe9b3);border-color:#f0cf7a;box-shadow:0 4px 0 #e6c468}
+  .buffrow{display:flex;flex-wrap:wrap;gap:7px;grid-column:1/-1}
+  .buffchip{font-family:'Fredoka',sans-serif;font-weight:600;font-size:11.5px;color:#2f5e2a;background:rgba(120,200,120,.25);
+    border:2px solid rgba(90,160,90,.5);border-radius:999px;padding:4px 10px}
+  .deal-empty{grid-column:1/-1;text-align:center;font-family:'Fredoka',sans-serif;font-weight:600;color:var(--ink-soft);padding:14px}
+  .buffdeal{grid-column:1/-1}
 
   /* ===== exchange chalkboard ===== */
   .exchange{background:linear-gradient(180deg,#2f4434,#22321f);border:7px solid var(--wood);border-radius:22px;padding:14px;
@@ -709,7 +729,7 @@
   <h2 class="sec">🧾 Farm Finances</h2>
   <div class="finances" id="finances"></div>
 
-  <h2 class="sec">🧺 Commodities Stall</h2>
+  <h2 class="sec">🧺 Buyers' Market</h2>
   <div class="stall"><div class="stall-grid" id="commodities"></div></div>
 
   <h2 class="sec">📈 The Acre Exchange</h2>
@@ -984,7 +1004,7 @@
                          flagged `wonder:true` and grows by WONDER_PER_YEAR forever.
      • PALLETS {}      — bulk-sale pallet sizes per item. PALLET_MULT is the
                          premium (1.6 = +60% vs selling singles).
-     • COMMODITIES {}  — the commodities-stall goods and their price bands.
+     • BUYERS / BUFF_ITEMS — the buyers'-market deal pool and rare temporary buffs.
      • STOCKS {}       — the stock market tickers, base price, volatility, drift.
      • PROPERTIES {}   — real estate: price, rent (per market tick), slots (bonus
                          farm plots when owned), growth/vol (value drift). Value is
@@ -1061,13 +1081,29 @@
     rain: {emoji:'🌧️', label:'Rainy',  speed:1.4, mod:'+40% growth'},
   };
   // Commodities: cozy goods you stockpile and resell. Each has a wandering price.
-  const COMMODITIES = {
-    grain:  {emoji:'🌾', name:'Grain',     base:8,   lo:0.55, hi:1.7,  vol:0.10},
-    hay:    {emoji:'🌿', name:'Hay Bale',  base:14,  lo:0.6,  hi:1.6,  vol:0.09},
-    honey:  {emoji:'🍯', name:'Honey Jar', base:26,  lo:0.5,  hi:1.9,  vol:0.13},
-    seeds:  {emoji:'🫘', name:'Rare Seeds',base:40,  lo:0.4,  hi:2.4,  vol:0.18},
-    cheese: {emoji:'🧀', name:'Cheese',    base:55,  lo:0.6,  hi:1.7,  vol:0.11},
+  // ===== Buyers' Market (daily-deal stall) =====
+  // Buyers post rotating "wanted" requests for goods you actually produce. Fulfill them from
+  // your inventory at a premium. Not speculation — a reason to farm specific things.
+  // Each buyer has a flavor name; deals pick a random eligible good + qty + premium + expiry.
+  const BUYERS = ['The Baker','Innkeeper Opal','Chef Renard','Old Man Hassil','The Market Co-op',
+    'Granny Plum','Dockmaster Fenn','The Orphanage','Festival Committee','Trader Sookie'];
+  // Goods buyers can request: id → must exist in PRODUCTS or CROPS (sold from inventory).
+  // We build this list at runtime from raw produce + crops so deals match what you can grow.
+  const DEAL_MIN_QTY=4, DEAL_MAX_QTY=18;       // how many units a buyer wants
+  const DEAL_PREMIUM_LO=1.25, DEAL_PREMIUM_HI=1.8;  // pays this × the good's base value
+  const DEAL_SLOTS=3;                           // how many deals are posted at once
+  const DEAL_LIFE_DAYS=2;                        // a deal expires after ~2 in-game days
+  const DEAL_REFRESH_MS=90000;                  // also rotate a fresh deal every ~90s of play
+
+  // ===== Rare buff items (occasionally for sale at the stall) =====
+  // Temporary boosts to crop growth or animal harvest speed. Last a few in-game days.
+  const BUFF_ITEMS = {
+    sunmist:  {emoji:'🌦️', name:'Sun-Mist Tonic',    kind:'crop',   mult:1.5, days:3, cost:900,  desc:'Crops grow 50% faster for 3 days'},
+    bloomdust:{emoji:'✨', name:'Bloom Dust',         kind:'crop',   mult:2.0, days:2, cost:1500, desc:'Crops grow 2× faster for 2 days'},
+    feedmix:  {emoji:'🌟', name:'Golden Feed Mix',    kind:'animal', mult:1.5, days:3, cost:1100, desc:'Animals produce 50% faster for 3 days'},
+    vitaboost:{emoji:'💉', name:'Vita-Boost Serum',   kind:'animal', mult:2.0, days:2, cost:1800, desc:'Animals produce 2× faster for 2 days'},
   };
+  const BUFF_APPEAR_CHANCE=0.5;  // chance a buff item is on offer after a refresh
   // Stocks: farm-world companies. Share price drifts with small chance of a jump.
   const STOCKS = {
     SPRT:{name:'Sprout Seed Co.',     emoji:'🌱', base:40,  vol:0.11, drift:0.004},
@@ -1212,7 +1248,7 @@
   const TAX_RATE=0.20;                        // 20% of gross yearly earnings
   const CAPGAINS_RATE=0.25;                   // 25% tax on PROFIT from stock & property sales
   const DEBT_DAILY_INTEREST=0.10;             // 10% compounding daily while in debt
-  const SAVE_KEY='littleacre:save'; const VERSION=32;
+  const SAVE_KEY='littleacre:save'; const VERSION=33;
   const BACKUP_KEY='littleacre:save:backup';   // last-known-good snapshot ("save folder")
   const MIN_MIGRATABLE=13;                       // saves at/after this version migrate forward instead of resetting
   // Leaderboard sanity cap: scores above this are clamped before submission. This is a
@@ -1289,8 +1325,8 @@
   // ---------- state ----------
   // Build the starting price-multiplier table for every sellable item.
   function freshMarket(){ const m={}; SELLABLE.forEach(id=>m[id]={mult:1,prev:1}); return m; }
-  // Build the starting state for the commodities stall.
-  function freshCommodities(){ const c={}; for(const id in COMMODITIES) c[id]={mult:1,prev:1,owned:0}; return c; }
+  // Build the starting state for the buyers' market (deals + optional buff offer + active buffs).
+  function freshMarketStall(){ return {deals:[], buffOffer:null, buffs:{crop:null,animal:null}, nextDeal:0, seeded:false}; }
   // Build the starting state for the stock market (prices + history).
   function freshStocks(){ const s={}; for(const sym in STOCKS){ const b=STOCKS[sym].base;
     s[sym]={price:b,prev:b,shares:0,cost:0,hist:Array.from({length:SPARK_LEN},()=>b)}; } return s; }
@@ -1302,7 +1338,7 @@
     return {version:VERSION, coins:50, level:1, xp:0, unlocked:START_UNLOCKED,
       plots:Array.from({length:GRID},()=>({crop:null,growth:0,ready:false})),
       animals:[], market:freshMarket(),
-      commodities:freshCommodities(), stocks:freshStocks(),
+      commodities:freshMarketStall(), stocks:freshStocks(),
       estates:freshEstates(), housing:0,
       inventory:{}, kitchen:[], cellar:[], harvestMode:'sell',
       weather:'sun', nextWeather:Date.now()+40000, nextMarket:Date.now()+22000,
@@ -1701,8 +1737,9 @@
     const s=saved;
     // backfill any missing pieces defensively
     if(!s.market) s.market=freshMarket(); else SELLABLE.forEach(id=>{ if(!s.market[id]) s.market[id]={mult:1,prev:1}; });
-    if(!s.commodities) s.commodities=freshCommodities();
-    else for(const id in COMMODITIES){ if(!s.commodities[id]) s.commodities[id]={mult:1,prev:1,owned:0}; }
+    // buyers' market: replace any old commodities structure with the new stall state
+    if(!s.commodities || !('deals' in s.commodities)) s.commodities=freshMarketStall();
+    if(!s.commodities.buffs) s.commodities.buffs={crop:null,animal:null};
     if(!s.stocks) s.stocks=freshStocks();
     else for(const sym in STOCKS){ const b=STOCKS[sym].base;
       if(!s.stocks[sym]) s.stocks[sym]={price:b,prev:b,shares:0,cost:0,hist:Array.from({length:SPARK_LEN},()=>b)};
@@ -1786,9 +1823,7 @@
   function rollMarket(){
     SELLABLE.forEach(id=>{ const m=state.market[id]; m.prev=m.mult;
       m.mult=Math.max(0.6, Math.min(1.5, m.mult+(Math.random()*0.36-0.18))); });
-    // commodities wander within their own band
-    for(const id in COMMODITIES){ const cfg=COMMODITIES[id], c=state.commodities[id]; c.prev=c.mult;
-      c.mult=Math.max(cfg.lo, Math.min(cfg.hi, c.mult+(Math.random()*2-1)*cfg.vol)); }
+    // (buyers' market deals rotate on their own schedule — see advanceStall)
     // stocks drift with occasional jumps
     for(const sym in STOCKS){ const cfg=STOCKS[sym], st=state.stocks[sym]; st.prev=st.price;
       let pct=(Math.random()*2-1)*cfg.vol + cfg.drift;
@@ -1816,16 +1851,83 @@
   let rentToast=0;
 
   // ---------- commodities ----------
-  // Current coin price of a commodity.
-  function comPrice(id){ const cfg=COMMODITIES[id]; return Math.max(1, Math.round(cfg.base*state.commodities[id].mult)); }
-  // Buy 1 commodity (can overdraft into debt).
-  function buyCommodity(id){ const px=comPrice(id), c=state.commodities[id];
-    spend(px); c.owned++; bumpCoins(); save(); render();
+  // ---------- buyers' market (daily deals + rare buffs) ----------
+  // The pool of goods a buyer can request: raw animal products, butcher cuts, crafted goods,
+  // and harvested crops — anything you can hold in inventory. Each maps to a unit value.
+  function dealGoodPool(){
+    const pool=[];
+    for(const id in PRODUCTS){ const p=PRODUCTS[id]; if(p.raw||p.craft) pool.push({id, name:p.name, emoji:p.emoji, unit:p.base}); }
+    for(const id in CROPS){ const c=CROPS[id]; pool.push({id, name:c.name, emoji:c.emoji, unit:c.sell}); }
+    return pool;
   }
-  // Sell 1 owned commodity.
-  function sellCommodity(id){ const c=state.commodities[id];
-    if(c.owned<=0){ toast('No '+COMMODITIES[id].name+' to sell'); return; }
-    const px=comPrice(id); earn(px); c.owned--; bumpCoins(); save(); render();
+  // How many of a good the player currently holds (crops & products both live in inventory).
+  function goodHeld(id){ return invCount(id); }
+  // Create one fresh deal: a random buyer wants a random good at a premium, expiring in a couple days.
+  function makeDeal(){
+    const pool=dealGoodPool();
+    const g=pool[Math.floor(Math.random()*pool.length)];
+    const qty=DEAL_MIN_QTY+Math.floor(Math.random()*(DEAL_MAX_QTY-DEAL_MIN_QTY+1));
+    const premium=DEAL_PREMIUM_LO+Math.random()*(DEAL_PREMIUM_HI-DEAL_PREMIUM_LO);
+    const buyer=BUYERS[Math.floor(Math.random()*BUYERS.length)];
+    const unitPay=Math.max(1, Math.round(g.unit*premium));
+    return { buyer, good:g.id, name:g.name, emoji:g.emoji, qty, filled:0,
+             unitPay, premium:Math.round(premium*100)/100, expireDay:(state.lastDay||1)+DEAL_LIFE_DAYS };
+  }
+  // Maybe put a rare buff item up for sale (replaces any previous unsold offer).
+  function rollBuffOffer(){
+    if(Math.random()<BUFF_APPEAR_CHANCE){
+      const keys=Object.keys(BUFF_ITEMS);
+      state.commodities.buffOffer=keys[Math.floor(Math.random()*keys.length)];
+    } else state.commodities.buffOffer=null;
+  }
+  // Keep the deal board full and rotate it over time; also drop expired deals.
+  function advanceStall(force){
+    const st=state.commodities; if(!st) return;
+    if(!st.seeded){ st.deals=[]; for(let i=0;i<DEAL_SLOTS;i++) st.deals.push(makeDeal());
+      rollBuffOffer(); st.seeded=true; st.nextDeal=Date.now()+DEAL_REFRESH_MS; }
+    // expire by day
+    st.deals=st.deals.filter(d=> (state.lastDay||1) < d.expireDay );
+    // periodic rotation: swap one out for a fresh one
+    if(force || Date.now()>=st.nextDeal){
+      if(st.deals.length>=DEAL_SLOTS) st.deals.shift();      // retire the oldest
+      while(st.deals.length<DEAL_SLOTS) st.deals.push(makeDeal());
+      rollBuffOffer();
+      st.nextDeal=Date.now()+DEAL_REFRESH_MS;
+    } else {
+      while(st.deals.length<DEAL_SLOTS) st.deals.push(makeDeal());  // always keep board full
+    }
+  }
+  // Fulfill as much of a deal as possible from inventory (partial fills allowed).
+  function fulfillDeal(idx){
+    const st=state.commodities, d=st.deals[idx]; if(!d) return;
+    const need=d.qty-d.filled, have=goodHeld(d.good);
+    if(have<=0){ toast('You have no '+d.name+' to deliver'); return; }
+    const give=Math.min(need, have);
+    invRemove(d.good, give); d.filled+=give;
+    const pay=give*d.unitPay; earn(pay); gainXP(Math.round(give*1.5));
+    bumpCoins();
+    if(d.filled>=d.qty){ toast('✅ '+d.buyer+' paid '+fmtMoney(pay)+' — order complete!', 3000);
+      st.deals.splice(idx,1); st.deals.push(makeDeal()); }
+    else toast('Delivered '+give+' '+d.name+' (+'+fmtMoney(pay)+'). '+(d.qty-d.filled)+' more wanted.', 2800);
+    save(); render();
+  }
+  // Buy the offered rare buff: activates a temporary crop or animal speed boost.
+  function buyBuff(){
+    const key=state.commodities.buffOffer; if(!key) return;
+    const it=BUFF_ITEMS[key];
+    spend(it.cost);
+    const until=(state.lastDay||1)+it.days;
+    state.commodities.buffs[it.kind]={key, mult:it.mult, until};
+    state.commodities.buffOffer=null;
+    bumpCoins(); save(); render();
+    toast('✨ '+it.name+' active — '+it.desc.toLowerCase()+'!', 3400);
+  }
+  // Current active growth multiplier for crops / animals (1 = none). Expired buffs are cleared.
+  function buffMult(kind){
+    const b=state.commodities && state.commodities.buffs && state.commodities.buffs[kind];
+    if(!b) return 1;
+    if((state.lastDay||1) >= b.until){ state.commodities.buffs[kind]=null; return 1; }
+    return b.mult;
   }
 
   // ---------- stocks ----------
@@ -2720,25 +2822,52 @@
       <div class="big">-${debt}</div><div class="small">10%/day interest — earn to climb out</div></div>`);
     wrap.innerHTML=cards.join('');
   }
-  // Trend arrow for a commodity's price move.
-  function comTrend(id){ const c=state.commodities[id];
-    if(c.mult>c.prev+0.005) return '<span class="trend up">▲</span>';
-    if(c.mult<c.prev-0.005) return '<span class="trend down">▼</span>'; return '<span class="trend flat">—</span>'; }
-  // Redraw the commodities stall.
+  // Redraw the buyers' market: active deals + any rare buff on offer + active buff timers.
   function renderCommodities(){
     const wrap=document.getElementById('commodities');
-    wrap.innerHTML='';
-    for(const id in COMMODITIES){ const cfg=COMMODITIES[id], c=state.commodities[id], px=comPrice(id);
-      const el=document.createElement('div'); el.className='com';
-      el.innerHTML=`<div class="top"><span class="e">${cfg.emoji}</span><span class="nm">${cfg.name}</span>
-          <span class="own">Owned<br><b>${c.owned}</b></span></div>
-        <div class="px"><span class="coinmini"></span>${px} ${comTrend(id)}</div>
-        <div class="row">
-          <button class="tbtn buy" data-buy="${id}">Buy</button>
-          <button class="tbtn sell" data-sell="${id}" ${c.owned<=0?'disabled':''}>Sell</button>
-        </div>`;
-      wrap.appendChild(el);
+    if(!wrap) return;
+    advanceStall();   // make sure the board is populated before drawing
+    const st=state.commodities;
+    let html='';
+
+    // active buff status chips (if any boosts are running)
+    const chips=[];
+    ['crop','animal'].forEach(kind=>{ const b=st.buffs&&st.buffs[kind];
+      if(b && (state.lastDay||1)<b.until){ const it=BUFF_ITEMS[b.key];
+        const left=b.until-(state.lastDay||1);
+        chips.push(`<span class="buffchip">${it.emoji} ${it.name} · ${b.mult}× ${kind} · ${left}d left</span>`); } });
+    if(chips.length) html+=`<div class="buffrow">${chips.join('')}</div>`;
+
+    // rare buff for sale
+    if(st.buffOffer){ const it=BUFF_ITEMS[st.buffOffer];
+      const afford = state.coins>=it.cost;
+      html+=`<div class="deal buffdeal">
+        <div class="deal-top"><span class="deal-e">${it.emoji}</span>
+          <div class="deal-info"><span class="deal-buyer">Rare find: ${it.name}</span>
+            <span class="deal-want">${it.desc}</span></div></div>
+        <div class="deal-row">
+          <span class="deal-pay">💰 ${fmtMoney(it.cost)}</span>
+          <button class="tbtn buy" data-buybuff="1">Buy</button>
+        </div></div>`;
     }
+
+    // the wanted-deals board
+    st.deals.forEach((d,i)=>{
+      const have=goodHeld(d.good), need=d.qty-d.filled;
+      const prog=Math.round((d.filled/d.qty)*100);
+      const canDeliver=have>0;
+      html+=`<div class="deal">
+        <div class="deal-top"><span class="deal-e">${d.emoji}</span>
+          <div class="deal-info"><span class="deal-buyer">${d.buyer} wants</span>
+            <span class="deal-want">${need} ${d.name} <span class="deal-prem">·  ${d.premium}× (${fmtMoney(d.unitPay)} each)</span></span></div></div>
+        <div class="deal-prog"><i style="width:${prog}%"></i></div>
+        <div class="deal-row">
+          <span class="deal-have">You hold: <b>${have}</b></span>
+          <button class="tbtn sell" data-deal="${i}" ${canDeliver?'':'disabled'}>Deliver ${canDeliver?Math.min(need,have):''}</button>
+        </div></div>`;
+    });
+
+    wrap.innerHTML=html || '<div class="deal-empty">The market is quiet… check back soon.</div>';
   }
   // Redraw the stock exchange (prices, charts, holdings, P/L).
   function renderStocks(){
@@ -3037,14 +3166,18 @@
     if(now>=state.nextWeather) rollWeather();
     if(now>=state.nextMarket){ rollMarket(); marketRolled=true;
       if(rentToast>0){ toast('🏘️ Collected '+rentToast+' in rent'); rentToast=0; } save(); }
+    const stallBefore = state.commodities.deals.length+' '+(state.commodities.buffOffer||'');
+    advanceStall();
+    if(state.commodities.deals.length+' '+(state.commodities.buffOffer||'') !== stallBefore) marketRolled=true;
     const speed=WEATHER[state.weather].speed; let changed=false; let spoiled=0;
+    const cropBuff=buffMult('crop'), animalBuff=buffMult('animal');
     state.plots.forEach(p=>{ if(!p.crop) return;
-      if(!p.ready){ p.growth+=dt*speed; if(p.growth>=CROPS[p.crop].grow){ p.ready=true; p.readyMs=0; changed=true; } }
+      if(!p.ready){ p.growth+=dt*speed*cropBuff; if(p.growth>=CROPS[p.crop].grow){ p.ready=true; p.readyMs=0; changed=true; } }
       else { p.readyMs=(p.readyMs||0)+dt;          // count real time spent ripe
         if(p.readyMs>=CROP_SPOIL_MS){ p.crop=null; p.growth=0; p.ready=false; p.readyMs=0; spoiled++; changed=true; } }
     });
     if(spoiled) toast('🥀 '+spoiled+' ripe crop'+(spoiled>1?'s':'')+' withered (left over 24h)', 2800);
-    state.animals.forEach(a=>{ const A=ANIMALS[a.type]; if(A.pid && !a.ready){ a.growth+=dt; if(a.growth>=A.cycle){ a.ready=true; changed=true; } }});
+    state.animals.forEach(a=>{ const A=ANIMALS[a.type]; if(A.pid && !a.ready){ a.growth+=dt*animalBuff; if(a.growth>=A.cycle){ a.ready=true; changed=true; } }});
     const prevDay=state.lastDay, prevAnimals=state.animals.length;
     advanceCalendar();
     const dayEvent = state.lastDay!==prevDay || state.animals.length!==prevAnimals;
@@ -3066,8 +3199,8 @@
   }
   // Wire up all delegated button handlers once at startup.
   function wireEvents(){
-    delegate('commodities','data-buy',  buyCommodity);
-    delegate('commodities','data-sell', sellCommodity);
+    delegate('commodities','data-deal',    i=>fulfillDeal(+i));
+    delegate('commodities','data-buybuff', ()=>buyBuff());
     delegate('stocks','data-buy',  buyShare);
     delegate('stocks','data-sell', sellShare);
     delegate('bigbox','data-pallet', sellPallet);
