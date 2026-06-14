@@ -212,10 +212,10 @@
   .plot.locked{background:linear-gradient(180deg,#6d6157,#4f463d);color:#d9ccbd}
   .plot.estate-plot{box-shadow:inset 0 0 0 2px rgba(124,179,66,.5)}
   /* ===== Farm | Pantry tabs ===== */
-  .tabbar{display:flex;gap:8px;margin:4px 0 14px;position:sticky;top:0;z-index:6;
+  .tabbar{display:flex;gap:6px;margin:4px 0 14px;position:sticky;top:0;z-index:6;
     padding:8px 0;background:linear-gradient(180deg,rgba(22,58,28,.96),rgba(22,58,28,.82) 70%,rgba(22,58,28,0));backdrop-filter:blur(3px)}
-  .tab{flex:1;font-family:'Fredoka',sans-serif;font-weight:600;font-size:16px;cursor:pointer;border:0;border-radius:14px;
-    padding:12px;color:#bcd3b9;background:rgba(255,255,255,.08);transition:transform .1s,background .15s,color .15s}
+  .tab{flex:1;font-family:'Fredoka',sans-serif;font-weight:600;font-size:14px;cursor:pointer;border:0;border-radius:14px;
+    padding:11px 6px;color:#bcd3b9;background:rgba(255,255,255,.08);transition:transform .1s,background .15s,color .15s;white-space:nowrap}
   .tab:active{transform:translateY(1px)}
   .tab.on{color:#163a1c;background:linear-gradient(180deg,#cfe8b0,#9fcd6e);box-shadow:0 3px 0 #6d9c43}
   .page{display:none;animation:pagein .25s ease}
@@ -378,6 +378,7 @@
     box-shadow:0 3px 0 var(--grass-dk);font-size:12px;padding:6px 12px}
   #cropBuffs .buffchip.daily{color:#5a3d0a;background:linear-gradient(180deg,#ffe07a,#f0bf3e);
     border-color:#cf9e34;box-shadow:0 3px 0 #cf9e34}
+  #cropBuffs .buffchip.stacktotal{color:#fff;background:linear-gradient(180deg,#7c5cff,#5a3de0);border-color:#4a30c0;box-shadow:0 3px 0 #4a30c0}
 
   /* ===== exchange chalkboard ===== */
   .exchange{background:linear-gradient(180deg,#2f4434,#22321f);border:7px solid var(--wood);border-radius:22px;padding:14px;
@@ -682,6 +683,32 @@
   .lb-peek{font-family:'Fredoka',sans-serif;font-weight:700;color:#9db89a;font-size:18px;width:14px;text-align:center}
   /* player profile card */
   .profile-modal{max-width:340px}
+  /* achievements page */
+  .ach-modal{max-width:560px;width:94vw;max-height:88vh;display:flex;flex-direction:column}
+  .ach-count{font-family:'Fredoka',sans-serif;font-weight:700;font-size:13px;color:#ffe28a;margin-left:6px}
+  .ach-body{overflow-y:auto;padding-right:4px;margin-top:8px}
+  .ach-progress{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .ach-progbar{flex:1;height:12px;background:rgba(255,255,255,.12);border-radius:7px;overflow:hidden}
+  .ach-progbar i{display:block;height:100%;background:linear-gradient(90deg,#ffd86b,#f0a83a)}
+  .ach-progtxt{font-family:'Fredoka',sans-serif;font-weight:700;font-size:12px;color:#eef6ea;white-space:nowrap}
+  .ach-cat{margin-bottom:14px}
+  .ach-cat-title{font-family:'Fredoka',sans-serif;font-weight:700;font-size:14px;color:#cfe8c4;margin:0 0 7px;
+    display:flex;align-items:center;gap:8px}
+  .ach-cat-title span{font-size:11px;color:#9db89a;font-weight:600}
+  .ach-grid{display:grid;grid-template-columns:1fr;gap:7px}
+  @media(min-width:460px){ .ach-grid{grid-template-columns:1fr 1fr} }
+  .ach-badge{display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.05);
+    border:2px solid rgba(255,255,255,.08);border-radius:13px;padding:9px 11px;opacity:.72}
+  .ach-badge.got{opacity:1;background:linear-gradient(180deg,rgba(255,225,130,.14),rgba(240,168,58,.08));border-color:rgba(240,180,60,.45)}
+  .ach-emoji{font-size:26px;line-height:1;flex:0 0 auto;width:30px;text-align:center}
+  .ach-info{flex:1;min-width:0}
+  .ach-name{font-family:'Fredoka',sans-serif;font-weight:700;font-size:13.5px;color:#fff}
+  .ach-desc{font-family:'Nunito',sans-serif;font-weight:600;font-size:11.5px;color:#bcd3b9;margin:1px 0 4px}
+  .ach-reward{font-family:'Fredoka',sans-serif;font-weight:700;font-size:11px;color:#9fe07e}
+  .ach-bar{position:relative;height:13px;background:rgba(0,0,0,.25);border-radius:7px;overflow:hidden}
+  .ach-bar i{display:block;height:100%;background:linear-gradient(90deg,#7cc34a,#5a9c39)}
+  .ach-bar span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-family:'Fredoka',sans-serif;font-weight:700;font-size:9px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6)}
   .prof-rank{font-family:'Fredoka',sans-serif;font-weight:700;color:#ffe28a;font-size:14px;margin:-4px 0 12px}
   .prof-stats{display:flex;flex-direction:column;gap:7px}
   .prof-stat{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.06);border-radius:11px;padding:9px 12px}
@@ -787,6 +814,7 @@
     </div>
     <div class="wpill" id="wpill">☀️ Sunny · Day</div>
     <button class="lb-open-btn" id="lbOpenBtn">🏆 Leaderboard</button>
+    <button class="lb-open-btn" id="achOpenBtn">🎖️ Achievements</button>
     <button class="install-btn" id="installBtn" style="display:none">📲 Install</button>
     <div class="acct" id="acct">
       <button class="acct-signin" id="acctSignIn">☁️ Sign in</button>
@@ -800,6 +828,7 @@
   <div class="tabbar" id="tabbar">
     <button class="tab on" data-page="farm">🌻 Farm</button>
     <button class="tab" data-page="pantry">📦 Pantry</button>
+    <button class="tab" data-page="finance">💵 Finance</button>
     <button class="tab" data-page="casino">🎰 Casino</button>
   </div>
 
@@ -833,32 +862,6 @@
 
   <h2 class="sec">🧺 Buyers' Market</h2>
   <div class="stall"><div class="stall-grid" id="commodities"></div></div>
-
-  <h2 class="sec">📈 The Acre Exchange</h2>
-  <div class="exchange">
-    <div class="ex-head">
-      <span class="lede">Buy low, sell high. Prices swing every few seconds.</span>
-      <span class="port" id="portfolio">Holdings: 0</span>
-    </div>
-    <div class="portfolio-box" id="portfolioBox" style="display:none">
-      <div class="pf-title">💼 My Portfolio</div>
-      <div class="pf-table" id="pfTable"></div>
-      <div class="pf-summary" id="pfSummary"></div>
-    </div>
-    <div class="ex-grid" id="stocks"></div>
-  </div>
-
-  <h2 class="sec">🧾 Farm Finances</h2>
-  <div class="finances" id="finances"></div>
-
-  <h2 class="sec">🏘️ Acre Estates</h2>
-  <div class="estate">
-    <div class="es-head">
-      <span class="lede">Buy property for more farm plots, rent income, and resale gains.</span>
-      <span class="mood flat" id="esMood">Market: steady</span>
-    </div>
-    <div class="es-grid" id="estates"></div>
-  </div>
   </section>
 
   <section class="page" id="page-pantry">
@@ -890,6 +893,34 @@
     <div class="pantry" id="pantry"></div>
     <div class="recipe-grid" id="recipes"></div>
     <div class="cask-grid" id="casks"></div>
+  </div>
+  </section>
+
+  <section class="page" id="page-finance">
+  <h2 class="sec">📈 The Acre Exchange</h2>
+  <div class="exchange">
+    <div class="ex-head">
+      <span class="lede">Buy low, sell high. Prices swing every few seconds.</span>
+      <span class="port" id="portfolio">Holdings: 0</span>
+    </div>
+    <div class="portfolio-box" id="portfolioBox" style="display:none">
+      <div class="pf-title">💼 My Portfolio</div>
+      <div class="pf-table" id="pfTable"></div>
+      <div class="pf-summary" id="pfSummary"></div>
+    </div>
+    <div class="ex-grid" id="stocks"></div>
+  </div>
+
+  <h2 class="sec">🧾 Farm Finances</h2>
+  <div class="finances" id="finances"></div>
+
+  <h2 class="sec">🏘️ Acre Estates</h2>
+  <div class="estate">
+    <div class="es-head">
+      <span class="lede">Buy property for more farm plots, rent income, and resale gains.</span>
+      <span class="mood flat" id="esMood">Market: steady</span>
+    </div>
+    <div class="es-grid" id="estates"></div>
   </div>
   </section>
 
@@ -1135,6 +1166,16 @@
     <div class="prof-rank" id="profRank">#—</div>
     <div class="prof-stats" id="profStats"></div>
     <p class="modal-fine">A peek at this farmer's public stats. Farms are read-only from here.</p>
+  </div>
+</div>
+
+<!-- Achievements page -->
+<div class="overlay" id="achOverlay" style="display:none">
+  <div class="modal ach-modal">
+    <div class="modal-title">🎖️ Achievements <span id="achCount" class="ach-count"></span>
+      <button class="modal-x" id="achClose">✕</button>
+    </div>
+    <div class="ach-body" id="achBody"></div>
   </div>
 </div>
 
@@ -1425,7 +1466,7 @@
   const TAX_RATE=0.20;                        // 20% of gross yearly earnings
   const CAPGAINS_RATE=0.25;                   // 25% tax on PROFIT from stock & property sales
   const DEBT_DAILY_INTEREST=0.10;             // 10% compounding daily while in debt
-  const SAVE_KEY='littleacre:save'; const VERSION=50;
+  const SAVE_KEY='littleacre:save'; const VERSION=54;
   const BACKUP_KEY='littleacre:save:backup';   // last-known-good snapshot ("save folder")
   const MIN_MIGRATABLE=13;                       // saves at/after this version migrate forward instead of resetting
   // Leaderboard sanity cap: scores above this are clamped before submission. This is a
@@ -1503,7 +1544,7 @@
   // Build the starting price-multiplier table for every sellable item.
   function freshMarket(){ const m={}; SELLABLE.forEach(id=>m[id]={mult:1,prev:1}); return m; }
   // Build the starting state for the buyers' market (deals + optional buff offer + active buffs).
-  function freshMarketStall(){ return {deals:[], buffOffer:null, buffs:{crop:null,animal:null}, dailyBuff:null, dailyBuffDay:0, nextDeal:0, seeded:false}; }
+  function freshMarketStall(){ return {deals:[], buffOffer:null, buffs:{crop:[],animal:[]}, dailyBuff:null, dailyBuffDay:0, nextDeal:0, seeded:false}; }
   // Build the starting state for the stock market (prices + history).
   function freshStocks(){ const s={}; for(const sym in STOCKS){ const b=STOCKS[sym].base;
     s[sym]={price:b,prev:b,shares:0,cost:0,hist:Array.from({length:SPARK_LEN},()=>b)}; } return s; }
@@ -1524,7 +1565,30 @@
       nextFeedDay:DAYS_PER_WEEK+1,       // first feed bill after week 1
       earnedThisYear:0,                  // gross income this year (for tax)
       inDebt:false,
+      stats:freshStats(),                // lifetime counters for achievements
+      achievements:{},                   // id -> timestamp unlocked
       savedAt:Date.now()};
+  }
+  // Lifetime counters that drive achievements. Everything starts at 0.
+  function freshStats(){
+    return {
+      cropsHarvested:0, cropsPlanted:0, plotsUnlocked:0,
+      animalsBought:0, animalsButchered:0,
+      crafted:{}, crafted_total:0,        // crafted[itemId] = count
+      brewed:{}, brewed_total:0,          // brewed[recipeId] = count
+      sold_total:0,                       // total individual goods sold (any channel)
+      sold:{},                            // sold[goodId] = count sold
+      palletsSold:0,
+      dealsFilled:0,
+      coinsEarned:0,                      // gross lifetime coins earned
+      coinsSpent:0,
+      casinoWins:0, casinoWon:0, casinoBets:0,
+      stocksBought:0, stocksSold:0,
+      propertiesBought:0, rentCollected:0,
+      taxesPaid:0, daysPlayed:0,
+      wonderWines:0,
+      maxCoins:50, maxLevel:1
+    };
   }
   // XP required to reach level L (raise the 45 to slow leveling).
   function req(L){ return 25 + (L-1)*45; }
@@ -1554,7 +1618,7 @@
   function itemUnitPrice(id){ const info=itemInfo(id); return priceOf(id, info.base); }
   // All coin INFLOWS go through earn() so gross yearly income is tracked for tax.
   // Add coins as INCOME (tracked for yearly tax); clears debt flag if positive.
-  function earn(n){ if(n>0){ state.coins+=n; state.earnedThisYear+=n; if(state.coins>=0) state.inDebt=false; } }
+  function earn(n){ if(n>0){ state.coins+=n; state.earnedThisYear+=n; if(state.stats) state.stats.coinsEarned=(state.stats.coinsEarned||0)+n; if(state.coins>=0) state.inDebt=false; } }
 
   // Load the main save from storage (IndexedDB/localStorage).
   async function load(){ if(!hasStore) return null;
@@ -1780,6 +1844,9 @@
   // Push the player's coin score to the shared leaderboard — only if they've claimed a name.
   function pushLeaderboard(){ if(!cloudOn() || !hasNick()) return; clearTimeout(lbTimer);
     lbTimer=setTimeout(async()=>{ try{
+      // The leaderboard rule requires a reserved nickKey that matches this uid. If we don't have a
+      // real reserved key, a write would be rejected — so surface that instead of silently failing.
+      if(!state.nickKey){ setDiag('⚠️ Leaderboard: no reserved nickname yet — pick a name to appear.'); return; }
       // allow negative scores (players in debt) — clamp only the magnitude to the cap
       const score=Math.max(-LEADERBOARD_CAP, Math.min(LEADERBOARD_CAP, Math.floor(state.coins||0)));
       // public profile stats (safe, non-sensitive) shown on the leaderboard profile card
@@ -1787,10 +1854,17 @@
       const plotsPlanted=(state.plots||[]).filter(p=>p&&p.crop).length;
       const properties=state.estates?Object.values(state.estates).filter(e=>e&&e.owned).length:0;
       await window.CLOUD.db.collection('leaderboard').doc(cloudUser.uid).set({
-        name: lbName().slice(0,20), nickKey: state.nickKey||normNick(lbName()), coins: score, updated: Date.now(),
+        name: lbName().slice(0,20), nickKey: state.nickKey, coins: score, updated: Date.now(),
         level: state.level||1, animals, plotsPlanted, properties, year: state.year||1
       });
-    }catch(e){ console.warn('pushLeaderboard',e); } }, 1200); }
+      setDiag('🏆 Leaderboard updated · '+fmtMoney(score)+' coins');
+    }catch(e){
+      const code=(e&&e.code)||'';
+      if(code==='permission-denied') setDiag('⚠️ Leaderboard write blocked (permission-denied). Check Firestore rules / nickname reservation.');
+      else if(code==='resource-exhausted') setDiag('⚠️ Leaderboard paused — daily Firebase quota reached. Resets at midnight US Pacific.');
+      else setDiag('⚠️ Leaderboard update failed'+(code?' ('+code+')':'')+' — will retry on next change.');
+      console.warn('pushLeaderboard',e);
+    } }, 1200); }
   let lbData={};   // uid -> profile data, for the profile card
   // Load and render the top scores into the board popup.
   async function loadLeaderboard(){
@@ -1926,6 +2000,7 @@
     const payBtn=document.getElementById('taxPayNowBtn'), extBtn=document.getElementById('taxExtendBtn');
     if(payBtn) payBtn.addEventListener('click',()=>{
       const tax=ov._tax||0; spend(tax); ov.style.display='none';
+      if(tax>0) bumpStat('taxesPaid');
       bumpCoins(); render(); save();
       toast('🧾 Tax paid: -'+fmtMoney(tax), 3000);
     });
@@ -1943,6 +2018,10 @@
   boardOverlay.addEventListener('click',e=>{ if(e.target===boardOverlay) closeBoard(); });
   document.getElementById('profClose').addEventListener('click', hideProfileCard);
   { const po=document.getElementById('profileOverlay'); po.addEventListener('click',e=>{ if(e.target===po) hideProfileCard(); }); }
+  { const ab=document.getElementById('achOpenBtn'), ao=document.getElementById('achOverlay'), ac=document.getElementById('achClose');
+    if(ab) ab.addEventListener('click',()=>{ renderAchievements(); ao.style.display='flex'; });
+    if(ac) ac.addEventListener('click',()=>{ ao.style.display='none'; });
+    if(ao) ao.addEventListener('click',e=>{ if(e.target===ao) ao.style.display='none'; }); }
   document.getElementById('nickLater').addEventListener('click', hideNickPopup);
   document.getElementById('nickConfirm').addEventListener('click', async()=>{
     const raw=(nickInput.value||'').trim();
@@ -2058,7 +2137,14 @@
     if(!s.market) s.market=freshMarket(); else SELLABLE.forEach(id=>{ if(!s.market[id]) s.market[id]={mult:1,prev:1}; });
     // buyers' market: replace any old commodities structure with the new stall state
     if(!s.commodities || !('deals' in s.commodities)) s.commodities=freshMarketStall();
-    if(!s.commodities.buffs) s.commodities.buffs={crop:null,animal:null};
+    // Buffs now STACK (arrays). Migrate older saves where each kind held a single object (or null).
+    if(!s.commodities.buffs) s.commodities.buffs={crop:[],animal:[]};
+    ['crop','animal'].forEach(kind=>{ const v=s.commodities.buffs[kind];
+      if(Array.isArray(v)) return;
+      s.commodities.buffs[kind] = (v && v.key) ? [v] : [];   // wrap a live single buff, else empty
+    });
+    if(!s.stats) s.stats=freshStats(); else { const f=freshStats(); for(const k in f){ if(!(k in s.stats)) s.stats[k]=f[k]; } }
+    if(!s.achievements) s.achievements={};
     if(!s.stocks) s.stocks=freshStocks();
     else for(const sym in STOCKS){ const b=STOCKS[sym].base;
       if(!s.stocks[sym]) s.stocks[sym]={price:b,prev:b,shares:0,cost:0,hist:Array.from({length:SPARK_LEN},()=>b)};
@@ -2125,9 +2211,143 @@
   // Briefly pulse the coin counter for feedback.
   function bumpCoins(){ coinsEl.classList.add('pulse'); setTimeout(()=>coinsEl.classList.remove('pulse'),160); }
   // Award XP and handle level-ups.
+  // ---------- achievements ----------
+  // Each: {id, emoji, name, desc, cat, reward:{coins,xp}, test(s)=>bool, prog(s)=>[cur,target]}
+  const ACH_CATS=['Farming','Animals','Kitchen','Cellar','Selling','Wealth','Property','Casino','Markets','Milestones'];
+  const ACHIEVEMENTS = [
+    // ---- Farming ----
+    {id:'first_sprout', emoji:'🌱', name:'First Sprout', desc:'Harvest your first crop', cat:'Farming', reward:{coins:50,xp:5}, prog:s=>[s.stats.cropsHarvested,1]},
+    {id:'harvest_50', emoji:'🥕', name:'Green Thumb', desc:'Harvest 50 crops', cat:'Farming', reward:{coins:300,xp:30}, prog:s=>[s.stats.cropsHarvested,50]},
+    {id:'harvest_250', emoji:'🌾', name:'Bountiful Harvest', desc:'Harvest 250 crops', cat:'Farming', reward:{coins:1200,xp:90}, prog:s=>[s.stats.cropsHarvested,250]},
+    {id:'harvest_1000', emoji:'🚜', name:'Master Farmer', desc:'Harvest 1,000 crops', cat:'Farming', reward:{coins:6000,xp:300}, prog:s=>[s.stats.cropsHarvested,1000]},
+    {id:'plant_100', emoji:'🌿', name:'Sower', desc:'Plant 100 seeds', cat:'Farming', reward:{coins:500,xp:40}, prog:s=>[s.stats.cropsPlanted,100]},
+    {id:'unlock_all_plots', emoji:'💎', name:"It's Peak!", desc:'Unlock every base plot of land', cat:'Farming', reward:{coins:5000,xp:200}, test:s=>s.unlocked>=GRID, prog:s=>[Math.min(s.unlocked,GRID),GRID]},
+    // ---- Animals ----
+    {id:'first_animal', emoji:'🐔', name:'Barnyard Begins', desc:'Buy your first animal', cat:'Animals', reward:{coins:100,xp:10}, prog:s=>[s.stats.animalsBought,1]},
+    {id:'animals_10', emoji:'🐄', name:'Livestock Baron', desc:'Buy 10 animals', cat:'Animals', reward:{coins:800,xp:60}, prog:s=>[s.stats.animalsBought,10]},
+    {id:'first_butcher', emoji:'🔪', name:'The Butcher', desc:'Process your first animal', cat:'Animals', reward:{coins:200,xp:20}, prog:s=>[s.stats.animalsButchered,1]},
+    {id:'butcher_25', emoji:'🥩', name:'Master Butcher', desc:'Process 25 animals', cat:'Animals', reward:{coins:2500,xp:150}, prog:s=>[s.stats.animalsButchered,25]},
+    // ---- Kitchen (crafting) ----
+    {id:'first_craft', emoji:'🍳', name:'Home Cook', desc:'Craft your first food', cat:'Kitchen', reward:{coins:100,xp:10}, prog:s=>[s.stats.crafted_total,1]},
+    {id:'craft_burger_20', emoji:'🍔', name:'Burger Joint', desc:'Cook 20 burgers', cat:'Kitchen', reward:{coins:1500,xp:120}, prog:s=>[s.stats.crafted.burger||0,20]},
+    {id:'craft_pizza_20', emoji:'🍕', name:'Pizzaiolo', desc:'Bake 20 pizzas', cat:'Kitchen', reward:{coins:1500,xp:120}, prog:s=>[s.stats.crafted.pizza||0,20]},
+    {id:'craft_bread_50', emoji:'🍞', name:'Baker', desc:'Bake 50 loaves of bread', cat:'Kitchen', reward:{coins:1200,xp:100}, prog:s=>[s.stats.crafted.bread||0,50]},
+    {id:'craft_cake_10', emoji:'🎂', name:'Pastry Chef', desc:'Bake 10 cakes', cat:'Kitchen', reward:{coins:2000,xp:140}, prog:s=>[s.stats.crafted.cake||0,10]},
+    {id:'craft_all', emoji:'👨‍🍳', name:'Iron Chef', desc:'Craft every recipe at least once', cat:'Kitchen', reward:{coins:4000,xp:250}, prog:s=>[Object.keys(CRAFT).filter(k=>(s.stats.crafted[k]||0)>0).length, Object.keys(CRAFT).length]},
+    {id:'craft_200', emoji:'🍽️', name:'Line Cook', desc:'Craft 200 dishes total', cat:'Kitchen', reward:{coins:3000,xp:180}, prog:s=>[s.stats.crafted_total,200]},
+    // ---- Cellar (brewing) ----
+    {id:'first_brew', emoji:'🍺', name:'First Pour', desc:'Ferment your first drink', cat:'Cellar', reward:{coins:150,xp:15}, prog:s=>[s.stats.brewed_total,1]},
+    {id:'brew_50', emoji:'🍷', name:'Vintner', desc:'Ferment 50 drinks', cat:'Cellar', reward:{coins:2500,xp:160}, prog:s=>[s.stats.brewed_total,50]},
+    {id:'brew_all', emoji:'🥃', name:'Master Distiller', desc:'Ferment every recipe at least once', cat:'Cellar', reward:{coins:5000,xp:300}, prog:s=>[Object.keys(RECIPES).filter(k=>(s.stats.brewed[k]||0)>0).length, Object.keys(RECIPES).length]},
+    {id:'wonder_wine', emoji:'✨', name:'Wonder Worker', desc:'Bottle a legendary Wonder Wine', cat:'Cellar', reward:{coins:25000,xp:1000}, prog:s=>[s.stats.wonderWines,1]},
+    // ---- Selling ----
+    {id:'sell_burger_20', emoji:'🍔', name:'Burgers to Market', desc:'Sell 20 burgers', cat:'Selling', reward:{coins:1800,xp:120}, prog:s=>[s.stats.sold.burger||0,20]},
+    {id:'sell_100', emoji:'📦', name:'Open for Business', desc:'Sell 100 goods', cat:'Selling', reward:{coins:800,xp:60}, prog:s=>[s.stats.sold_total,100]},
+    {id:'sell_1000', emoji:'🏪', name:'Merchant', desc:'Sell 1,000 goods', cat:'Selling', reward:{coins:5000,xp:250}, prog:s=>[s.stats.sold_total,1000]},
+    {id:'pallet_10', emoji:'🚛', name:'Bulk Dealer', desc:'Sell 10 big-box pallets', cat:'Selling', reward:{coins:3000,xp:160}, prog:s=>[s.stats.palletsSold,10]},
+    {id:'deals_25', emoji:'🤝', name:"Buyer's Friend", desc:"Fill 25 buyers'-market deals", cat:'Selling', reward:{coins:3500,xp:180}, prog:s=>[s.stats.dealsFilled,25]},
+    // ---- Wealth ----
+    {id:'coins_1k', emoji:'🪙', name:'Pocket Change', desc:'Hold 1,000 coins', cat:'Wealth', reward:{coins:200,xp:20}, prog:s=>[Math.min(s.stats.maxCoins,1000),1000]},
+    {id:'coins_100k', emoji:'💰', name:'Well-Off', desc:'Hold 100,000 coins', cat:'Wealth', reward:{coins:5000,xp:200}, prog:s=>[Math.min(s.stats.maxCoins,100000),100000]},
+    {id:'coins_1m', emoji:'🤑', name:'Millionaire', desc:'Hold 1,000,000 coins', cat:'Wealth', reward:{coins:50000,xp:1000}, prog:s=>[Math.min(s.stats.maxCoins,1000000),1000000]},
+    {id:'earned_1m', emoji:'📈', name:'Big Earner', desc:'Earn 1,000,000 coins total', cat:'Wealth', reward:{coins:20000,xp:600}, prog:s=>[Math.min(s.stats.coinsEarned,1000000),1000000]},
+    {id:'in_debt', emoji:'📉', name:'In the Red', desc:'Go into debt (it happens to everyone)', cat:'Wealth', reward:{coins:100,xp:25}, test:s=>(s.coins||0)<0, prog:s=>[(s.coins||0)<0?1:0,1]},
+    // ---- Property ----
+    {id:'first_property', emoji:'🏡', name:'Landlord', desc:'Buy your first property', cat:'Property', reward:{coins:5000,xp:200}, prog:s=>[s.stats.propertiesBought,1]},
+    {id:'property_all', emoji:'🏰', name:'Real Estate Mogul', desc:'Own every property at once', cat:'Property', reward:{coins:100000,xp:2000}, test:s=>Object.keys(PROPERTIES).every(id=>s.estates&&s.estates[id]&&s.estates[id].owned), prog:s=>[Object.keys(PROPERTIES).filter(id=>s.estates&&s.estates[id]&&s.estates[id].owned).length, Object.keys(PROPERTIES).length]},
+    {id:'rent_100k', emoji:'🔑', name:'Rentier', desc:'Collect 100,000 in rent', cat:'Property', reward:{coins:8000,xp:300}, prog:s=>[Math.min(s.stats.rentCollected,100000),100000]},
+    // ---- Casino ----
+    {id:'first_bet', emoji:'🎲', name:'High Roller Rookie', desc:'Place your first casino bet', cat:'Casino', reward:{coins:50,xp:10}, prog:s=>[s.stats.casinoBets,1]},
+    {id:'casino_win_10', emoji:'🎰', name:'Lucky Streak', desc:'Win 10 casino games', cat:'Casino', reward:{coins:1000,xp:80}, prog:s=>[s.stats.casinoWins,10]},
+    {id:'casino_won_50k', emoji:'💸', name:'Whale', desc:'Win 50,000 coins at the casino', cat:'Casino', reward:{coins:5000,xp:250}, prog:s=>[Math.min(s.stats.casinoWon,50000),50000]},
+    // ---- Markets ----
+    {id:'first_stock', emoji:'📊', name:'Investor', desc:'Buy your first stock', cat:'Markets', reward:{coins:200,xp:20}, prog:s=>[s.stats.stocksBought,1]},
+    {id:'stock_100', emoji:'🏦', name:'Day Trader', desc:'Buy 100 shares', cat:'Markets', reward:{coins:3000,xp:160}, prog:s=>[s.stats.stocksBought,100]},
+    {id:'taxes_paid', emoji:'🧾', name:'Good Citizen', desc:'Pay your income taxes', cat:'Markets', reward:{coins:500,xp:50}, prog:s=>[s.stats.taxesPaid,1]},
+    // ---- Milestones ----
+    {id:'level_5', emoji:'⭐', name:'Getting Started', desc:'Reach level 5', cat:'Milestones', reward:{coins:500,xp:0}, prog:s=>[Math.min(s.stats.maxLevel,5),5]},
+    {id:'level_10', emoji:'🌟', name:'Seasoned', desc:'Reach level 10 (max)', cat:'Milestones', reward:{coins:5000,xp:0}, prog:s=>[Math.min(s.stats.maxLevel,10),10]},
+    {id:'year_2', emoji:'📅', name:'One Year In', desc:'Reach Year 2', cat:'Milestones', reward:{coins:1000,xp:80}, prog:s=>[Math.min(s.year||1,2),2]},
+    {id:'year_5', emoji:'🗓️', name:'Old Timer', desc:'Reach Year 5', cat:'Milestones', reward:{coins:8000,xp:300}, prog:s=>[Math.min(s.year||1,5),5]},
+    {id:'half', emoji:'🏅', name:'Halfway There', desc:'Unlock half of all achievements', cat:'Milestones', reward:{coins:5000,xp:200}, test:s=>achUnlockedCount()>=Math.ceil((ACHIEVEMENTS.length-1)/2), prog:s=>[achUnlockedCount(),Math.ceil((ACHIEVEMENTS.length-1)/2)]},
+    {id:'completionist', emoji:'👑', name:'Completionist', desc:'Unlock every other achievement', cat:'Milestones', reward:{coins:100000,xp:5000}, test:s=>ACHIEVEMENTS.filter(a=>a.id!=='completionist').every(a=>state.achievements[a.id]), prog:s=>[ACHIEVEMENTS.filter(a=>a.id!=='completionist'&&state.achievements[a.id]).length, ACHIEVEMENTS.length-1]},
+  ];
+  const ACH_BY_ID={}; ACHIEVEMENTS.forEach(a=>ACH_BY_ID[a.id]=a);
+  function achUnlockedCount(){ return ACHIEVEMENTS.filter(a=>state.achievements&&state.achievements[a.id]).length; }
+  // Bump a lifetime stat counter (supports nested maps like crafted[itemId]).
+  function bumpStat(key, amt, sub){
+    if(!state.stats) state.stats=freshStats();
+    if(sub!=null){ if(!state.stats[key]) state.stats[key]={}; state.stats[key][sub]=(state.stats[key][sub]||0)+(amt||1); }
+    else state.stats[key]=(state.stats[key]||0)+(amt||1);
+    checkAchievements();
+  }
+  // Re-evaluate all achievements; unlock & reward any newly satisfied ones.
+  let _achChecking=false;
+  function checkAchievements(){
+    if(_achChecking) return; _achChecking=true;
+    if(!state.achievements) state.achievements={};
+    if(state.stats){ state.stats.maxCoins=Math.max(state.stats.maxCoins||0, Math.floor(state.coins||0));
+      state.stats.maxLevel=Math.max(state.stats.maxLevel||1, state.level||1); }
+    let unlockedAny=false;
+    for(const a of ACHIEVEMENTS){
+      if(state.achievements[a.id]) continue;
+      let done=false;
+      try{ if(a.test) done=!!a.test(state); else if(a.prog){ const pr=a.prog(state); done=pr[0]>=pr[1]; } }catch(e){ done=false; }
+      if(done){ state.achievements[a.id]=Date.now(); unlockedAny=true;
+        const r=a.reward||{}; if(r.coins) earn(r.coins); if(r.xp) gainXP(r.xp);
+        achToast(a); }
+    }
+    _achChecking=false;
+    if(unlockedAny){ if(typeof bumpCoins==='function') bumpCoins(); if(typeof renderAchievements==='function') renderAchievements(); }
+  }
+  function achToast(a){ const r=a.reward||{};
+    const bits=[]; if(r.coins) bits.push('+'+fmtMoney(r.coins)+'🪙'); if(r.xp) bits.push('+'+r.xp+'xp');
+    toast('🏆 Achievement: '+a.emoji+' '+a.name+(bits.length?'  ('+bits.join(' ')+')':''), 3600);
+  }
+  // Render the Achievements page: progress header + each category with locked/unlocked badges.
+  function renderAchievements(){
+    const body=document.getElementById('achBody'); if(!body) return;
+    if(!state.achievements) state.achievements={};
+    const total=ACHIEVEMENTS.length, got=achUnlockedCount();
+    const cnt=document.getElementById('achCount'); if(cnt) cnt.textContent=got+' / '+total;
+    let html='';
+    html+=`<div class="ach-progress"><div class="ach-progbar"><i style="width:${Math.round(got/total*100)}%"></i></div>
+      <span class="ach-progtxt">${got} of ${total} unlocked</span></div>`;
+    ACH_CATS.forEach(cat=>{
+      const items=ACHIEVEMENTS.filter(a=>a.cat===cat); if(!items.length) return;
+      const gotc=items.filter(a=>state.achievements[a.id]).length;
+      html+=`<div class="ach-cat"><h3 class="ach-cat-title">${cat} <span>${gotc}/${items.length}</span></h3><div class="ach-grid">`;
+      items.forEach(a=>{
+        const unlocked=!!state.achievements[a.id];
+        let cur=0,tgt=1; try{ if(a.prog){ const pr=a.prog(state); cur=pr[0]; tgt=pr[1]; } else { cur=unlocked?1:0; tgt=1; } }catch(e){}
+        const pct=Math.max(0,Math.min(100,Math.round(cur/tgt*100)));
+        const r=a.reward||{};
+        const rewardTxt=[r.coins?'+'+fmtMoney(r.coins)+'🪙':'', r.xp?'+'+r.xp+'xp':''].filter(Boolean).join(' ');
+        html+=`<div class="ach-badge${unlocked?' got':''}">
+          <div class="ach-emoji">${unlocked?a.emoji:'🔒'}</div>
+          <div class="ach-info">
+            <div class="ach-name">${a.name}</div>
+            <div class="ach-desc">${a.desc}</div>
+            ${unlocked?`<div class="ach-reward">✓ Earned · ${rewardTxt}</div>`
+              :`<div class="ach-bar"><i style="width:${pct}%"></i><span>${fmtMoney(Math.min(cur,tgt))}/${fmtMoney(tgt)}</span></div>`}
+          </div>
+        </div>`;
+      });
+      html+='</div></div>';
+    });
+    body.innerHTML=html;
+  }
+  // Record a casino round for achievements: a bet placed, and how much (gross) was won (0 if lost).
+  function casinoResult(bet, win){
+    if(bet>0) bumpStat('casinoBets');
+    if(win>0){ bumpStat('casinoWins'); bumpStat('casinoWon', Math.round(win)); }
+    else checkAchievements();
+  }
+
   function gainXP(n){
     state.xp+=n;
     while(state.xp>=req(state.level)){ state.xp-=req(state.level); state.level++; announceLevel(state.level); }
+    checkAchievements();
   }
   // Show the level-up banner and any newly unlocked content.
   function announceLevel(L){
@@ -2164,7 +2384,7 @@
       e.value=Math.max(lo, Math.min(hi, Math.round(e.value*(1+pct))));
       if(e.owned) rentDue+=cfg.rent;
     }
-    if(rentDue>0){ earn(rentDue); rentToast=rentDue; }
+    if(rentDue>0){ earn(rentDue); bumpStat('rentCollected', rentDue); rentToast=rentDue; }
     state.nextMarket=Date.now()+18000+Math.random()*9000;
   }
   let rentToast=0;
@@ -2239,8 +2459,9 @@
     const give=Math.min(need, have);
     invRemove(d.good, give); d.filled+=give;
     const pay=give*d.unitPay; earn(pay); gainXP(Math.round(give*1.5));
-    bumpCoins();
+    bumpCoins(); bumpStat('sold_total', give); bumpStat('sold', give, d.good);
     if(d.filled>=d.qty){ toast('✅ '+d.buyer+' paid '+fmtMoney(pay)+' — order complete!', 3000);
+      bumpStat('dealsFilled');
       st.deals.splice(idx,1); st.deals.push(makeDeal()); }
     else toast('Delivered '+give+' '+d.name+' (+'+fmtMoney(pay)+'). '+(d.qty-d.filled)+' more wanted.', 2800);
     save(); render();
@@ -2251,29 +2472,35 @@
     const it=BUFF_ITEMS[key];
     spend(it.cost);
     const until=(state.lastDay||1)+it.days;
-    state.commodities.buffs[it.kind]={key, mult:it.mult, until};
+    // STACK: keep every purchased buff as its own entry with its own timer (same-kind multipliers multiply)
+    if(!Array.isArray(state.commodities.buffs[it.kind])) state.commodities.buffs[it.kind]=[];
+    state.commodities.buffs[it.kind].push({key, mult:it.mult, until});
     state.commodities.buffOffer=null;
     bumpCoins(); save(); render();
     toast('✨ '+it.name+' active — '+it.desc.toLowerCase()+'!', 3400);
   }
-  // Current active growth multiplier for crops / animals (1 = none). Expired buffs are cleared.
+  // Current active growth multiplier for crops / animals (1 = none).
+  // All active same-kind buffs MULTIPLY together; expired ones are dropped.
   function buffMult(kind){
-    const b=state.commodities && state.commodities.buffs && state.commodities.buffs[kind];
-    if(!b) return 1;
-    if((state.lastDay||1) >= b.until){ state.commodities.buffs[kind]=null; return 1; }
-    return b.mult;
+    const arr=state.commodities && state.commodities.buffs && state.commodities.buffs[kind];
+    if(!Array.isArray(arr) || !arr.length) return 1;
+    const day=(state.lastDay||1);
+    // drop expired buffs
+    const live=arr.filter(b=>b && day<b.until);
+    if(live.length!==arr.length) state.commodities.buffs[kind]=live;
+    return live.reduce((m,b)=>m*(b.mult||1), 1);
   }
 
   // ---------- stocks ----------
   // Buy 1 share of a stock (can overdraft into debt).
   function buyShare(sym){ const st=state.stocks[sym], px=st.price;
-    spend(px); st.cost+=px; st.shares++; bumpCoins(); save(); render();
+    spend(px); st.cost+=px; st.shares++; bumpCoins(); bumpStat('stocksBought'); save(); render();
   }
   // Sell 1 share; applies 25% capital-gains tax on profit.
   function sellShare(sym){ const st=state.stocks[sym];
     if(st.shares<=0){ toast('No '+sym+' shares to sell'); return; }
     const avg=st.cost/st.shares; const profit=st.price-avg;
-    earn(st.price);
+    earn(st.price); bumpStat('stocksSold');
     const tax=profit>0?Math.round(profit*CAPGAINS_RATE):0;
     if(tax>0){ spend(tax); toast('📈 Sold '+sym+' · capital gains tax -'+tax+' (25% of '+Math.round(profit)+' profit)', 2600); }
     st.cost-=avg; st.shares--; if(st.shares===0) st.cost=0;
@@ -2304,6 +2531,7 @@
   function collectCraft(i){ const c=state.kitchen[i]; if(!c) return; const r=CRAFT[c.key];
     if(Date.now()<c.done){ toast(PRODUCTS[c.key].name+' still cooking'); return; }
     invAdd(c.key, r.out); gainXP(Math.round(PRODUCTS[c.key].base/40));
+    bumpStat('crafted_total', r.out); bumpStat('crafted', r.out, c.key);
     state.kitchen.splice(i,1); save(); render();
     toast('Made '+r.out+'× '+PRODUCTS[c.key].name+' '+PRODUCTS[c.key].emoji);
   }
@@ -2315,7 +2543,9 @@
   // Sell a full pallet of an item for the bulk premium.
   function sellPallet(id){ const p=PALLETS[id]; if(!p) return;
     if(invCount(id)<p.size){ toast('Need '+p.size+' '+itemInfo(id).name+' for a pallet'); return; }
-    invRemove(id, p.size); const val=palletPrice(id); earn(val); bumpCoins(); save(); render();
+    invRemove(id, p.size); const val=palletPrice(id); earn(val); bumpCoins();
+    bumpStat('palletsSold'); bumpStat('sold_total', p.size); bumpStat('sold', p.size, id);
+    save(); render();
     toast('📦 Sold a pallet of '+p.size+'× '+itemInfo(id).name+' for '+val+'!', 2600);
   }
 
@@ -2324,7 +2554,7 @@
   function buyProperty(id){ const cfg=PROPERTIES[id], e=state.estates[id];
     if(state.level<cfg.lvl){ toast('Reach Level '+cfg.lvl+' to buy '+cfg.name); return; }
     if(e.owned){ toast('You already own '+cfg.name); return; }
-    spend(e.value); e.owned=true; e.paid=e.value; bumpCoins(); buildGrid(); save(); render();
+    spend(e.value); e.owned=true; e.paid=e.value; bumpCoins(); buildGrid(); bumpStat('propertiesBought'); save(); render();
     toast('Bought '+cfg.name+' — +'+cfg.slots+' farm plots, +'+cfg.rent+' rent/cycle', 3000);
   }
   // Sell a property; applies capital-gains tax and removes its farm slots.
@@ -2381,23 +2611,24 @@
     if(Date.now()<b.done){ toast(r.name+' still fermenting'); return; }
     const val=bottleValue(b.key, b.done, b);
     earn(val); gainXP(Math.round(r.sell/20)); state.cellar.splice(i,1);
+    bumpStat('brewed_total'); bumpStat('brewed',1,b.key); if(r.wonder) bumpStat('wonderWines');
     bumpCoins(); save(); render(); toast('Bottled & sold '+r.name+' for '+val);
   }
 
   // ---------- inventory selling (singles, at the normal coin price) ----------
   // Sell one unit of an inventory item.
   function sellInvOne(id){ if(invCount(id)<=0) return;
-    const val=itemUnitPrice(id); invRemove(id,1); earn(val); bumpCoins(); save(); render();
+    const val=itemUnitPrice(id); invRemove(id,1); earn(val); bumpCoins(); bumpStat('sold_total'); bumpStat('sold',1,id); save(); render();
   }
   // Sell the entire stack of one inventory item.
   function sellInvAllOf(id){ const n=invCount(id); if(n<=0) return;
-    const val=itemUnitPrice(id)*n; invRemove(id,n); earn(val); bumpCoins(); save(); render();
+    const val=itemUnitPrice(id)*n; invRemove(id,n); earn(val); bumpCoins(); bumpStat('sold_total',n); bumpStat('sold',n,id); save(); render();
     toast('Sold '+n+'× '+itemInfo(id).name+' for '+val);
   }
   // Sell the entire inventory at once.
   function sellInvEverything(){ let total=0, count=0;
-    Object.keys(state.inventory||{}).forEach(id=>{ const n=invCount(id); if(n>0){ total+=itemUnitPrice(id)*n; count+=n; state.inventory[id]=0; } });
-    if(count>0){ earn(total); bumpCoins(); save(); render(); toast('Sold '+count+' items for '+total+' coins'); }
+    Object.keys(state.inventory||{}).forEach(id=>{ const n=invCount(id); if(n>0){ total+=itemUnitPrice(id)*n; count+=n; bumpStat('sold',n,id); state.inventory[id]=0; } });
+    if(count>0){ earn(total); bumpStat('sold_total',count); bumpCoins(); save(); render(); toast('Sold '+count+' items for '+total+' coins'); }
     else toast('Inventory is empty');
   }
   // Pick the next weather (affects crop growth speed) and toggle rain visuals.
@@ -2644,18 +2875,20 @@
     const p=state.plots[i];
     if(i<GRID && i>=state.unlocked){ const price=unlockPrice();
       spend(price); state.unlocked++; float(el,'-'+price,'cost'); bumpCoins();
+      bumpStat('plotsUnlocked');
       if(state.unlocked>=GRID) peakSplash();   // unlocked the FINAL base plot 🏆
       save(); render(); return; }
     if(p.ready){ const cropId=p.crop, c=CROPS[cropId];
       if(state.harvestMode==='store'){
-        invAdd(cropId,1); gainXP(c.xp);
+        invAdd(cropId,1); gainXP(c.xp); bumpStat('cropsHarvested');
         float(el,'+'+c.emoji,'gain'); p.crop=null;p.growth=0;p.ready=false;p.readyMs=0; save(); render(); return;
       }
       const val=Math.round(priceOf(cropId,c.sell)*(cropInSeason(cropId)?SEASON_BONUS_PRICE:1));
-      earn(val); gainXP(c.xp); float(el,'+'+val,'gain'); p.crop=null;p.growth=0;p.ready=false;p.readyMs=0; bumpCoins(); save(); render(); return; }
+      earn(val); gainXP(c.xp); bumpStat('cropsHarvested'); bumpStat('sold_total'); bumpStat('sold',1,cropId);
+      float(el,'+'+val,'gain'); p.crop=null;p.growth=0;p.ready=false;p.readyMs=0; bumpCoins(); save(); render(); return; }
     if(!p.crop){ const c=CROPS[selected];
       if(state.level<c.lvl){ toast('Reach Level '+c.lvl+' to grow '+c.name); return; }
-      spend(c.cost); p.crop=selected; p.growth=0; p.ready=false; p.readyMs=0;
+      spend(c.cost); p.crop=selected; p.growth=0; p.ready=false; p.readyMs=0; bumpStat('cropsPlanted');
       float(el,'-'+c.cost,'cost'); bumpCoins(); save(); render(); return; }
     const left=(CROPS[p.crop].grow-p.growth)/(1000*WEATHER[state.weather].speed);
     toast(CROPS[p.crop].name+' ready in ~'+fmtTime(left));
@@ -2664,7 +2897,7 @@
   function buyAnimal(key){ const a=ANIMALS[key];
     if(state.level<a.lvl){ toast('Reach Level '+a.lvl+' for a '+a.name); return; }
     if(state.animals.length>=ANIMAL_CAP){ toast('Barnyard is full'); return; }
-    spend(a.cost); state.animals.push({type:key,growth:0,ready:false,age:0,starving:false}); bumpCoins(); save(); render();
+    spend(a.cost); state.animals.push({type:key,growth:0,ready:false,age:0,starving:false}); bumpCoins(); bumpStat('animalsBought'); save(); render();
     toast('Welcome, new '+a.name+'! '+a.emoji);
   }
   // Handle a tap on an animal pen: collect its product.
@@ -2672,7 +2905,7 @@
     if(an.ready){
       if(state.harvestMode==='store'){ invAdd(a.pid,1); gainXP(a.xp); float(el,'+'+a.pe,'gain');
         an.growth=0; an.ready=false; save(); render(); return; }
-      const val=priceOf(a.pid,a.sell); earn(val); gainXP(a.xp); float(el,'+'+val,'gain');
+      const val=priceOf(a.pid,a.sell); earn(val); gainXP(a.xp); bumpStat('sold_total'); bumpStat('sold',1,a.pid); float(el,'+'+val,'gain');
       an.growth=0; an.ready=false; bumpCoins(); save(); render(); return; }
     const left=(a.cycle-an.growth)/1000;
     if(a.pid) toast(a.name+' has '+a.pe+' in ~'+fmtTime(left));
@@ -2697,10 +2930,10 @@
     const total = cuts.reduce((s,c)=>s+priceOf(c.id,PRODUCTS[c.id].base)*c.qty, 0);
     if(!confirm('Process this '+a.name+' into cuts?\n\nYields: '+cutList+'\n'+(storing?'Cuts go to your inventory.':'Sells for ~'+total+' coins.')+'\nThis permanently removes the animal'+incomeNote+'.')) return;
     butcherSound();   // play the confirm-butcher sound
-    if(storing){ cuts.forEach(c=>invAdd(c.id,c.qty)); gainXP(Math.round(a.xp/2)); state.animals.splice(i,1); save(); render();
+    if(storing){ cuts.forEach(c=>invAdd(c.id,c.qty)); gainXP(Math.round(a.xp/2)); state.animals.splice(i,1); bumpStat('animalsButchered'); save(); render();
       toast('Processed '+a.name+' → '+cutList+' to inventory', 2800); return; }
     let val=0; cuts.forEach(c=>{ val+=priceOf(c.id,PRODUCTS[c.id].base)*c.qty; });
-    earn(val); gainXP(Math.round(a.xp/2)); state.animals.splice(i,1);
+    earn(val); gainXP(Math.round(a.xp/2)); state.animals.splice(i,1); bumpStat('animalsButchered');
     bumpCoins(); save(); render();
     toast('Processed '+a.name+' → '+cutList+' for '+val+' coins', 2800);
   }
@@ -2726,7 +2959,7 @@
     });
     window.scrollTo(0,0);
   }
-  const PAGE_ORDER=['farm','pantry','casino'];
+  const PAGE_ORDER=['farm','pantry','finance','casino'];
   document.querySelectorAll('#tabbar .tab').forEach(t=>t.addEventListener('click',()=>{
     const target=t.dataset.page;
     const dir = PAGE_ORDER.indexOf(target) < PAGE_ORDER.indexOf(curPage) ? 'left' : 'right';
@@ -2809,9 +3042,9 @@
         const c=rlColor(n);
         rlResult.textContent=n; rlResult.style.color = c==='green'?'#5ee08a':(c==='red'?'#ff7a6a':'#fff');
         const mult=rlWins(b.dataset.bet,n);
-        if(mult>0){ const win=rlBet*mult; earn(win); bumpCoins(); render();
+        if(mult>0){ const win=rlBet*mult; earn(win); casinoResult(rlBet, win); bumpCoins(); render();
           rlMsg.textContent='🎉 '+n+' '+c+' — you win '+win+' coins!'; }
-        else { rlMsg.textContent='🎲 '+n+' '+c+' — no win. Try again!'; }
+        else { casinoResult(rlBet, 0); rlMsg.textContent='🎲 '+n+' '+c+' — no win. Try again!'; }
         rlSpinning=false; save();
       },950);
     }));
@@ -2903,10 +3136,12 @@
       if(splitActive){
         const r1=settleHand(pHand, dv), r2=settleHand(splitHand, dv);
         if(r1.mult>0) earn(bjBet*r1.mult); if(r2.mult>0) earn(bjBet*r2.mult);
+        casinoResult(bjBet, r1.mult>1?bjBet*r1.mult:0); casinoResult(bjBet, r2.mult>1?bjBet*r2.mult:0);
         bjMsg.textContent='Hand 1: '+r1.txt+' · Hand 2: '+r2.txt+' (dealer '+dv+')';
       } else {
         const r=settleHand(pHand, dv);
         if(r.mult>0) earn(bjBet*r.mult);
+        casinoResult(bjBet, r.mult>1?bjBet*r.mult:0);
         bjMsg.textContent = r.mult>1?('You win '+fmtMoney(bjBet)+'! 🎉'):(r.mult===1?'Push — bet returned.':'Dealer wins with '+dv+'. 😕');
       }
       endRound();
@@ -3062,9 +3297,9 @@
         const mh=evalHand(m.hand.concat(heBoard)); m.rankCat=mh[0];
         const r=cmpHand(mh,house); m.result = r>0?'win':(r<0?'lose':'push'); });
       renderHEMates(true);
-      if(c>0){ earn(hePot); heMsg.textContent='🎉 You win '+hePot+' with '+HAND_NAMES[you[0]]+'!'; }
-      else if(c<0){ heMsg.textContent='😕 House wins with '+HAND_NAMES[house[0]]+'.'; }
-      else { earn(Math.floor(hePot/2)); heMsg.textContent='Split pot — half returned.'; }
+      if(c>0){ earn(hePot); casinoResult(heContrib, hePot); heMsg.textContent='🎉 You win '+hePot+' with '+HAND_NAMES[you[0]]+'!'; }
+      else if(c<0){ casinoResult(heContrib, 0); heMsg.textContent='😕 House wins with '+HAND_NAMES[house[0]]+'.'; }
+      else { earn(Math.floor(hePot/2)); casinoResult(heContrib, 0); heMsg.textContent='Split pot — half returned.'; }
       heActive=false; heActions.style.display='none'; heBetRow.style.display='flex';
       bumpCoins(); render(); save();
     }
@@ -3283,10 +3518,18 @@
     const chips=[];
     if(st.dailyBuff && CROPS[st.dailyBuff]){ const c=CROPS[st.dailyBuff];
       chips.push(`<span class="buffchip daily">${c.emoji} ${c.name} thriving today · grows ${DAILY_BUFF_MULT}× faster</span>`); }
-    ['crop','animal'].forEach(kind=>{ const b=st.buffs&&st.buffs[kind];
-      if(b && (state.lastDay||1)<b.until){ const it=BUFF_ITEMS[b.key];
-        const left=b.until-(state.lastDay||1);
-        chips.push(`<span class="buffchip">${it.emoji} ${it.name} · ${b.mult}× ${kind} · ${left}d left</span>`); } });
+    ['crop','animal'].forEach(kind=>{ const arr=st.buffs&&st.buffs[kind];
+      if(!Array.isArray(arr)) return;
+      const day=(state.lastDay||1);
+      const live=arr.filter(b=>b && day<b.until);
+      // one chip per active buff (so stacks are visible), each with its own remaining days
+      live.forEach(b=>{ const it=BUFF_ITEMS[b.key]; if(!it) return;
+        const left=b.until-day;
+        chips.push(`<span class="buffchip">${it.emoji} ${it.name} · ${b.mult}× ${kind} · ${left}d left</span>`); });
+      // if more than one of a kind is stacked, show the combined total
+      if(live.length>1){ const total=live.reduce((m,b)=>m*(b.mult||1),1);
+        chips.push(`<span class="buffchip stacktotal">⚡ ${kind} stack: ${(+total.toFixed(2))}× total</span>`); }
+    });
     wrap.innerHTML = chips.join('');
   }
   function renderCommodities(){
