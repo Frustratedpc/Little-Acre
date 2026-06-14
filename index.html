@@ -286,6 +286,7 @@
   .cloud-status.syncing{color:#ffd98a}
   .cloud-status.err{color:#ff9b8a}
   .cloud-diag{display:block;width:100%;font-family:'Nunito',sans-serif;font-weight:600;font-size:11px;color:#ffb0a0;margin-top:4px;word-break:break-word}
+  .ver-label{display:block;width:100%;text-align:right;font-family:'Nunito',sans-serif;font-weight:700;font-size:10px;color:#7fa379;margin-top:2px;opacity:.8}
   .btn.cloud{background:linear-gradient(180deg,#fff,#eef1f4);color:#2b3138;box-shadow:0 3px 0 #b9c2cc;
     display:inline-flex;align-items:center;gap:8px}
   .btn.cloud::before{content:'';width:16px;height:16px;flex:0 0 16px;background-size:contain;background-repeat:no-repeat;
@@ -961,6 +962,7 @@
   <div class="cloudbar" id="cloudbar">
     <span class="cloud-status" id="cloudStatus">☁️ Cloud saves: not signed in — tap “Sign in” at the top to sync across devices</span>
     <span class="cloud-diag" id="cloudDiag"></span>
+    <span class="ver-label" id="verLabel"></span>
   </div>
 
   <div class="actions">
@@ -1381,7 +1383,7 @@
   const TAX_RATE=0.20;                        // 20% of gross yearly earnings
   const CAPGAINS_RATE=0.25;                   // 25% tax on PROFIT from stock & property sales
   const DEBT_DAILY_INTEREST=0.10;             // 10% compounding daily while in debt
-  const SAVE_KEY='littleacre:save'; const VERSION=42;
+  const SAVE_KEY='littleacre:save'; const VERSION=43;
   const BACKUP_KEY='littleacre:save:backup';   // last-known-good snapshot ("save folder")
   const MIN_MIGRATABLE=13;                       // saves at/after this version migrate forward instead of resetting
   // Leaderboard sanity cap: scores above this are clamped before submission. This is a
@@ -3607,6 +3609,7 @@
     document.body.classList.toggle('raining', state.weather==='rain');
     document.getElementById('rain').classList.toggle('on', state.weather==='rain');
     lastTick=Date.now(); skyUpdate(); applyEventBackground(); render();
+    { const vl=document.getElementById('verLabel'); if(vl) vl.textContent='Little Acre · v'+VERSION; }
     if(state._migratedFrom!==undefined){
       const from=state._migratedFrom; delete state._migratedFrom; save();
       setTimeout(()=>toast('✅ Save carried over from v'+from+' — coins & resources kept',3200),600);
