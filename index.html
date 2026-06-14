@@ -83,6 +83,22 @@
   #rain.on{opacity:.55}
   body.raining .sky-layer{filter:brightness(.82) saturate(.9)}
   @keyframes pour{from{background-position:0 0}to{background-position:-40px 22px}}
+  /* drought: warm, dusty, washed-out sky */
+  body.event-drought .sky-layer{filter:sepia(.45) saturate(1.15) brightness(1.05) hue-rotate(-12deg)}
+  body.event-drought::after{content:'';position:fixed;inset:0;z-index:2;pointer-events:none;
+    background:linear-gradient(180deg,rgba(224,170,80,.20),rgba(200,130,50,.12));mix-blend-mode:multiply}
+  /* snowstorm: cold, pale-blue sky + falling snow */
+  body.event-snow .sky-layer{filter:brightness(1.08) saturate(.6) hue-rotate(8deg)}
+  body.event-snow::after{content:'';position:fixed;inset:0;z-index:2;pointer-events:none;
+    background:linear-gradient(180deg,rgba(220,235,255,.30),rgba(190,215,245,.18))}
+  #snowfall{position:fixed;inset:0;z-index:4;pointer-events:none;opacity:0;transition:opacity .6s;
+    background-image:radial-gradient(2.5px 2.5px at 20px 30px,#fff 50%,transparent),
+      radial-gradient(2px 2px at 80px 70px,#fff 50%,transparent),
+      radial-gradient(2.5px 2.5px at 140px 20px,#fff 50%,transparent),
+      radial-gradient(2px 2px at 200px 90px,#fff 50%,transparent);
+    background-size:220px 140px;animation:snowdrift 3.2s linear infinite}
+  #snowfall.on{opacity:.85}
+  @keyframes snowdrift{from{background-position:0 0,0 0,0 0,0 0}to{background-position:10px 140px,-14px 140px,8px 140px,-10px 140px}}
 
   .game{position:relative;z-index:3;max-width:740px;margin:0 auto;
     padding:calc(16px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) calc(52px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left))}
@@ -116,6 +132,16 @@
   .lock-btn{margin-top:8px;font-family:'Fredoka',sans-serif;font-weight:700;font-size:15px;cursor:pointer;border:0;
     border-radius:14px;padding:13px 22px;color:#fff;background:linear-gradient(180deg,#c860c0,#9c3a96);box-shadow:0 4px 0 #7a2c74}
   .lock-btn:active{transform:translateY(2px);box-shadow:0 2px 0 #7a2c74}
+  /* syncing screen */
+  .sync-screen{position:fixed;inset:0;z-index:2100;display:flex;align-items:center;justify-content:center;padding:24px;
+    background:linear-gradient(180deg,#1d3a25,#13271a);}
+  .sync-card{text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
+  .sync-spinner{width:54px;height:54px;border-radius:50%;border:5px solid rgba(255,255,255,.18);
+    border-top-color:#9acb5a;animation:syncspin .8s linear infinite;margin-bottom:10px}
+  @keyframes syncspin{to{transform:rotate(360deg)}}
+  .sync-emoji{font-size:34px;line-height:1}
+  .sync-title{font-family:'Fredoka',sans-serif;font-weight:700;font-size:20px;color:#eaf6e2}
+  .sync-sub{font-family:'Nunito',sans-serif;font-weight:600;font-size:13px;color:#a9c4a3}
   .title{font-family:'Fredoka',sans-serif;font-weight:700;font-size:clamp(26px,6.5vw,38px);color:var(--cream);
     margin:0;text-shadow:0 2px 0 var(--grass-dk),0 4px 6px rgba(0,0,0,.22)}
   .hud{display:flex;align-items:center;gap:9px}
@@ -237,6 +263,11 @@
   .card.selected{border-color:var(--grass-dk);box-shadow:0 4px 0 var(--grass-dk),0 0 0 3px rgba(124,179,66,.35)}
   .card.locked{opacity:.62;filter:grayscale(.55);cursor:not-allowed}
   .card.broke .buyline{color:#c0392b}
+  .card.inseason{border-color:#e0a83a;box-shadow:0 4px 0 #c98f28,0 0 0 3px rgba(240,180,60,.3)}
+  .season-badge{position:absolute;top:-9px;left:50%;transform:translateX(-50%);white-space:nowrap;
+    font-family:'Fredoka',sans-serif;font-weight:700;font-size:9.5px;color:#5a3d0a;
+    background:linear-gradient(180deg,#ffe7a3,#f0c659);border:1.5px solid #cf9e34;border-radius:999px;padding:2px 8px;
+    box-shadow:0 2px 4px rgba(0,0,0,.2)}
   .card .e{font-size:32px;line-height:1}
   .card .n{font-family:'Fredoka',sans-serif;font-weight:600;font-size:15px;margin-top:2px}
   .card .meta{font-size:12px;color:var(--ink-soft);margin-top:4px;line-height:1.5}
@@ -311,6 +342,7 @@
   .buffrow{display:flex;flex-wrap:wrap;gap:7px;grid-column:1/-1}
   .buffchip{font-family:'Fredoka',sans-serif;font-weight:600;font-size:11.5px;color:#2f5e2a;background:rgba(120,200,120,.25);
     border:2px solid rgba(90,160,90,.5);border-radius:999px;padding:4px 10px}
+  .buffchip.daily{color:#7a5a12;background:rgba(245,205,90,.3);border-color:rgba(220,170,50,.6)}
   .deal-empty{grid-column:1/-1;text-align:center;font-family:'Fredoka',sans-serif;font-weight:600;color:var(--ink-soft);padding:14px}
   .buffdeal{grid-column:1/-1}
 
@@ -567,6 +599,11 @@
   .rl-wheel > span{width:54px;height:54px;border-radius:50%;background:#0d1f14;color:#fff;display:flex;align-items:center;justify-content:center;
     font-family:'Fredoka',sans-serif;font-weight:700;font-size:20px;border:3px solid #ffe28a}
   .rl-betrow,.bj-betrow{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:12px;flex-wrap:wrap}
+  .bj-betrow{flex-direction:column}
+  .bj-betline{display:flex;align-items:center;gap:10px;justify-content:center}
+  .bj-chips{display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
+  .chip.denom{font-size:12px;padding:7px 11px;background:linear-gradient(180deg,#bfe3ff,#6fb0e0);box-shadow:0 2px 0 #3f7bb0;color:#0c2c44}
+  .chip.clearbet{font-size:11px;padding:5px 11px;background:linear-gradient(180deg,#e9c0c0,#d08a8a);box-shadow:0 2px 0 #a05a5a;color:#3a1010}
   .rl-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px}
   .rl-opt{font-family:'Fredoka',sans-serif;font-weight:700;font-size:13px;cursor:pointer;border:0;border-radius:11px;padding:11px 6px;color:#fff;
     box-shadow:0 3px 0 rgba(0,0,0,.35);transition:transform .1s}
@@ -679,6 +716,7 @@
 <div class="cloud c1">☁️</div>
 <div class="cloud c2">☁️</div>
 <div id="rain"></div>
+<div id="snowfall"></div>
 
 <div class="game">
   <div class="sync-banner" id="syncBanner" style="display:none">
@@ -821,11 +859,17 @@
     <div class="cas-game" id="game-roulette">
       <div class="cas-table-title">🎡 Roulette</div>
       <div class="rl-wheel" id="rlWheel"><span id="rlResult">—</span></div>
-      <div class="rl-betrow">
-        <span class="cas-label">Bet</span>
-        <button class="chip" data-betadj="-100">−100</button>
-        <span class="betamt" id="rlBetAmt">100</span>
-        <button class="chip" data-betadj="100">+100</button>
+      <div class="rl-betrow bj-betrow">
+        <div class="bj-betline"><span class="cas-label">Bet</span> <span class="betamt" id="rlBetAmt">10</span>
+          <button class="chip clearbet" data-rlchip="clear">Clear</button></div>
+        <div class="bj-chips">
+          <button class="chip denom" data-rlchip="1">+1</button>
+          <button class="chip denom" data-rlchip="5">+5</button>
+          <button class="chip denom" data-rlchip="10">+10</button>
+          <button class="chip denom" data-rlchip="250">+250</button>
+          <button class="chip denom" data-rlchip="500">+500</button>
+          <button class="chip denom" data-rlchip="1000">+1000</button>
+        </div>
       </div>
       <div class="rl-options" id="rlOptions">
         <button class="rl-opt red" data-bet="red">Red <small>2×</small></button>
@@ -843,18 +887,26 @@
     <div class="cas-game" id="game-blackjack">
       <div class="cas-table-title">🃏 Blackjack</div>
       <div class="bj-betrow" id="bjBetRow">
-        <span class="cas-label">Bet</span>
-        <button class="chip" data-bjadj="-100">−100</button>
-        <span class="betamt" id="bjBetAmt">100</span>
-        <button class="chip" data-bjadj="100">+100</button>
+        <div class="bj-betline"><span class="cas-label">Bet</span> <span class="betamt" id="bjBetAmt">10</span>
+          <button class="chip clearbet" data-bjchip="clear">Clear</button></div>
+        <div class="bj-chips">
+          <button class="chip denom" data-bjchip="1">+1</button>
+          <button class="chip denom" data-bjchip="5">+5</button>
+          <button class="chip denom" data-bjchip="10">+10</button>
+          <button class="chip denom" data-bjchip="250">+250</button>
+          <button class="chip denom" data-bjchip="500">+500</button>
+          <button class="chip denom" data-bjchip="1000">+1000</button>
+        </div>
         <button class="bj-deal" id="bjDeal">Deal</button>
       </div>
       <div class="bj-table" id="bjTable" style="display:none">
         <div class="bj-hand"><span class="bj-who">Dealer <b id="bjDealerVal"></b></span><div class="bj-cards" id="bjDealer"></div></div>
         <div class="bj-hand"><span class="bj-who">You <b id="bjPlayerVal"></b></span><div class="bj-cards" id="bjPlayer"></div></div>
+        <div class="bj-hand bj-split-hand" id="bjSplitWrap" style="display:none"><span class="bj-who">Split <b id="bjSplitVal"></b></span><div class="bj-cards" id="bjSplit"></div></div>
         <div class="bj-actions" id="bjActions">
           <button class="bj-btn" id="bjHit">Hit</button>
           <button class="bj-btn" id="bjStand">Stand</button>
+          <button class="bj-btn" id="bjSplit" style="display:none">Split</button>
         </div>
         <div class="tablemates" id="bjMates"></div>
       </div>
@@ -865,10 +917,16 @@
     <div class="cas-game" id="game-holdem">
       <div class="cas-table-title">♠️ Texas Hold'em</div>
       <div class="bj-betrow" id="heBetRow">
-        <span class="cas-label">Ante</span>
-        <button class="chip" data-headj="-100">−100</button>
-        <span class="betamt" id="heBetAmt">100</span>
-        <button class="chip" data-headj="100">+100</button>
+        <div class="bj-betline"><span class="cas-label">Ante</span> <span class="betamt" id="heBetAmt">10</span>
+          <button class="chip clearbet" data-hechip="clear">Clear</button></div>
+        <div class="bj-chips">
+          <button class="chip denom" data-hechip="1">+1</button>
+          <button class="chip denom" data-hechip="5">+5</button>
+          <button class="chip denom" data-hechip="10">+10</button>
+          <button class="chip denom" data-hechip="250">+250</button>
+          <button class="chip denom" data-hechip="500">+500</button>
+          <button class="chip denom" data-hechip="1000">+1000</button>
+        </div>
         <button class="bj-deal" id="heDeal">Deal</button>
       </div>
       <div class="he-table" id="heTable" style="display:none">
@@ -911,6 +969,16 @@
     <p class="lock-msg">This farm is now active on <b>another device</b>. To protect your progress, only one device can play at a time.</p>
     <p class="lock-msg lock-sub">Tap below to move play back to this device. The other device will switch to locked.</p>
     <button class="lock-btn" id="lockReclaim">🔓 Reclaim &amp; play here</button>
+  </div>
+</div>
+
+<!-- Syncing screen: shown while loading the farm from the cloud (sign-in / reclaim) -->
+<div class="sync-screen" id="syncScreen" style="display:none">
+  <div class="sync-card">
+    <div class="sync-spinner" aria-hidden="true"></div>
+    <div class="sync-emoji">🌻</div>
+    <div class="sync-title" id="syncTitle">Syncing your farm…</div>
+    <div class="sync-sub" id="syncSub">Loading your latest progress from the cloud</div>
   </div>
 </div>
 
@@ -1067,31 +1135,44 @@
   const MIN=60000, HOUR=3600000;
   const CROPS = {
     // quick starters (under ~3 min)
-    carrot:    {emoji:'🥕', name:'Carrot',      lvl:1,  cost:5,    grow:1*MIN,    sell:10,    xp:2 },
-    radish:    {emoji:'🥬', name:'Radish',      lvl:1,  cost:8,    grow:2*MIN,    sell:18,    xp:3 },
-    lettuce:   {emoji:'🥬', name:'Lettuce',     lvl:2,  cost:12,   grow:3*MIN,    sell:28,    xp:4 },
-    corn:      {emoji:'🌽', name:'Corn',        lvl:2,  cost:15,   grow:5*MIN,    sell:42,    xp:5 },
+    carrot:    {emoji:'🥕', name:'Carrot',      lvl:1,  cost:5,    grow:1*MIN,    sell:10,    xp:2,  season:'spring'},
+    radish:    {emoji:'🥬', name:'Radish',      lvl:1,  cost:8,    grow:2*MIN,    sell:18,    xp:3,  season:'spring'},
+    lettuce:   {emoji:'🥬', name:'Lettuce',     lvl:2,  cost:12,   grow:3*MIN,    sell:28,    xp:4,  season:'spring'},
+    corn:      {emoji:'🌽', name:'Corn',        lvl:2,  cost:15,   grow:5*MIN,    sell:42,    xp:5,  season:'summer'},
     // short (5–20 min)
-    potato:    {emoji:'🥔', name:'Potato',      lvl:3,  cost:22,   grow:8*MIN,    sell:70,    xp:7 },
-    tomato:    {emoji:'🍅', name:'Tomato',      lvl:3,  cost:28,   grow:12*MIN,   sell:105,   xp:9 },
-    onion:     {emoji:'🧅', name:'Onion',       lvl:4,  cost:34,   grow:18*MIN,   sell:150,   xp:11},
-    cucumber:  {emoji:'🥒', name:'Cucumber',    lvl:4,  cost:40,   grow:25*MIN,   sell:205,   xp:13},
+    potato:    {emoji:'🥔', name:'Potato',      lvl:3,  cost:22,   grow:8*MIN,    sell:70,    xp:7,  season:'fall'},
+    tomato:    {emoji:'🍅', name:'Tomato',      lvl:3,  cost:28,   grow:12*MIN,   sell:105,   xp:9,  season:'summer'},
+    onion:     {emoji:'🧅', name:'Onion',       lvl:4,  cost:34,   grow:18*MIN,   sell:150,   xp:11, season:'spring'},
+    cucumber:  {emoji:'🥒', name:'Cucumber',    lvl:4,  cost:40,   grow:25*MIN,   sell:205,   xp:13, season:'summer'},
     // medium (30–90 min)
-    strawberry:{emoji:'🍓', name:'Strawberry',  lvl:5,  cost:50,   grow:35*MIN,   sell:300,   xp:16},
-    pepper:    {emoji:'🫑', name:'Bell Pepper',  lvl:5,  cost:62,   grow:45*MIN,   sell:380,   xp:19},
-    eggplant:  {emoji:'🍆', name:'Eggplant',    lvl:6,  cost:78,   grow:60*MIN,   sell:500,   xp:23},
-    pumpkin:   {emoji:'🎃', name:'Pumpkin',     lvl:6,  cost:95,   grow:90*MIN,   sell:760,   xp:28},
+    strawberry:{emoji:'🍓', name:'Strawberry',  lvl:5,  cost:50,   grow:35*MIN,   sell:300,   xp:16, season:'spring'},
+    pepper:    {emoji:'🫑', name:'Bell Pepper',  lvl:5,  cost:62,   grow:45*MIN,   sell:380,   xp:19, season:'summer'},
+    eggplant:  {emoji:'🍆', name:'Eggplant',    lvl:6,  cost:78,   grow:60*MIN,   sell:500,   xp:23, season:'summer'},
+    pumpkin:   {emoji:'🎃', name:'Pumpkin',     lvl:6,  cost:95,   grow:90*MIN,   sell:760,   xp:28, season:'fall'},
     // long (2–5 hours)
-    grapes:    {emoji:'🍇', name:'Grapes',      lvl:7,  cost:120,  grow:2*HOUR,   sell:1050,  xp:34},
-    pineapple: {emoji:'🍍', name:'Pineapple',   lvl:7,  cost:150,  grow:3*HOUR,   sell:1500,  xp:40},
-    melon:     {emoji:'🍈', name:'Honeydew',    lvl:8,  cost:185,  grow:4*HOUR,   sell:1950,  xp:47},
-    chili:     {emoji:'🌶️', name:'Ghost Chili',  lvl:8,  cost:220,  grow:5*HOUR,   sell:2500,  xp:55},
+    grapes:    {emoji:'🍇', name:'Grapes',      lvl:7,  cost:120,  grow:2*HOUR,   sell:1050,  xp:34, season:'fall'},
+    pineapple: {emoji:'🍍', name:'Pineapple',   lvl:7,  cost:150,  grow:3*HOUR,   sell:1500,  xp:40, season:'summer'},
+    melon:     {emoji:'🍈', name:'Honeydew',    lvl:8,  cost:185,  grow:4*HOUR,   sell:1950,  xp:47, season:'summer'},
+    chili:     {emoji:'🌶️', name:'Ghost Chili',  lvl:8,  cost:220,  grow:5*HOUR,   sell:2500,  xp:55, season:'summer'},
+    cactus:    {emoji:'🌵', name:'Cactus',      lvl:7,  cost:175,  grow:4*HOUR,   sell:1800,  xp:44, season:'summer'},
     // premium (8–24 hours)
-    watermelon:{emoji:'🍉', name:'Watermelon',  lvl:9,  cost:300,  grow:8*HOUR,   sell:4200,  xp:70},
-    sunflower: {emoji:'🌻', name:'Sunflower',   lvl:9,  cost:380,  grow:12*HOUR,  sell:6400,  xp:90},
-    truffle:   {emoji:'🍄', name:'Truffle',     lvl:10, cost:500,  grow:18*HOUR,  sell:9800,  xp:120},
-    goldwheat: {emoji:'🌾', name:'Golden Wheat', lvl:10, cost:650,  grow:24*HOUR,  sell:14000, xp:160},
+    watermelon:{emoji:'🍉', name:'Watermelon',  lvl:9,  cost:300,  grow:8*HOUR,   sell:4200,  xp:70, season:'summer'},
+    sunflower: {emoji:'🌻', name:'Sunflower',   lvl:9,  cost:380,  grow:12*HOUR,  sell:6400,  xp:90, season:'summer'},
+    truffle:   {emoji:'🍄', name:'Truffle',     lvl:10, cost:500,  grow:18*HOUR,  sell:9800,  xp:120,season:'fall'},
+    goldwheat: {emoji:'🌾', name:'Golden Wheat', lvl:10, cost:650,  grow:24*HOUR,  sell:14000, xp:160,season:'fall'},
   };
+  // Northern-hemisphere seasons by day-of-year (used for IN SEASON buffs + visual events).
+  // spring: Mar–May, summer: Jun–Aug, fall: Sep–Nov, winter: Dec–Feb.
+  const SEASON_BONUS_GROWTH=1.4;   // in-season crops grow 40% faster
+  const SEASON_BONUS_PRICE=1.3;    // and sell for 30% more
+  function seasonOfDoy(doy){
+    if(doy>=60 && doy<=151) return 'spring';   // Mar 1 – May 31
+    if(doy>=152 && doy<=243) return 'summer';  // Jun 1 – Aug 31
+    if(doy>=244 && doy<=334) return 'fall';    // Sep 1 – Nov 30
+    return 'winter';                            // Dec 1 – Feb 28/29
+  }
+  function currentSeason(){ return seasonOfDoy(doyOf(state.lastDay||globalAbsDay())); }
+  function cropInSeason(id){ const c=CROPS[id]; return !!(c && c.season && c.season===currentSeason()); }
   const ANIMALS = {
     chicken:{emoji:'🐔', name:'Chicken', lvl:3, cost:80,   cycle:10*MIN,  sell:55,  xp:6,  pid:'egg',  pe:'🥚'},
     cow:    {emoji:'🐄', name:'Cow',     lvl:5, cost:220,  cycle:45*MIN,  sell:240, xp:16, pid:'milk', pe:'🥛'},
@@ -1130,6 +1211,9 @@
     vitaboost:{emoji:'💉', name:'Vita-Boost Serum',   kind:'animal', mult:2.0, days:2, cost:1800, desc:'Animals produce 2× faster for 2 days'},
   };
   const BUFF_APPEAR_CHANCE=0.5;  // chance a buff item is on offer after a refresh
+  // ===== Mini daily buff (FREE) — each in-game day, ONE random crop grows faster =====
+  // Light, automatic flavor: "Carrots are thriving today — they grow 50% faster!" No cost.
+  const DAILY_BUFF_MULT=1.5;     // how much faster the lucky crop grows that day
   // Stocks: farm-world companies. Share price drifts with small chance of a jump.
   const STOCKS = {
     SPRT:{name:'Sprout Seed Co.',     emoji:'🌱', base:40,  vol:0.11, drift:0.004},
@@ -1274,7 +1358,7 @@
   const TAX_RATE=0.20;                        // 20% of gross yearly earnings
   const CAPGAINS_RATE=0.25;                   // 25% tax on PROFIT from stock & property sales
   const DEBT_DAILY_INTEREST=0.10;             // 10% compounding daily while in debt
-  const SAVE_KEY='littleacre:save'; const VERSION=37;
+  const SAVE_KEY='littleacre:save'; const VERSION=40;
   const BACKUP_KEY='littleacre:save:backup';   // last-known-good snapshot ("save folder")
   const MIN_MIGRATABLE=13;                       // saves at/after this version migrate forward instead of resetting
   // Leaderboard sanity cap: scores above this are clamped before submission. This is a
@@ -1352,7 +1436,7 @@
   // Build the starting price-multiplier table for every sellable item.
   function freshMarket(){ const m={}; SELLABLE.forEach(id=>m[id]={mult:1,prev:1}); return m; }
   // Build the starting state for the buyers' market (deals + optional buff offer + active buffs).
-  function freshMarketStall(){ return {deals:[], buffOffer:null, buffs:{crop:null,animal:null}, nextDeal:0, seeded:false}; }
+  function freshMarketStall(){ return {deals:[], buffOffer:null, buffs:{crop:null,animal:null}, dailyBuff:null, dailyBuffDay:0, nextDeal:0, seeded:false}; }
   // Build the starting state for the stock market (prices + history).
   function freshStocks(){ const s={}; for(const sym in STOCKS){ const b=STOCKS[sym].base;
     s[sym]={price:b,prev:b,shares:0,cost:0,hist:Array.from({length:SPARK_LEN},()=>b)}; } return s; }
@@ -1465,9 +1549,10 @@
   // Re-take the session from another device (the player tapped "Reclaim").
   async function reclaimSession(){
     if(!cloudOn()) return;
-    // pull the latest farm first so we don't clobber what the other device just did
-    await cloudPullAndMerge();
-    await claimSession();
+    showSyncScreen('Reclaiming your farm…','Pulling the latest progress from the cloud');
+    try{ await cloudPullAndMerge(); await claimSession(); }
+    catch(e){ console.warn('reclaim',e); }
+    finally{ hideSyncScreen(); }
     toast('🔓 Farm reclaimed on this device', 2600);
     render();
   }
@@ -1480,6 +1565,12 @@
   }
   // True if this device is allowed to write (signed out players always may; signed-in must own session).
   function canWrite(){ return !cloudOn() || sessionActive; }
+  // Full-screen syncing overlay shown while pulling the farm from the cloud.
+  function showSyncScreen(title, sub){ const s=document.getElementById('syncScreen'); if(!s) return;
+    if(title) document.getElementById('syncTitle').textContent=title;
+    if(sub) document.getElementById('syncSub').textContent=sub;
+    s.style.display='flex'; }
+  function hideSyncScreen(){ const s=document.getElementById('syncScreen'); if(s) s.style.display='none'; }
   // Reflect signed-in/out state in BOTH the top-bar chip and the bottom cloud bar.
   function updateAccountUI(){
     const signedIn=!!cloudUser;
@@ -1797,6 +1888,13 @@
     if(typeof window.addEventListener==='function'){
       window.addEventListener('online', updateSyncBanner);
       window.addEventListener('offline', updateSyncBanner);
+      // FLUSH-ON-LEAVE: the instant this device is backgrounded or closed, force the latest
+      // farm up to the cloud — so quickly switching devices can't strand recent actions
+      // (e.g. just-planted sprouts) in this device's local cache.
+      const flush=()=>{ if(cloudOn() && canWrite()) flushNow(); };
+      document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden') flush(); });
+      window.addEventListener('pagehide', flush);
+      window.addEventListener('blur', flush);
     }
 
     // If we returned from a redirect sign-in, complete it.
@@ -1805,7 +1903,11 @@
     window.CLOUD.auth.onAuthStateChanged(async(user)=>{
       cloudUser=user||null;
       updateAccountUI();
-      if(user){ await cloudPullAndMerge(); await claimSession(); pushLeaderboard(); maybePromptNickname(); }
+      if(user){ showSyncScreen('Syncing your farm…','Loading your latest progress from the cloud');
+        try{ await cloudPullAndMerge(); await claimSession(); }
+        catch(e){ console.warn('signin sync',e); }
+        finally{ hideSyncScreen(); }
+        pushLeaderboard(); maybePromptNickname(); }
       else { if(sessionWatch){ try{ sessionWatch(); }catch(e){} sessionWatch=null; } mySessionId=null; sessionActive=true; updateSessionUI(); setCloudStatus('☁️ Cloud saves: not signed in',''); }
     });
 
@@ -1830,6 +1932,14 @@
     }catch(e){ setCloudStatus('☁️ Auto-sync failed (saved locally)','err'); console.warn('cloudPushNow',e); }
       pushLeaderboard();
     })();
+  }
+  // Immediate flush used when leaving the page (visibility hidden / pagehide / blur). Fires the
+  // current state straight up with no debounce so a fast device switch doesn't strand progress.
+  function flushNow(){ if(!cloudOn() || !canWrite()) return;
+    try{ clearTimeout(cloudTimer);   // cancel any pending debounced push; this supersedes it
+      cloudDoc().set({ save: JSON.stringify(state), savedAt: state.savedAt||Date.now(),
+        version: VERSION, updated: Date.now(), sessionId: mySessionId });
+    }catch(e){ console.warn('flushNow',e); }
   }
 
   // Take a loaded save and migrate it forward to the current VERSION (or reset if too old).
@@ -1986,9 +2096,24 @@
       state.commodities.buffOffer=keys[Math.floor(Math.random()*keys.length)];
     } else state.commodities.buffOffer=null;
   }
+  // Pick today's free "lucky crop" — one random crop that grows faster all day. Rerolls daily.
+  function rollDailyBuff(){
+    const st=state.commodities;
+    const day=state.lastDay||1;
+    if(st.dailyBuffDay===day && st.dailyBuff) return;   // already chosen for today
+    const keys=Object.keys(CROPS);
+    st.dailyBuff=keys[Math.floor(Math.random()*keys.length)];
+    st.dailyBuffDay=day;
+  }
+  // The growth multiplier for a SPECIFIC crop today (1 = none; >1 if it's the lucky crop).
+  function dailyCropMult(cropId){
+    const st=state.commodities;
+    return (st && st.dailyBuff===cropId && st.dailyBuffDay===(state.lastDay||1)) ? DAILY_BUFF_MULT : 1;
+  }
   // Keep the deal board full and rotate it over time; also drop expired deals.
   function advanceStall(force){
     const st=state.commodities; if(!st) return;
+    rollDailyBuff();   // ensure today's lucky crop is chosen
     if(!st.seeded){ st.deals=[]; for(let i=0;i<DEAL_SLOTS;i++) st.deals.push(makeDeal());
       rollBuffOffer(); st.seeded=true; st.nextDeal=Date.now()+DEAL_REFRESH_MS; }
     // expire by day
@@ -2179,6 +2304,33 @@
     document.body.classList.toggle('raining', state.weather==='rain');
     document.getElementById('rain').classList.toggle('on', state.weather==='rain');
   }
+  // ----- Visual-only seasonal events: droughts (summer) & snowstorms (winter) -----
+  // Purely atmospheric — they change the background for ~3 in-game days. No growth effect.
+  const EVENT_DAYS=3;            // how many in-game days an event lasts
+  const EVENT_CHANCE=0.10;       // chance per new day to START an event (when none active & in season)
+  // Called once per new in-game day. Ends an expired event, or maybe starts a season-appropriate one.
+  function rollSeasonEvent(){
+    // end an event that has run its course
+    if(state.event && (state.lastDay||1) >= state.eventUntil){ state.event=null; }
+    if(!state.event){
+      const season=currentSeason();
+      if(Math.random()<EVENT_CHANCE){
+        if(season==='summer'){ state.event='drought'; state.eventUntil=(state.lastDay||1)+EVENT_DAYS;
+          if(!state._offlineCatchup) toast('🏜️ A drought has settled over the valley…', 3200); }
+        else if(season==='winter'){ state.event='snow'; state.eventUntil=(state.lastDay||1)+EVENT_DAYS;
+          if(!state._offlineCatchup) toast('❄️ A snowstorm is rolling in…', 3200); }
+      }
+    }
+    applyEventBackground();
+  }
+  // Reflect the current visual event on the page background (CSS classes do the rest).
+  function applyEventBackground(){
+    const b=document.body; if(!b||!b.classList) return;
+    b.classList.toggle('event-drought', state.event==='drought');
+    b.classList.toggle('event-snow', state.event==='snow');
+    const snowEl=document.getElementById('snowfall');
+    if(snowEl) snowEl.classList.toggle('on', state.event==='snow');
+  }
 
   // ---------- calendar & expenses ----------
   // Total elapsed days come from dayClock / CYCLE. We process each new day exactly once.
@@ -2202,6 +2354,7 @@
       const doy=doyOf(state.lastDay);
       state.day=doy; state.year=yearOf(state.lastDay);
       state.animals.forEach(a=>a.age++);
+      rollSeasonEvent();   // maybe start/continue a visual drought or snowstorm
       processDay(offline);
       if(doy===TAX_DOY) processTaxDay(offline);          // April 14: taxes due (pay or extend)
       if(doy===OCT_TAX_DOY) processOctoberTax(offline);  // October 14: collect any extended bill
@@ -2393,7 +2546,7 @@
         invAdd(cropId,1); gainXP(c.xp);
         float(el,'+'+c.emoji,'gain'); p.crop=null;p.growth=0;p.ready=false;p.readyMs=0; save(); render(); return;
       }
-      const val=priceOf(cropId,c.sell);
+      const val=Math.round(priceOf(cropId,c.sell)*(cropInSeason(cropId)?SEASON_BONUS_PRICE:1));
       earn(val); gainXP(c.xp); float(el,'+'+val,'gain'); p.crop=null;p.growth=0;p.ready=false;p.readyMs=0; bumpCoins(); save(); render(); return; }
     if(!p.crop){ const c=CROPS[selected];
       if(state.level<c.lvl){ toast('Reach Level '+c.lvl+' to grow '+c.name); return; }
@@ -2513,12 +2666,13 @@
     // ----- Roulette -----
     // European-style wheel: 0 (green) + 1..36 (alternating red/black). Bets pay true-ish odds
     // minus the house edge that comes from the single green 0.
-    let rlBet=100;
+    let rlBet=10;
     const REDS=new Set([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]);
     const rlBetAmtEl=document.getElementById('rlBetAmt');
     const rlMsg=document.getElementById('rlMsg'), rlWheel=document.getElementById('rlWheel'), rlResult=document.getElementById('rlResult');
-    function rlSetBet(v){ rlBet=Math.max(100, rlBet+v); rlBetAmtEl.textContent=rlBet; }
-    document.querySelectorAll('[data-betadj]').forEach(b=>b.addEventListener('click',()=>rlSetBet(+b.dataset.betadj)));
+    function rlAddChip(v){ rlBet=Math.max(0, rlBet+v); rlBetAmtEl.textContent=rlBet; }
+    document.querySelectorAll('[data-rlchip]').forEach(b=>b.addEventListener('click',()=>{
+      const v=b.dataset.rlchip; if(v==='clear'){ rlBet=0; } else rlBet=Math.max(0,rlBet+ +v); rlBetAmtEl.textContent=rlBet; }));
     let rlSpinning=false;
     function rlColor(n){ return n===0?'green':(REDS.has(n)?'red':'black'); }
     function rlWins(bet,n){ const c=rlColor(n);
@@ -2533,7 +2687,7 @@
       } return 0; }
     document.querySelectorAll('.rl-opt').forEach(b=>b.addEventListener('click',()=>{
       if(rlSpinning) return;
-      if(rlBet<=0) return;
+      if(rlBet<=0){ rlMsg.textContent='Add chips to place a bet first.'; return; }
       rlSpinning=true;
       spend(rlBet); bumpCoins(); render();
       rlWheel.classList.remove('spin'); void rlWheel.offsetWidth; rlWheel.classList.add('spin');
@@ -2551,12 +2705,18 @@
     }));
 
     // ----- Blackjack -----
-    let deck=[], pHand=[], dHand=[], bjBet=100, bjActive=false, bjMates=[];
+    let deck=[], pHand=[], dHand=[], bjBet=10, bjActive=false, bjMates=[];
+    // split support: when active, splitHand holds the 2nd hand; we play hand 1 then hand 2.
+    let splitHand=null, splitActive=false, playingSplit=false, splitDone=false, mainDone=false;
     const bjBetAmtEl=document.getElementById('bjBetAmt'), bjMsg=document.getElementById('bjMsg'),
           bjTable=document.getElementById('bjTable'), bjBetRow=document.getElementById('bjBetRow'),
-          bjActions=document.getElementById('bjActions'), bjMatesEl=document.getElementById('bjMates');
-    function bjSetBet(v){ if(bjActive) return; bjBet=Math.max(100, bjBet+v); bjBetAmtEl.textContent=bjBet; }
-    document.querySelectorAll('[data-bjadj]').forEach(b=>b.addEventListener('click',()=>bjSetBet(+b.dataset.bjadj)));
+          bjActions=document.getElementById('bjActions'), bjMatesEl=document.getElementById('bjMates'),
+          bjSplitBtn=document.getElementById('bjSplit'), bjSplitWrap=document.getElementById('bjSplitWrap');
+    // chip-denomination betting: tap chips to build a bet (1/5/10/250/500/1000), or Clear.
+    function bjAddChip(v){ if(bjActive) return; bjBet=Math.max(0, bjBet+v); bjBetAmtEl.textContent=bjBet; }
+    function bjClearBet(){ if(bjActive) return; bjBet=0; bjBetAmtEl.textContent=bjBet; }
+    document.querySelectorAll('[data-bjchip]').forEach(b=>b.addEventListener('click',()=>{
+      const v=b.dataset.bjchip; if(v==='clear') bjClearBet(); else bjAddChip(+v); }));
     function newDeck(){ const s=['♠','♥','♦','♣'], r=['A','2','3','4','5','6','7','8','9','10','J','Q','K']; deck=[];
       for(const su of s) for(const ra of r) deck.push({r:ra,s:su}); 
       for(let i=deck.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [deck[i],deck[j]]=[deck[j],deck[i]]; } }
@@ -2565,24 +2725,15 @@
       while(v>21&&aces>0){ v-=10; aces--; } return v; }
     function cardHTML(c,hidden){ if(hidden) return '<div class="bjcard back">?</div>';
       const red=(c.s==='♥'||c.s==='♦'); return '<div class="bjcard '+(red?'red':'black')+'">'+c.r+c.s+'</div>'; }
-    // A bot decides hit/stand. Skilled bots follow solid basic strategy; weak bots over-hit
-    // and bust far more often, so skill produces a real, visible win-rate gap.
     function botWantsHit(hand, dealerUp, skill){
       const v=handVal(hand), up=cardVal(dealerUp);
       if(v>=21) return false;
-      if(v<=11) return true;          // everyone hits a hand that can't bust
-      if(skill<=3){                   // reckless: keeps hitting into dangerous totals
-        return v <= (16+Math.floor(Math.random()*2));   // hits 12-17ish, busts a lot
-      }
-      if(skill<=6){                   // casual: roughly "stand on 17", a bit loose on 16
-        if(v>=17) return false;
-        if(v===16) return Math.random()<0.4;
-        return v<=15 && (up>=7 || up===1);   // hits stiffs vs strong dealer, sometimes
-      }
-      // skilled (7-10): proper basic strategy for hard totals
+      if(v<=11) return true;
+      if(skill<=3){ return v <= (16+Math.floor(Math.random()*2)); }
+      if(skill<=6){ if(v>=17) return false; if(v===16) return Math.random()<0.4; return v<=15 && (up>=7 || up===1); }
       if(v>=17) return false;
-      if(v>=13 && v<=16) return up>=7 || up===1;   // stand vs weak dealer, hit vs strong
-      if(v===12) return up>=7 || up<=3;            // hit 12 except vs 4-6
+      if(v>=13 && v<=16) return up>=7 || up===1;
+      if(v===12) return up>=7 || up<=3;
       return false;
     }
     function renderBJ(hideDealer){
@@ -2590,6 +2741,14 @@
       document.getElementById('bjDealer').innerHTML=dHand.map((c,i)=>cardHTML(c,hideDealer&&i===1)).join('');
       document.getElementById('bjPlayerVal').textContent=handVal(pHand);
       document.getElementById('bjDealerVal').textContent=hideDealer?handVal([dHand[0]])+' +?':handVal(dHand);
+      // split hand display + active-hand highlight
+      if(splitActive){ bjSplitWrap.style.display='';
+        document.getElementById('bjSplit').innerHTML=splitHand.map(c=>cardHTML(c,false)).join('');
+        document.getElementById('bjSplitVal').textContent=handVal(splitHand);
+        document.getElementById('bjPlayer').parentElement.style.opacity = playingSplit?'.5':'1';
+        bjSplitWrap.style.opacity = playingSplit?'1':'.5';
+      } else { bjSplitWrap.style.display='none';
+        document.getElementById('bjPlayer').parentElement.style.opacity='1'; }
     }
     function renderBJMates(resolved){
       if(!bjMatesEl) return;
@@ -2600,65 +2759,110 @@
         return mateRow(m.ch, '<span class="'+cls+'">'+word+'</span> ('+m.val+')'+miniCards(m.hand,false));
       }).join('');
     }
-    function bjEnd(text, payoutMult){ bjActive=false;
-      if(payoutMult>0){ earn(bjBet*payoutMult); }
+    // Show/hide the Split button: only when the two starting cards are a matching rank and affordable.
+    function updateSplitBtn(){
+      const canSplit = bjActive && !splitActive && pHand.length===2
+        && cardVal(pHand[0])===cardVal(pHand[1]) && (state.coins>=bjBet || true);   // overdraft allowed
+      bjSplitBtn.style.display = canSplit ? '' : 'none';
+    }
+    function endRound(){ bjActive=false; splitActive=false; playingSplit=false;
+      bjActions.style.display='none'; bjBetRow.style.display='flex'; bjSplitBtn.style.display='none';
       bumpCoins(); render(); save();
-      bjActions.style.display='none'; bjBetRow.style.display='flex';
-      bjMsg.textContent=text;
+    }
+    // Resolve ONE player hand vs the dealer, return net payout multiplier on its bet.
+    function settleHand(hand, dv){ const pv=handVal(hand);
+      if(pv>21) return {mult:0, txt:'Bust ('+pv+')'};
+      if(dv>21) return {mult:2, txt:'Dealer bust — win'};
+      if(pv>dv) return {mult:2, txt:'Win ('+pv+')'};
+      if(pv<dv) return {mult:0, txt:'Lose ('+pv+')'};
+      return {mult:1, txt:'Push'};
     }
     function dealerPlay(){ renderBJ(false);
       while(handVal(dHand)<17) dHand.push(deck.pop());
-      // bots now play out their own hands vs the same dealer
       const dv0=handVal(dHand);
-      bjMates.forEach(m=>{
-        let guard=0;
+      bjMates.forEach(m=>{ let guard=0;
         while(botWantsHit(m.hand, dHand[0], m.ch.skill) && guard++<8) m.hand.push(deck.pop());
         m.val=handVal(m.hand);
-        if(m.val>21) m.result='lose';
-        else if(dv0>21) m.result='win';
-        else if(m.val>dv0) m.result='win';
-        else if(m.val<dv0) m.result='lose';
-        else m.result='push';
+        if(m.val>21) m.result='lose'; else if(dv0>21) m.result='win';
+        else if(m.val>dv0) m.result='win'; else if(m.val<dv0) m.result='lose'; else m.result='push';
       });
-      renderBJMates(true);
-      renderBJ(false);
-      const pv=handVal(pHand), dv=handVal(dHand);
-      if(dv>21) bjEnd('Dealer busts — you win '+(bjBet)+'! 🎉', 2);
-      else if(dv>pv) bjEnd('Dealer wins with '+dv+'. 😕', 0);
-      else if(dv<pv) bjEnd('You win with '+pv+'! 🎉 +'+bjBet, 2);
-      else bjEnd('Push — bet returned.', 1);
+      renderBJMates(true); renderBJ(false);
+      const dv=handVal(dHand);
+      if(splitActive){
+        const r1=settleHand(pHand, dv), r2=settleHand(splitHand, dv);
+        if(r1.mult>0) earn(bjBet*r1.mult); if(r2.mult>0) earn(bjBet*r2.mult);
+        bjMsg.textContent='Hand 1: '+r1.txt+' · Hand 2: '+r2.txt+' (dealer '+dv+')';
+      } else {
+        const r=settleHand(pHand, dv);
+        if(r.mult>0) earn(bjBet*r.mult);
+        bjMsg.textContent = r.mult>1?('You win '+fmtMoney(bjBet)+'! 🎉'):(r.mult===1?'Push — bet returned.':'Dealer wins with '+dv+'. 😕');
+      }
+      endRound();
+    }
+    // After finishing the main hand in a split, move to the second hand (or go to dealer).
+    function advanceSplit(){
+      if(splitActive && !playingSplit && !splitDone){
+        playingSplit=true; mainDone=true; renderBJ(true);
+        bjMsg.textContent='Now playing your 2nd hand — hit or stand.';
+      } else { dealerPlay(); }
     }
     document.getElementById('bjDeal').addEventListener('click',()=>{
       if(bjActive) return;
+      if(bjBet<1){ bjMsg.textContent='Add chips to place a bet first.'; return; }
       spend(bjBet); bumpCoins(); render();
       newDeck(); pHand=[deck.pop(),deck.pop()]; dHand=[deck.pop(),deck.pop()]; bjActive=true;
-      // seat 2-4 characters, each dealt 2 cards
+      splitHand=null; splitActive=false; playingSplit=false; splitDone=false; mainDone=false;
       bjMates=pickMates().map(ch=>({ch, hand:[deck.pop(),deck.pop()], val:0, result:null}));
       renderBJMates(false);
       bjTable.style.display='block'; bjBetRow.style.display='none'; bjActions.style.display='flex';
-      renderBJ(true); bjMsg.textContent='Hit or stand?';
-      if(handVal(pHand)===21){ renderBJ(false); bjEnd('Blackjack! 🃏 +'+(Math.round(bjBet*1.5)), 2.5); }
+      renderBJ(true); bjMsg.textContent='Hit, stand'+ (cardVal(pHand[0])===cardVal(pHand[1])?', or split?':'?');
+      updateSplitBtn();
+      if(handVal(pHand)===21){ renderBJ(false); earn(Math.round(bjBet*2.5)); bjMsg.textContent='Blackjack! 🃏 +'+fmtMoney(Math.round(bjBet*1.5)); endRound(); }
     });
     document.getElementById('bjHit').addEventListener('click',()=>{
-      if(!bjActive) return; pHand.push(deck.pop()); renderBJ(true);
-      const v=handVal(pHand);
-      if(v>21){ renderBJ(false); bjEnd('Bust at '+v+'. 😕', 0); }
-      else if(v===21){ dealerPlay(); }
+      if(!bjActive) return;
+      const hand = playingSplit ? splitHand : pHand;
+      hand.push(deck.pop()); renderBJ(true); updateSplitBtn();
+      const v=handVal(hand);
+      if(v>=21){
+        if(playingSplit){ splitDone=true; dealerPlay(); }
+        else if(splitActive){ advanceSplit(); }
+        else { if(v>21){ renderBJ(false); bjMsg.textContent='Bust at '+v+'. 😕'; endRound(); } else dealerPlay(); }
+      }
     });
-    document.getElementById('bjStand').addEventListener('click',()=>{ if(!bjActive) return; dealerPlay(); });
+    document.getElementById('bjStand').addEventListener('click',()=>{
+      if(!bjActive) return;
+      if(playingSplit){ splitDone=true; dealerPlay(); }
+      else if(splitActive){ advanceSplit(); }
+      else dealerPlay();
+    });
+    bjSplitBtn.addEventListener('click',()=>{
+      if(!bjActive || splitActive || pHand.length!==2) return;
+      if(cardVal(pHand[0])!==cardVal(pHand[1])) return;
+      spend(bjBet); bumpCoins(); render();           // second hand needs an equal bet
+      splitActive=true; splitDone=false; mainDone=false; playingSplit=false;
+      splitHand=[pHand.pop()];                        // move one card to the split hand
+      pHand.push(deck.pop()); splitHand.push(deck.pop());   // deal one new card to each
+      bjSplitBtn.style.display='none';
+      renderBJ(true);
+      bjMsg.textContent='Split! Playing your 1st hand — hit or stand.';
+      // if first hand is instantly 21, move on
+      if(handVal(pHand)===21) advanceSplit();
+    });
 
     // ----- Texas Hold'em (heads-up vs the house) -----
     // Simple but real: ante, 2 hole cards each, flop/turn/river. One bet/check round after
     // each street (you act; house calls or checks). At showdown the best 5-of-7 hand wins.
     const RANKS='23456789TJQKA';
     function rankVal(r){ return RANKS.indexOf(r==='10'?'T':r); }
-    let heDeck=[], heYou=[], heHouse=[], heBoard=[], heAnte=100, hePot=0, heStreet=0, heActive=false, heContrib=0, heMates=[];
+    let heDeck=[], heYou=[], heHouse=[], heBoard=[], heAnte=10, hePot=0, heStreet=0, heActive=false, heContrib=0, heMates=[];
     const heBetAmtEl=document.getElementById('heBetAmt'), heMsg=document.getElementById('heMsg'),
           heTable=document.getElementById('heTable'), heBetRow=document.getElementById('heBetRow'),
           heActions=document.getElementById('heActions'), hePotEl=document.getElementById('hePot'),
           heMatesEl=document.getElementById('heMates');
-    function heSetBet(v){ if(heActive) return; heAnte=Math.max(100, heAnte+v); heBetAmtEl.textContent=heAnte; }
-    document.querySelectorAll('[data-headj]').forEach(b=>b.addEventListener('click',()=>heSetBet(+b.dataset.headj)));
+    function heSetBet(v){ if(heActive) return; heAnte=Math.max(0, heAnte+v); heBetAmtEl.textContent=heAnte; }
+    document.querySelectorAll('[data-hechip]').forEach(b=>b.addEventListener('click',()=>{
+      if(heActive) return; const v=b.dataset.hechip; if(v==='clear'){ heAnte=0; } else heAnte=Math.max(0,heAnte+ +v); heBetAmtEl.textContent=heAnte; }));
     function heDeckNew(){ const s=['♠','♥','♦','♣']; heDeck=[];
       for(const su of s) for(const r of RANKS) heDeck.push({r:r==='T'?'10':r, s:su});
       for(let i=heDeck.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [heDeck[i],heDeck[j]]=[heDeck[j],heDeck[i]]; } }
@@ -2767,6 +2971,7 @@
     }
     document.getElementById('heDeal').addEventListener('click',()=>{
       if(heActive) return;
+      if(heAnte<1){ heMsg.textContent='Add chips to set an ante first.'; return; }
       spend(heAnte); hePot=heAnte*2; heContrib=heAnte;   // you + house both ante
       heDeckNew(); heYou=[heDeck.pop(),heDeck.pop()]; heHouse=[heDeck.pop(),heDeck.pop()]; heBoard=[]; heStreet=0; heActive=true;
       // seat 2-4 characters with hole cards; some may fold preflop
@@ -2795,7 +3000,7 @@
     let earned=0,n=0,stored=0; const storing=state.harvestMode==='store';
     state.plots.forEach(p=>{ if(p.ready){ const c=CROPS[p.crop]; gainXP(c.xp); n++;
       if(storing){ invAdd(p.crop,1); stored++; }
-      else earned+=priceOf(p.crop,c.sell);
+      else earned+=Math.round(priceOf(p.crop,c.sell)*(cropInSeason(p.crop)?SEASON_BONUS_PRICE:1));
       p.crop=null;p.growth=0;p.ready=false;p.readyMs=0; }});
     state.animals.forEach(an=>{ if(an.ready){ const a=ANIMALS[an.type]; gainXP(a.xp); n++;
       if(storing){ invAdd(a.pid,1); stored++; }
@@ -2852,12 +3057,15 @@
   function renderShop(){
     document.querySelectorAll('#shop .card').forEach(el=>{ const key=el.dataset.crop, c=CROPS[key];
       const locked=state.level<c.lvl, price=priceOf(key,c.sell);
+      const inSeason=cropInSeason(key);
       el.classList.toggle('selected', key===selected && !locked);
       el.classList.toggle('locked', locked);
       el.classList.toggle('broke', !locked && state.coins<c.cost);
-      el.innerHTML=`<div class="e">${c.emoji}</div><div class="n">${c.name}</div>
+      el.classList.toggle('inseason', inSeason && !locked);
+      const seasonPrice=inSeason?Math.round(price*SEASON_BONUS_PRICE):price;
+      el.innerHTML=`${inSeason?'<div class="season-badge">☀️ IN SEASON</div>':''}<div class="e">${c.emoji}</div><div class="n">${c.name}</div>
         <div class="meta buyline">Buy <b>${c.cost}</b> · ${fmtTime(c.grow/1000)}</div>
-        <div class="meta">Sell <span class="sell ${priceClass(key)}">${price}</span>${trendSpan(key)}</div>
+        <div class="meta">Sell <span class="sell ${priceClass(key)}">${seasonPrice}</span>${trendSpan(key)}</div>
         ${locked?`<div class="lockmsg">🔒<span>Level ${c.lvl}</span></div>`:''}`;
     });
   }
@@ -2938,6 +3146,10 @@
 
     // active buff status chips (if any boosts are running)
     const chips=[];
+    // free daily "lucky crop" chip
+    rollDailyBuff();
+    if(st.dailyBuff && CROPS[st.dailyBuff]){ const c=CROPS[st.dailyBuff];
+      chips.push(`<span class="buffchip daily">${c.emoji} ${c.name} thriving today · grows ${DAILY_BUFF_MULT}× faster</span>`); }
     ['crop','animal'].forEach(kind=>{ const b=st.buffs&&st.buffs[kind];
       if(b && (state.lastDay||1)<b.until){ const it=BUFF_ITEMS[b.key];
         const left=b.until-(state.lastDay||1);
@@ -3235,7 +3447,8 @@
     document.getElementById('xpFill').style.width=Math.min(100,Math.round(state.xp/need*100))+'%';
     document.getElementById('xpText').textContent=Math.floor(state.xp)+' / '+need+' XP';
     const w=WEATHER[state.weather];
-    document.getElementById('wpill').innerHTML=`${w.emoji} ${w.label} · ${state._tod||'Day'} <small>(${w.mod})</small>`;
+    const evtTag = state.event==='drought' ? ' · 🏜️ Drought' : state.event==='snow' ? ' · ❄️ Snowstorm' : '';
+    document.getElementById('wpill').innerHTML=`${w.emoji} ${w.label} · ${state._tod||'Day'}${evtTag} <small>(${w.mod})</small>`;
     // calendar clock
     const cl=calendarLabel();
     const phase=(state.dayClock%CYCLE)/CYCLE;          // 0..1 through the day
@@ -3280,7 +3493,7 @@
     const speed=WEATHER[state.weather].speed; let changed=false; let spoiled=0;
     const cropBuff=buffMult('crop'), animalBuff=buffMult('animal');
     state.plots.forEach(p=>{ if(!p.crop) return;
-      if(!p.ready){ p.growth+=dt*speed*cropBuff; if(p.growth>=CROPS[p.crop].grow){ p.ready=true; p.readyMs=0; changed=true; } }
+      if(!p.ready){ p.growth+=dt*speed*cropBuff*dailyCropMult(p.crop)*(cropInSeason(p.crop)?SEASON_BONUS_GROWTH:1); if(p.growth>=CROPS[p.crop].grow){ p.ready=true; p.readyMs=0; changed=true; } }
       else { p.readyMs=(p.readyMs||0)+dt;          // count real time spent ripe
         if(p.readyMs>=CROP_SPOIL_MS){ p.crop=null; p.growth=0; p.ready=false; p.readyMs=0; spoiled++; changed=true; } }
     });
@@ -3334,7 +3547,7 @@
     wireEvents();
     document.body.classList.toggle('raining', state.weather==='rain');
     document.getElementById('rain').classList.toggle('on', state.weather==='rain');
-    lastTick=Date.now(); skyUpdate(); render();
+    lastTick=Date.now(); skyUpdate(); applyEventBackground(); render();
     if(state._migratedFrom!==undefined){
       const from=state._migratedFrom; delete state._migratedFrom; save();
       setTimeout(()=>toast('✅ Save carried over from v'+from+' — coins & resources kept',3200),600);
