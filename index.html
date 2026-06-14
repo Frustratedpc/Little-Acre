@@ -333,8 +333,12 @@
   .deal-buyer{font-family:'Fredoka',sans-serif;font-weight:600;font-size:13px;color:var(--ink-soft)}
   .deal-want{font-family:'Fredoka',sans-serif;font-weight:700;font-size:15.5px;color:var(--ink)}
   .deal-prem{font-weight:600;font-size:12px;color:#2e8b40}
-  .deal-prog{height:7px;background:#e7d6bf;border-radius:5px;overflow:hidden;margin:9px 0 8px}
+  .deal-sub{font-family:'Nunito',sans-serif;font-weight:600;font-size:11.5px;color:var(--ink-soft)}
+  .deal-premtag{font-family:'Fredoka',sans-serif;font-weight:700;font-size:12px;color:#2e8b40;margin-top:2px}
+  .deal-prog{position:relative;height:14px;background:#e7d6bf;border-radius:7px;overflow:hidden;margin:9px 0 8px}
   .deal-prog i{display:block;height:100%;background:linear-gradient(90deg,#9acb5a,#5a9c39);transition:width .3s}
+  .deal-prog-lbl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-family:'Fredoka',sans-serif;font-weight:700;font-size:10px;color:#3a2c14}
   .deal-row{display:flex;align-items:center;gap:9px}
   .deal-have{font-family:'Nunito',sans-serif;font-weight:700;font-size:12.5px;color:var(--ink-soft);flex:1}
   .deal-pay{font-family:'Fredoka',sans-serif;font-weight:700;font-size:16px;color:var(--ink);flex:1}
@@ -346,6 +350,13 @@
   .buffchip.daily{color:#7a5a12;background:rgba(245,205,90,.3);border-color:rgba(220,170,50,.6)}
   .deal-empty{grid-column:1/-1;text-align:center;font-family:'Fredoka',sans-serif;font-weight:600;color:var(--ink-soft);padding:14px}
   .buffdeal{grid-column:1/-1}
+  /* daily/active buff chips — bare row (no panel), with their own SOLID background */
+  #cropBuffs{display:flex;flex-wrap:wrap;gap:7px;margin:2px 0 11px}
+  #cropBuffs:empty{display:none}
+  #cropBuffs .buffchip{color:#fff;background:var(--grass);border:2px solid var(--grass-dk);
+    box-shadow:0 3px 0 var(--grass-dk);font-size:12px;padding:6px 12px}
+  #cropBuffs .buffchip.daily{color:#5a3d0a;background:linear-gradient(180deg,#ffe07a,#f0bf3e);
+    border-color:#cf9e34;box-shadow:0 3px 0 #cf9e34}
 
   /* ===== exchange chalkboard ===== */
   .exchange{background:linear-gradient(180deg,#2f4434,#22321f);border:7px solid var(--wood);border-radius:22px;padding:14px;
@@ -782,6 +793,7 @@
   <div class="field"><div class="grid" id="grid"></div></div>
 
   <h2 class="sec">🛒 Seed Shop</h2>
+  <div class="buffrow" id="cropBuffs"></div>
   <div class="shop" id="shop"></div>
 
   <h2 class="sec">🐔 Barnyard</h2>
@@ -1383,7 +1395,7 @@
   const TAX_RATE=0.20;                        // 20% of gross yearly earnings
   const CAPGAINS_RATE=0.25;                   // 25% tax on PROFIT from stock & property sales
   const DEBT_DAILY_INTEREST=0.10;             // 10% compounding daily while in debt
-  const SAVE_KEY='littleacre:save'; const VERSION=43;
+  const SAVE_KEY='littleacre:save'; const VERSION=46;
   const BACKUP_KEY='littleacre:save:backup';   // last-known-good snapshot ("save folder")
   const MIN_MIGRATABLE=13;                       // saves at/after this version migrate forward instead of resetting
   // Leaderboard sanity cap: scores above this are clamped before submission. This is a
@@ -3198,6 +3210,20 @@
     wrap.innerHTML=cards.join('');
   }
   // Redraw the buyers' market: active deals + any rare buff on offer + active buff timers.
+  // Simple buff-chip row under the crop grid: the daily lucky crop + any active purchased buffs.
+  function renderCropBuffs(){
+    const wrap=document.getElementById('cropBuffs'); if(!wrap) return;
+    rollDailyBuff();
+    const st=state.commodities||{};
+    const chips=[];
+    if(st.dailyBuff && CROPS[st.dailyBuff]){ const c=CROPS[st.dailyBuff];
+      chips.push(`<span class="buffchip daily">${c.emoji} ${c.name} thriving today · grows ${DAILY_BUFF_MULT}× faster</span>`); }
+    ['crop','animal'].forEach(kind=>{ const b=st.buffs&&st.buffs[kind];
+      if(b && (state.lastDay||1)<b.until){ const it=BUFF_ITEMS[b.key];
+        const left=b.until-(state.lastDay||1);
+        chips.push(`<span class="buffchip">${it.emoji} ${it.name} · ${b.mult}× ${kind} · ${left}d left</span>`); } });
+    wrap.innerHTML = chips.join('');
+  }
   function renderCommodities(){
     const wrap=document.getElementById('commodities');
     if(!wrap) return;
@@ -3205,27 +3231,16 @@
     const st=state.commodities;
     let html='';
 
-    // active buff status chips (if any boosts are running)
-    const chips=[];
-    // free daily "lucky crop" chip
-    rollDailyBuff();
-    if(st.dailyBuff && CROPS[st.dailyBuff]){ const c=CROPS[st.dailyBuff];
-      chips.push(`<span class="buffchip daily">${c.emoji} ${c.name} thriving today · grows ${DAILY_BUFF_MULT}× faster</span>`); }
-    ['crop','animal'].forEach(kind=>{ const b=st.buffs&&st.buffs[kind];
-      if(b && (state.lastDay||1)<b.until){ const it=BUFF_ITEMS[b.key];
-        const left=b.until-(state.lastDay||1);
-        chips.push(`<span class="buffchip">${it.emoji} ${it.name} · ${b.mult}× ${kind} · ${left}d left</span>`); } });
-    if(chips.length) html+=`<div class="buffrow">${chips.join('')}</div>`;
-
-    // rare buff for sale
+    // rare buff for sale (the purchasable item stays in the market)
     if(st.buffOffer){ const it=BUFF_ITEMS[st.buffOffer];
       const afford = state.coins>=it.cost;
       html+=`<div class="deal buffdeal">
         <div class="deal-top"><span class="deal-e">${it.emoji}</span>
-          <div class="deal-info"><span class="deal-buyer">Rare find: ${it.name}</span>
-            <span class="deal-want">${it.desc}</span></div></div>
+          <div class="deal-info"><span class="deal-buyer">✨ Rare find</span>
+            <span class="deal-want">${it.name}</span>
+            <span class="deal-sub">${it.desc}</span></div></div>
         <div class="deal-row">
-          <span class="deal-pay">💰 ${fmtMoney(it.cost)}</span>
+          <span class="deal-pay">🪙 ${fmtMoney(it.cost)}</span>
           <button class="tbtn buy" data-buybuff="1">Buy</button>
         </div></div>`;
     }
@@ -3235,14 +3250,20 @@
       const have=goodHeld(d.good), need=d.qty-d.filled;
       const prog=Math.round((d.filled/d.qty)*100);
       const canDeliver=have>0;
+      const premPct=Math.round((d.premium-1)*100);
       html+=`<div class="deal">
-        <div class="deal-top"><span class="deal-e">${d.emoji}</span>
-          <div class="deal-info"><span class="deal-buyer">${d.buyer} wants</span>
-            <span class="deal-want">${need} ${d.name} <span class="deal-prem">·  ${d.premium}× (${fmtMoney(d.unitPay)} each)</span></span></div></div>
-        <div class="deal-prog"><i style="width:${prog}%"></i></div>
+        <div class="deal-top">
+          <span class="deal-e">${d.emoji}</span>
+          <div class="deal-info">
+            <span class="deal-buyer">${d.buyer}</span>
+            <span class="deal-want">wants ${need} ${d.name}</span>
+            <span class="deal-premtag">+${premPct}% · 🪙 ${fmtMoney(d.unitPay)} each</span>
+          </div>
+        </div>
+        <div class="deal-prog"><i style="width:${prog}%"></i><span class="deal-prog-lbl">${d.filled}/${d.qty}</span></div>
         <div class="deal-row">
-          <span class="deal-have">You hold: <b>${have}</b></span>
-          <button class="tbtn sell" data-deal="${i}" ${canDeliver?'':'disabled'}>Deliver ${canDeliver?Math.min(need,have):''}</button>
+          <span class="deal-have">In stock: <b>${have}</b></span>
+          <button class="tbtn sell" data-deal="${i}" ${canDeliver?'':'disabled'}>Deliver${canDeliver?' '+Math.min(need,have):''}</button>
         </div></div>`;
     });
 
@@ -3531,7 +3552,7 @@
   function render(){
     renderHUD();
     const ripe=renderField(); renderPens(); renderShop(); renderAnimalShop();
-    renderCommodities(); renderStocks(); renderBigBox(); renderEstates();
+    renderCommodities(); renderCropBuffs(); renderStocks(); renderBigBox(); renderEstates();
     renderHarvestToggle(); renderPantry(); renderInventoryView(); renderCraftRecipes(); renderCraftSlots(); renderRecipes(); renderCasks(); renderFinances();
     const anyAnimalReady=state.animals.some(a=>a.ready);
     document.getElementById('collectAll').disabled = ripe===0 && !anyAnimalReady;
