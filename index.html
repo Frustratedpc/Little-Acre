@@ -1,0 +1,1921 @@
+<!-- Little Acre — a cozy farming game (v2: levels, animals, market, day/night + weather) -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+<title>Little Acre</title>
+<meta name="theme-color" content="#7cb342" />
+<meta name="mobile-web-app-capable" content="yes" />
+<!-- iOS standalone web app -->
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Little Acre" />
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iMTAwIiBmaWxsPSIjODZjMjRlIi8+CjxyZWN0IHk9IjMzMCIgd2lkdGg9IjUxMiIgaGVpZ2h0PSIxODIiIGZpbGw9IiM5YTZiNGYiLz4KPHBhdGggZD0iTTAgMzMwIGg1MTIgdjQwIEgweiIgZmlsbD0iIzgzNTgzZiIgb3BhY2l0eT0iLjUiLz4KPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMjU2IDIwMCkiPgo8ZyBmaWxsPSIjZjdiNzMzIj4KPGcgaWQ9InAiPjxlbGxpcHNlIGN4PSIwIiBjeT0iLTk2IiByeD0iMjYiIHJ5PSI1NCIvPjwvZz4KPHVzZSBocmVmPSIjcCIgdHJhbnNmb3JtPSJyb3RhdGUoNDUpIi8+PHVzZSBocmVmPSIjcCIgdHJhbnNmb3JtPSJyb3RhdGUoOTApIi8+Cjx1c2UgaHJlZj0iI3AiIHRyYW5zZm9ybT0icm90YXRlKDEzNSkiLz48dXNlIGhyZWY9IiNwIiB0cmFuc2Zvcm09InJvdGF0ZSgxODApIi8+Cjx1c2UgaHJlZj0iI3AiIHRyYW5zZm9ybT0icm90YXRlKDIyNSkiLz48dXNlIGhyZWY9IiNwIiB0cmFuc2Zvcm09InJvdGF0ZSgyNzApIi8+Cjx1c2UgaHJlZj0iI3AiIHRyYW5zZm9ybT0icm90YXRlKDMxNSkiLz4KPHVzZSBocmVmPSIjcCIgdHJhbnNmb3JtPSJyb3RhdGUoMjIuNSkiLz48dXNlIGhyZWY9IiNwIiB0cmFuc2Zvcm09InJvdGF0ZSg2Ny41KSIvPgo8dXNlIGhyZWY9IiNwIiB0cmFuc2Zvcm09InJvdGF0ZSgxMTIuNSkiLz48dXNlIGhyZWY9IiNwIiB0cmFuc2Zvcm09InJvdGF0ZSgxNTcuNSkiLz4KPHVzZSBocmVmPSIjcCIgdHJhbnNmb3JtPSJyb3RhdGUoMjAyLjUpIi8+PHVzZSBocmVmPSIjcCIgdHJhbnNmb3JtPSJyb3RhdGUoMjQ3LjUpIi8+Cjx1c2UgaHJlZj0iI3AiIHRyYW5zZm9ybT0icm90YXRlKDI5Mi41KSIvPjx1c2UgaHJlZj0iI3AiIHRyYW5zZm9ybT0icm90YXRlKDMzNy41KSIvPgo8L2c+CjxjaXJjbGUgcj0iNTgiIGZpbGw9IiM2YjQ0MjMiLz4KPGNpcmNsZSByPSI1OCIgZmlsbD0iIzRhMmYxOCIgb3BhY2l0eT0iLjQiLz4KPC9nPgo8cmVjdCB4PSIyNDQiIHk9IjI1MCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjE1MCIgcng9IjEyIiBmaWxsPSIjNTU4YjJmIi8+Cjwvc3ZnPgo=" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iMTAwIiBmaWxsPSIjODZjMjRlIi8+CjxyZWN0IHk9IjMzMCIgd2lkdGg9IjUxMiIgaGVpZ2h0PSIxODIiIGZpbGw9IiM5YTZiNGYiLz4KPHBhdGggZD0iTTAgMzMwIGg1MTIgdjQwIEgweiIgZmlsbD0iIzgzNTgzZiIgb3BhY2l0eT0iLjUiLz4KPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMjU2IDIwMCkiPgo8ZyBmaWxsPSIjZjdiNzMzIj4KPGcgaWQ9InAiPjxlbGxpcHNlIGN4PSIwIiBjeT0iLTk2IiByeD0iMjYiIHJ5PSI1NCIvPjwvZz4KPHVzZSBocmVmPSIjcCIgdHJhbnNmb3JtPSJyb3RhdGUoNDUpIi8+PHVzZSBocmVmPSIjcCIgdHJhbnNmb3JtPSJyb3RhdGUoOTApIi8+Cjx1c2UgaHJlZj0iI3AiIHRyYW5zZm9ybT0icm90YXRlKDEzNSkiLz48dXNlIGhyZWY9IiNwIiB0cmFuc2Zvcm09InJvdGF0ZSgxODApIi8+Cjx1c2UgaHJlZj0iI3AiIHRyYW5zZm9ybT0icm90YXRlKDIyNSkiLz48dXNlIGhyZWY9IiNwIiB0cmFuc2Zvcm09InJvdGF0ZSgyNzApIi8+Cjx1c2UgaHJlZj0iI3AiIHRyYW5zZm9ybT0icm90YXRlKDMxNSkiLz4KPHVzZSBocmVmPSIjcCIgdHJhbnNmb3JtPSJyb3RhdGUoMjIuNSkiLz48dXNlIGhyZWY9IiNwIiB0cmFuc2Zvcm09InJvdGF0ZSg2Ny41KSIvPgo8dXNlIGhyZWY9IiNwIiB0cmFuc2Zvcm09InJvdGF0ZSgxMTIuNSkiLz48dXNlIGhyZWY9IiNwIiB0cmFuc2Zvcm09InJvdGF0ZSgxNTcuNSkiLz4KPHVzZSBocmVmPSIjcCIgdHJhbnNmb3JtPSJyb3RhdGUoMjAyLjUpIi8+PHVzZSBocmVmPSIjcCIgdHJhbnNmb3JtPSJyb3RhdGUoMjQ3LjUpIi8+Cjx1c2UgaHJlZj0iI3AiIHRyYW5zZm9ybT0icm90YXRlKDI5Mi41KSIvPjx1c2UgaHJlZj0iI3AiIHRyYW5zZm9ybT0icm90YXRlKDMzNy41KSIvPgo8L2c+CjxjaXJjbGUgcj0iNTgiIGZpbGw9IiM2YjQ0MjMiLz4KPGNpcmNsZSByPSI1OCIgZmlsbD0iIzRhMmYxOCIgb3BhY2l0eT0iLjQiLz4KPC9nPgo8cmVjdCB4PSIyNDQiIHk9IjI1MCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjE1MCIgcng9IjEyIiBmaWxsPSIjNTU4YjJmIi8+Cjwvc3ZnPgo=" />
+<link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjogIkxpdHRsZSBBY3JlIiwgInNob3J0X25hbWUiOiAiTGl0dGxlIEFjcmUiLCAiZGVzY3JpcHRpb24iOiAiQSBjb3p5IGZhcm1pbmcsIGNyYWZ0aW5nLCBhbmQgdHJhZGluZyBnYW1lLiIsICJzdGFydF91cmwiOiAiLiIsICJzY29wZSI6ICIuIiwgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsICJvcmllbnRhdGlvbiI6ICJwb3J0cmFpdCIsICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMxNjNhMWMiLCAidGhlbWVfY29sb3IiOiAiIzdjYjM0MiIsICJpY29ucyI6IFt7InNyYyI6ICJkYXRhOmltYWdlL3N2Zyt4bWw7YmFzZTY0LFBITjJaeUI0Yld4dWN6MGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TUM5emRtY2lJSGRwWkhSb1BTSTFNVElpSUdobGFXZG9kRDBpTlRFeUlpQjJhV1YzUW05NFBTSXdJREFnTlRFeUlEVXhNaUkrQ2p4eVpXTjBJSGRwWkhSb1BTSTFNVElpSUdobGFXZG9kRDBpTlRFeUlpQnllRDBpTVRBd0lpQm1hV3hzUFNJak9EWmpNalJsSWk4K0NqeHlaV04wSUhrOUlqTXpNQ0lnZDJsa2RHZzlJalV4TWlJZ2FHVnBaMmgwUFNJeE9ESWlJR1pwYkd3OUlpTTVZVFppTkdZaUx6NEtQSEJoZEdnZ1pEMGlUVEFnTXpNd0lHZzFNVElnZGpRd0lFZ3dlaUlnWm1sc2JEMGlJemd6TlRnelppSWdiM0JoWTJsMGVUMGlMalVpTHo0S1BHY2dkSEpoYm5ObWIzSnRQU0owY21GdWMyeGhkR1VvTWpVMklESXdNQ2tpUGdvOFp5Qm1hV3hzUFNJalpqZGlOek16SWo0S1BHY2dhV1E5SW5BaVBqeGxiR3hwY0hObElHTjRQU0l3SWlCamVUMGlMVGsySWlCeWVEMGlNallpSUhKNVBTSTFOQ0l2UGp3dlp6NEtQSFZ6WlNCb2NtVm1QU0lqY0NJZ2RISmhibk5tYjNKdFBTSnliM1JoZEdVb05EVXBJaTgrUEhWelpTQm9jbVZtUFNJamNDSWdkSEpoYm5ObWIzSnRQU0p5YjNSaGRHVW9PVEFwSWk4K0NqeDFjMlVnYUhKbFpqMGlJM0FpSUhSeVlXNXpabTl5YlQwaWNtOTBZWFJsS0RFek5Ta2lMejQ4ZFhObElHaHlaV1k5SWlOd0lpQjBjbUZ1YzJadmNtMDlJbkp2ZEdGMFpTZ3hPREFwSWk4K0NqeDFjMlVnYUhKbFpqMGlJM0FpSUhSeVlXNXpabTl5YlQwaWNtOTBZWFJsS0RJeU5Ta2lMejQ4ZFhObElHaHlaV1k5SWlOd0lpQjBjbUZ1YzJadmNtMDlJbkp2ZEdGMFpTZ3lOekFwSWk4K0NqeDFjMlVnYUhKbFpqMGlJM0FpSUhSeVlXNXpabTl5YlQwaWNtOTBZWFJsS0RNeE5Ta2lMejRLUEhWelpTQm9jbVZtUFNJamNDSWdkSEpoYm5ObWIzSnRQU0p5YjNSaGRHVW9Nakl1TlNraUx6NDhkWE5sSUdoeVpXWTlJaU53SWlCMGNtRnVjMlp2Y20wOUluSnZkR0YwWlNnMk55NDFLU0l2UGdvOGRYTmxJR2h5WldZOUlpTndJaUIwY21GdWMyWnZjbTA5SW5KdmRHRjBaU2d4TVRJdU5Ta2lMejQ4ZFhObElHaHlaV1k5SWlOd0lpQjBjbUZ1YzJadmNtMDlJbkp2ZEdGMFpTZ3hOVGN1TlNraUx6NEtQSFZ6WlNCb2NtVm1QU0lqY0NJZ2RISmhibk5tYjNKdFBTSnliM1JoZEdVb01qQXlMalVwSWk4K1BIVnpaU0JvY21WbVBTSWpjQ0lnZEhKaGJuTm1iM0p0UFNKeWIzUmhkR1VvTWpRM0xqVXBJaTgrQ2p4MWMyVWdhSEpsWmowaUkzQWlJSFJ5WVc1elptOXliVDBpY205MFlYUmxLREk1TWk0MUtTSXZQangxYzJVZ2FISmxaajBpSTNBaUlIUnlZVzV6Wm05eWJUMGljbTkwWVhSbEtETXpOeTQxS1NJdlBnbzhMMmMrQ2p4amFYSmpiR1VnY2owaU5UZ2lJR1pwYkd3OUlpTTJZalEwTWpNaUx6NEtQR05wY21Oc1pTQnlQU0kxT0NJZ1ptbHNiRDBpSXpSaE1tWXhPQ0lnYjNCaFkybDBlVDBpTGpRaUx6NEtQQzluUGdvOGNtVmpkQ0I0UFNJeU5EUWlJSGs5SWpJMU1DSWdkMmxrZEdnOUlqSTBJaUJvWldsbmFIUTlJakUxTUNJZ2NuZzlJakV5SWlCbWFXeHNQU0lqTlRVNFlqSm1JaTgrQ2p3dmMzWm5QZ289IiwgInNpemVzIjogIjUxMng1MTIiLCAidHlwZSI6ICJpbWFnZS9zdmcreG1sIiwgInB1cnBvc2UiOiAiYW55IG1hc2thYmxlIn0sIHsic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjRiV3h1Y3owaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNQzl6ZG1jaUlIZHBaSFJvUFNJMU1USWlJR2hsYVdkb2REMGlOVEV5SWlCMmFXVjNRbTk0UFNJd0lEQWdOVEV5SURVeE1pSStDanh5WldOMElIZHBaSFJvUFNJMU1USWlJR2hsYVdkb2REMGlOVEV5SWlCeWVEMGlNVEF3SWlCbWFXeHNQU0lqT0Raak1qUmxJaTgrQ2p4eVpXTjBJSGs5SWpNek1DSWdkMmxrZEdnOUlqVXhNaUlnYUdWcFoyaDBQU0l4T0RJaUlHWnBiR3c5SWlNNVlUWmlOR1lpTHo0S1BIQmhkR2dnWkQwaVRUQWdNek13SUdnMU1USWdkalF3SUVnd2VpSWdabWxzYkQwaUl6Z3pOVGd6WmlJZ2IzQmhZMmwwZVQwaUxqVWlMejRLUEdjZ2RISmhibk5tYjNKdFBTSjBjbUZ1YzJ4aGRHVW9NalUySURJd01Da2lQZ284WnlCbWFXeHNQU0lqWmpkaU56TXpJajRLUEdjZ2FXUTlJbkFpUGp4bGJHeHBjSE5sSUdONFBTSXdJaUJqZVQwaUxUazJJaUJ5ZUQwaU1qWWlJSEo1UFNJMU5DSXZQand2Wno0S1BIVnpaU0JvY21WbVBTSWpjQ0lnZEhKaGJuTm1iM0p0UFNKeWIzUmhkR1VvTkRVcElpOCtQSFZ6WlNCb2NtVm1QU0lqY0NJZ2RISmhibk5tYjNKdFBTSnliM1JoZEdVb09UQXBJaTgrQ2p4MWMyVWdhSEpsWmowaUkzQWlJSFJ5WVc1elptOXliVDBpY205MFlYUmxLREV6TlNraUx6NDhkWE5sSUdoeVpXWTlJaU53SWlCMGNtRnVjMlp2Y20wOUluSnZkR0YwWlNneE9EQXBJaTgrQ2p4MWMyVWdhSEpsWmowaUkzQWlJSFJ5WVc1elptOXliVDBpY205MFlYUmxLREl5TlNraUx6NDhkWE5sSUdoeVpXWTlJaU53SWlCMGNtRnVjMlp2Y20wOUluSnZkR0YwWlNneU56QXBJaTgrQ2p4MWMyVWdhSEpsWmowaUkzQWlJSFJ5WVc1elptOXliVDBpY205MFlYUmxLRE14TlNraUx6NEtQSFZ6WlNCb2NtVm1QU0lqY0NJZ2RISmhibk5tYjNKdFBTSnliM1JoZEdVb01qSXVOU2tpTHo0OGRYTmxJR2h5WldZOUlpTndJaUIwY21GdWMyWnZjbTA5SW5KdmRHRjBaU2cyTnk0MUtTSXZQZ284ZFhObElHaHlaV1k5SWlOd0lpQjBjbUZ1YzJadmNtMDlJbkp2ZEdGMFpTZ3hNVEl1TlNraUx6NDhkWE5sSUdoeVpXWTlJaU53SWlCMGNtRnVjMlp2Y20wOUluSnZkR0YwWlNneE5UY3VOU2tpTHo0S1BIVnpaU0JvY21WbVBTSWpjQ0lnZEhKaGJuTm1iM0p0UFNKeWIzUmhkR1VvTWpBeUxqVXBJaTgrUEhWelpTQm9jbVZtUFNJamNDSWdkSEpoYm5ObWIzSnRQU0p5YjNSaGRHVW9NalEzTGpVcElpOCtDangxYzJVZ2FISmxaajBpSTNBaUlIUnlZVzV6Wm05eWJUMGljbTkwWVhSbEtESTVNaTQxS1NJdlBqeDFjMlVnYUhKbFpqMGlJM0FpSUhSeVlXNXpabTl5YlQwaWNtOTBZWFJsS0RNek55NDFLU0l2UGdvOEwyYytDanhqYVhKamJHVWdjajBpTlRnaUlHWnBiR3c5SWlNMllqUTBNak1pTHo0S1BHTnBjbU5zWlNCeVBTSTFPQ0lnWm1sc2JEMGlJelJoTW1ZeE9DSWdiM0JoWTJsMGVUMGlMalFpTHo0S1BDOW5QZ284Y21WamRDQjRQU0l5TkRRaUlIazlJakkxTUNJZ2QybGtkR2c5SWpJMElpQm9aV2xuYUhROUlqRTFNQ0lnY25nOUlqRXlJaUJtYVd4c1BTSWpOVFU0WWpKbUlpOCtDand2YzNablBnbz0iLCAic2l6ZXMiOiAiMTkyeDE5MiIsICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiLCAicHVycG9zZSI6ICJhbnkifV19" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --grass:#7cb342; --grass-dk:#558b2f;
+    --soil:#9a6b4f; --soil-dk:#6f4a36; --furrow:#83583f;
+    --gold:#ffca28; --gold-dk:#f29d1c;
+    --cream:#fffaf0; --ink:#4a3527; --ink-soft:#7a6453;
+    --wood:#b07d52; --wood-dk:#6d4a30;
+    --xp:#5cb8ff; --xp-dk:#2f8de0;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{font-family:'Nunito',sans-serif;color:var(--ink);background:#163a1c;min-height:100vh;min-height:100dvh;
+    -webkit-tap-highlight-color:transparent;overflow-x:hidden;overscroll-behavior-y:contain;
+    text-size-adjust:100%;-webkit-text-size-adjust:100%}
+
+  /* ===== sky / atmosphere (crossfading layers) ===== */
+  .sky-layer{position:fixed;inset:0;z-index:0;transition:opacity .9s ease;will-change:opacity}
+  #sky-morning{background:linear-gradient(180deg,#ffc98a 0%,#bfe6ff 40%,#86c24e 46%,#5d9636 100%)}
+  #sky-day{background:linear-gradient(180deg,#7ec8ff 0%,#cdeeff 44%,#7cb342 46%,#4f8a2c 100%)}
+  #sky-dusk{background:linear-gradient(180deg,#ff9e6d 0%,#ffd49e 28%,#c98fb0 44%,#6b7f3a 46%,#3f5a26 100%)}
+  #sky-night{background:linear-gradient(180deg,#141d4a 0%,#2a376a 40%,#1f4426 46%,#12301a 100%)}
+  #stars{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity .9s}
+  #stars span{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;
+    box-shadow:0 0 3px 1px rgba(255,255,255,.7);animation:tw 3s infinite}
+  @keyframes tw{0%,100%{opacity:.3}50%{opacity:1}}
+  #celestial{position:fixed;z-index:0;font-size:46px;line-height:1;pointer-events:none;
+    filter:drop-shadow(0 0 18px rgba(255,220,120,.7));transition:opacity .6s}
+  .cloud{position:fixed;z-index:1;font-size:46px;opacity:.85;pointer-events:none}
+  .c1{top:64px;animation:drift 52s linear infinite}
+  .c2{top:122px;font-size:34px;opacity:.7;animation:drift 74s linear infinite 9s}
+  @keyframes drift{from{transform:translateX(-140px)}to{transform:translateX(112vw)}}
+  /* rain overlay */
+  #rain{position:fixed;inset:0;z-index:4;pointer-events:none;opacity:0;transition:opacity .6s;
+    background-image:repeating-linear-gradient(108deg,rgba(174,210,255,.45) 0 1px,transparent 1px 9px);
+    background-size:100% 22px;animation:pour .5s linear infinite}
+  #rain.on{opacity:.55}
+  body.raining .sky-layer{filter:brightness(.82) saturate(.9)}
+  @keyframes pour{from{background-position:0 0}to{background-position:-40px 22px}}
+
+  .game{position:relative;z-index:3;max-width:740px;margin:0 auto;
+    padding:calc(16px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) calc(52px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left))}
+
+  /* ===== HUD ===== */
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .title{font-family:'Fredoka',sans-serif;font-weight:700;font-size:clamp(26px,6.5vw,38px);color:var(--cream);
+    margin:0;text-shadow:0 2px 0 var(--grass-dk),0 4px 6px rgba(0,0,0,.22)}
+  .hud{display:flex;align-items:center;gap:9px}
+  .cal{font-family:'Fredoka',sans-serif;text-align:center;background:linear-gradient(180deg,#fff6e0,#ffe7a8);
+    color:#7a5800;border:3px solid var(--gold-dk);border-radius:14px;padding:4px 11px;box-shadow:0 4px 0 var(--gold-dk);line-height:1.1}
+  .cal-date{font-weight:700;font-size:15px}
+  .cal-sub{font-weight:600;font-size:10px;opacity:.8;margin-top:1px}
+  .lvl{font-family:'Fredoka',sans-serif;font-weight:600;background:linear-gradient(180deg,#eaf6ff,#bfe2ff);
+    color:#1c5a8a;border:3px solid var(--xp-dk);border-radius:999px;padding:7px 13px;font-size:15px;
+    box-shadow:0 4px 0 var(--xp-dk)}
+  .coins{display:flex;align-items:center;gap:7px;font-family:'Fredoka',sans-serif;font-weight:600;
+    background:linear-gradient(180deg,#fff,#ffe9b0);color:#7a5800;font-size:clamp(17px,4.5vw,22px);
+    padding:7px 14px;border-radius:999px;border:3px solid var(--gold-dk);
+    box-shadow:0 4px 0 var(--gold-dk);transition:transform .15s}
+  .coins.pulse{transform:scale(1.12)}
+  .coins.debt{background:linear-gradient(180deg,#ffe2dc,#ffc2b3);color:#b1402c;border-color:#c0392b;box-shadow:0 4px 0 #c0392b}
+  .debt-badge{display:none;font-family:'Fredoka',sans-serif;font-weight:700;font-size:11px;color:#fff;
+    background:#c0392b;border-radius:999px;padding:2px 7px;margin-left:5px;line-height:1.3;white-space:nowrap;
+    animation:debtpulse 1.3s ease-in-out infinite}
+  .coins.debt .debt-badge{display:inline-block}
+  @keyframes debtpulse{0%,100%{opacity:1}50%{opacity:.55}}
+  .coins .coin{width:20px;height:20px;border-radius:50%;
+    background:radial-gradient(circle at 35% 35%,#fff3b0,var(--gold) 60%,var(--gold-dk));border:2px solid var(--gold-dk)}
+
+  .statusrow{display:flex;align-items:center;gap:12px;margin:12px 0 14px;flex-wrap:wrap}
+  .xpwrap{flex:1 1 220px;min-width:180px}
+  .xpbar{height:13px;border-radius:999px;background:rgba(0,0,0,.28);overflow:hidden;border:2px solid rgba(255,255,255,.35)}
+  .xpbar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,#9fd6ff,var(--xp));transition:width .3s}
+  .xptext{font-size:12px;color:var(--cream);font-weight:700;text-shadow:0 1px 1px rgba(0,0,0,.3);margin-top:3px;display:block}
+  .wpill{font-family:'Fredoka',sans-serif;font-weight:600;color:var(--ink);background:var(--cream);
+    border:3px solid #e7d6bf;border-radius:999px;padding:7px 14px;font-size:14px;box-shadow:0 4px 0 #e0cdb2;white-space:nowrap}
+  .wpill small{color:var(--grass-dk);font-weight:800}
+
+  /* ===== sections ===== */
+  h2.sec{font-family:'Fredoka',sans-serif;font-weight:600;color:var(--cream);font-size:18px;margin:20px 0 9px;
+    text-shadow:0 1px 2px rgba(0,0,0,.28)}
+  .field{background:linear-gradient(180deg,var(--soil),var(--soil-dk));border:7px solid var(--wood);border-radius:22px;
+    padding:13px;box-shadow:0 0 0 4px var(--wood-dk),0 14px 30px rgba(0,0,0,.3)}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+
+  .plot{position:relative;aspect-ratio:1/1;border-radius:12px;cursor:pointer;overflow:hidden;border:0;padding:0;
+    background:repeating-linear-gradient(180deg,var(--furrow) 0 3px,transparent 3px 16px),linear-gradient(180deg,#a9785b,#8a5d44);
+    box-shadow:inset 0 3px 6px rgba(255,255,255,.18),inset 0 -6px 10px rgba(0,0,0,.28);
+    display:flex;align-items:center;justify-content:center;font-size:clamp(24px,6.6vw,46px);transition:transform .12s,filter .2s}
+  .plot:hover{filter:brightness(1.06)}.plot:active{transform:scale(.96)}
+  .plot:focus-visible{outline:3px solid #fff;outline-offset:2px}
+  .plot.locked{background:linear-gradient(180deg,#6d6157,#4f463d);color:#d9ccbd}
+  .plot.estate-plot{box-shadow:inset 0 0 0 2px rgba(124,179,66,.5)}
+  /* ===== Farm | Pantry tabs ===== */
+  .tabbar{display:flex;gap:8px;margin:4px 0 14px;position:sticky;top:0;z-index:6;
+    padding:8px 0;background:linear-gradient(180deg,rgba(22,58,28,.96),rgba(22,58,28,.82) 70%,rgba(22,58,28,0));backdrop-filter:blur(3px)}
+  .tab{flex:1;font-family:'Fredoka',sans-serif;font-weight:600;font-size:16px;cursor:pointer;border:0;border-radius:14px;
+    padding:12px;color:#bcd3b9;background:rgba(255,255,255,.08);transition:transform .1s,background .15s,color .15s}
+  .tab:active{transform:translateY(1px)}
+  .tab.on{color:#163a1c;background:linear-gradient(180deg,#cfe8b0,#9fcd6e);box-shadow:0 3px 0 #6d9c43}
+  .page{display:none;animation:pagein .25s ease}
+  .page.on{display:block}
+  @keyframes pagein{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:none}}
+  .page.from-left{animation:pageinL .25s ease}
+  @keyframes pageinL{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+  .plot.locked .lock{font-size:.6em}
+  .plot .price{position:absolute;bottom:6px;font-family:'Fredoka',sans-serif;font-size:12px;font-weight:600;
+    background:rgba(0,0,0,.4);color:#ffe39a;padding:1px 8px;border-radius:999px}
+  .crop{display:inline-block;line-height:1;transform-origin:bottom center;filter:drop-shadow(0 3px 3px rgba(0,0,0,.3))}
+  .crop.seed{font-size:.5em;opacity:.9}.crop.mid{font-size:.78em;opacity:.95}
+  .plot.ready,.pen.ready{box-shadow:inset 0 0 0 3px rgba(255,235,150,.7),0 0 18px 2px rgba(255,210,80,.55)}
+  .plot.spoiling{box-shadow:inset 0 0 0 3px rgba(192,57,42,.75),0 0 16px 2px rgba(192,57,42,.5);animation:spoilpulse 1.2s ease-in-out infinite}
+  .plot .timer.spoil{background:rgba(120,30,20,.6);color:#ffd9cf;font-size:10px}
+  @keyframes spoilpulse{0%,100%{filter:none}50%{filter:brightness(.85) saturate(1.2)}}
+  .plot.ready .crop,.pen.ready .animal{animation:bob 1.1s ease-in-out infinite}
+  .plot.ready::after,.pen.ready::after{content:"✦";position:absolute;top:5px;right:7px;color:#fff4bf;font-size:.4em;animation:twk 1.4s infinite}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-5px) rotate(3deg)}}
+  @keyframes twk{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
+  .plot .timer,.pen .timer{position:absolute;top:5px;left:50%;transform:translateX(-50%);font-family:'Fredoka',sans-serif;
+    font-weight:600;font-size:12px;color:#fff;background:rgba(0,0,0,.45);padding:1px 8px;border-radius:999px;
+    line-height:1.5;letter-spacing:.3px;white-space:nowrap}
+  .bar{position:absolute;left:6px;right:6px;bottom:6px;height:6px;border-radius:6px;background:rgba(0,0,0,.32);overflow:hidden}
+  .bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,#aed581,#7cb342);transition:width .2s linear}
+
+  /* barnyard */
+  .barn{background:linear-gradient(180deg,#caa46f,#9c7547);border:7px solid var(--wood);border-radius:22px;padding:13px;
+    box-shadow:0 0 0 4px var(--wood-dk),0 14px 30px rgba(0,0,0,.3)}
+  .pens{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:9px}
+  .pen{position:relative;aspect-ratio:1/1;border-radius:12px;cursor:pointer;border:0;overflow:hidden;
+    background:linear-gradient(180deg,#e7d3a8,#c9aa72);box-shadow:inset 0 -5px 8px rgba(0,0,0,.18);
+    display:flex;align-items:center;justify-content:center;font-size:clamp(24px,6.5vw,42px);transition:transform .12s}
+  .pen:active{transform:scale(.96)}.pen:focus-visible{outline:3px solid #fff;outline-offset:2px}
+  .pen.empty{background:repeating-linear-gradient(45deg,#bfa06c 0 7px,#b6975f 7px 14px);cursor:default}
+  .pen.starving{box-shadow:inset 0 0 0 3px rgba(192,57,42,.7);animation:starvepulse 1.4s ease-in-out infinite}
+  .pen .starve{position:absolute;top:3px;left:4px;font-size:.5em;z-index:2}
+  .pen .butcher{position:absolute;bottom:3px;right:3px;z-index:3;width:24px;height:24px;border-radius:50%;border:2px solid #fff;
+    background:rgba(150,40,30,.92);color:#fff;font-size:12px;line-height:1;cursor:pointer;padding:0;
+    display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,.35);transition:transform .1s}
+  .pen .butcher:hover{transform:scale(1.12)}
+  .pen .butcher:active{transform:scale(.94)}
+  @keyframes starvepulse{0%,100%{filter:none}50%{filter:brightness(.8) saturate(1.3)}}
+  /* ===== finances panel ===== */
+  .finances{background:linear-gradient(180deg,#fbf4e4,#efe2c8);border:7px solid var(--wood);border-radius:22px;padding:13px;
+    box-shadow:0 0 0 4px var(--wood-dk),0 14px 30px rgba(0,0,0,.3);display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+  .fin{background:var(--cream);border:3px solid #e7d6bf;border-radius:14px;padding:10px 12px;box-shadow:0 4px 0 #e0cdb2}
+  .fin .lab{font-family:'Fredoka',sans-serif;font-weight:600;font-size:12px;color:var(--ink-soft);display:flex;align-items:center;gap:5px}
+  .fin .big{font-family:'Fredoka',sans-serif;font-weight:700;font-size:19px;color:var(--ink);margin-top:3px}
+  .fin .small{font-size:11.5px;color:var(--ink-soft);margin-top:2px;line-height:1.4}
+  .fin.warn{border-color:#e0a96a;box-shadow:0 4px 0 #c98a4a}
+  .fin.warn .big{color:#b5651d}
+  .fin.danger{border-color:#d98a78;box-shadow:0 4px 0 #c0392b}
+  .fin.danger .big{color:#b1402c}
+  .pen .product{position:absolute;top:3px;right:4px;font-size:.5em;filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))}
+  .pen .bar{left:5px;right:5px}
+
+  /* shop cards */
+  .shop{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:10px}
+  .card{background:var(--cream);border:3px solid #e7d6bf;border-radius:16px;padding:10px 8px;text-align:center;cursor:pointer;
+    transition:transform .12s,border-color .15s,box-shadow .15s;box-shadow:0 4px 0 #e0cdb2;position:relative}
+  .card:hover{transform:translateY(-2px)}.card:focus-visible{outline:3px solid var(--gold-dk);outline-offset:2px}
+  .card.selected{border-color:var(--grass-dk);box-shadow:0 4px 0 var(--grass-dk),0 0 0 3px rgba(124,179,66,.35)}
+  .card.locked{opacity:.62;filter:grayscale(.55);cursor:not-allowed}
+  .card.broke .buyline{color:#c0392b}
+  .card .e{font-size:32px;line-height:1}
+  .card .n{font-family:'Fredoka',sans-serif;font-weight:600;font-size:15px;margin-top:2px}
+  .card .meta{font-size:12px;color:var(--ink-soft);margin-top:4px;line-height:1.5}
+  .card .meta b{color:#2e7d32}
+  .card .sell{font-weight:800}
+  .card .trend{font-size:11px;font-weight:800;margin-left:2px}
+  .up{color:#2e9e4f}.down{color:#d24b3a}.flat{color:#9a8a76}
+  .card .lockmsg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;
+    gap:2px;background:rgba(60,50,40,.78);color:#ffe39a;border-radius:13px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:14px}
+
+  .actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:18px}
+  .btn{font-family:'Fredoka',sans-serif;font-weight:600;font-size:15px;border:0;cursor:pointer;border-radius:14px;padding:11px 18px;
+    color:#fff;background:var(--grass);box-shadow:0 4px 0 var(--grass-dk);transition:transform .1s}
+  .btn:hover{filter:brightness(1.05)}.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--grass-dk)}
+  .btn:focus-visible{outline:3px solid #fff;outline-offset:2px}
+  .btn.ghost{background:#fff7e8;color:var(--ink);box-shadow:0 4px 0 #e0cdb2}
+  .btn[disabled]{opacity:.45;cursor:not-allowed;box-shadow:none;transform:none}
+
+  .float{position:absolute;left:50%;top:38%;transform:translateX(-50%);font-family:'Fredoka',sans-serif;font-weight:700;
+    font-size:17px;pointer-events:none;animation:rise .85s ease-out forwards;text-shadow:0 1px 2px rgba(0,0,0,.45);z-index:5}
+  .float.gain{color:#d6ffbf}.float.cost{color:#ffd0c0}
+  @keyframes rise{from{opacity:0;transform:translate(-50%,6px)}20%{opacity:1}to{opacity:0;transform:translate(-50%,-34px)}}
+  .toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);z-index:9;background:var(--ink);
+    color:#fff;font-weight:700;padding:10px 18px;border-radius:999px;opacity:0;transition:transform .25s,opacity .25s;
+    pointer-events:none;font-size:14px;text-align:center;max-width:90vw}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* ===== commodities stall ===== */
+  .stall{background:linear-gradient(180deg,#e8d2a4,#cdaa72);border:7px solid var(--wood);border-radius:22px;padding:13px;
+    box-shadow:0 0 0 4px var(--wood-dk),0 14px 30px rgba(0,0,0,.3)}
+  .stall-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+  .com{background:var(--cream);border:3px solid #e7d6bf;border-radius:16px;padding:10px;box-shadow:0 4px 0 #e0cdb2;position:relative}
+  .com .top{display:flex;align-items:center;gap:8px}
+  .com .e{font-size:28px;line-height:1}
+  .com .nm{font-family:'Fredoka',sans-serif;font-weight:600;font-size:15px}
+  .com .own{font-size:11px;color:var(--ink-soft);margin-left:auto;text-align:right;line-height:1.3}
+  .com .px{font-family:'Fredoka',sans-serif;font-weight:700;font-size:20px;margin-top:6px;display:flex;align-items:baseline;gap:6px}
+  .com .px .coinmini{width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff3b0,var(--gold) 60%,var(--gold-dk));border:2px solid var(--gold-dk);align-self:center}
+  .com .row{display:flex;gap:7px;margin-top:9px}
+  .tbtn{flex:1;font-family:'Fredoka',sans-serif;font-weight:600;font-size:13px;border:0;cursor:pointer;border-radius:11px;padding:8px 4px;color:#fff;transition:transform .1s}
+  .tbtn:active{transform:translateY(2px)}
+  .tbtn.buy{background:var(--grass);box-shadow:0 3px 0 var(--grass-dk)}
+  .tbtn.sell{background:#d98a3d;box-shadow:0 3px 0 #a9692a}
+  .tbtn[disabled]{opacity:.4;cursor:not-allowed;box-shadow:none;transform:none}
+
+  /* ===== exchange chalkboard ===== */
+  .exchange{background:linear-gradient(180deg,#2f4434,#22321f);border:7px solid var(--wood);border-radius:22px;padding:14px;
+    box-shadow:0 0 0 4px var(--wood-dk),0 14px 30px rgba(0,0,0,.3)}
+  .ex-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:11px;flex-wrap:wrap}
+  .ex-head .lede{font-family:'Fredoka',sans-serif;font-weight:600;color:#f2e9d0;font-size:14px;opacity:.85}
+  .ex-head .port{font-family:'Fredoka',sans-serif;font-weight:600;color:#ffe39a;font-size:13px;
+    background:rgba(0,0,0,.25);border:2px solid rgba(255,227,154,.35);border-radius:999px;padding:5px 12px}
+  .ex-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:11px}
+  .stock{background:linear-gradient(180deg,#3a533f,#2b3f2b);border:2px solid rgba(255,255,255,.12);border-radius:14px;padding:11px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.06);position:relative;overflow:hidden}
+  .stock .sym{font-family:'Fredoka',sans-serif;font-weight:700;font-size:15px;color:#fff;letter-spacing:.5px;display:flex;align-items:center;gap:6px}
+  .stock .co{font-size:10.5px;color:#bcd3b9;margin-top:1px;line-height:1.25}
+  .stock .quote{display:flex;align-items:baseline;gap:7px;margin-top:7px}
+  .stock .val{font-family:'Fredoka',sans-serif;font-weight:700;font-size:19px;color:#fff}
+  .stock .chg{font-size:12px;font-weight:800}
+  .spark{display:block;width:100%;height:30px;margin-top:7px}
+  .stock .hold{font-size:11px;color:#dfe8d8;margin-top:7px;min-height:14px;line-height:1.4}
+  .stock .hold .pl{font-weight:800}
+  .stock .row{display:flex;gap:7px;margin-top:8px}
+  .sbtn{flex:1;font-family:'Fredoka',sans-serif;font-weight:600;font-size:13px;border:0;cursor:pointer;border-radius:10px;padding:7px 4px;color:#fff;transition:transform .1s}
+  .sbtn:active{transform:translateY(2px)}
+  .sbtn.buy{background:var(--grass);box-shadow:0 3px 0 var(--grass-dk)}
+  .sbtn.sell{background:#3e7fb5;box-shadow:0 3px 0 #2c5d88}
+  .sbtn[disabled]{opacity:.4;cursor:not-allowed;box-shadow:none;transform:none}
+  .gain{color:#7fe39a}.loss{color:#ff9b86}
+
+  /* ===== big-box buyer (pallet sales) ===== */
+  .bigbox{background:linear-gradient(180deg,#d9e3ec,#b7c6d6);border:7px solid var(--wood);border-radius:22px;padding:13px;
+    box-shadow:0 0 0 4px var(--wood-dk),0 14px 30px rgba(0,0,0,.3)}
+  .bb-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:11px;flex-wrap:wrap}
+  .bb-head .lede{font-family:'Fredoka',sans-serif;font-weight:600;color:#33424f;font-size:14px;opacity:.9}
+  .bb-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(178px,1fr));gap:11px}
+  .bbcard{background:#fff;border:3px solid #cdd9e4;border-radius:16px;padding:11px;box-shadow:0 4px 0 #b9c8d6;position:relative}
+  .bbcard.ready{border-color:var(--grass-dk);box-shadow:0 4px 0 var(--grass-dk),0 0 0 3px rgba(124,179,66,.3)}
+  .bbcard .top{display:flex;align-items:center;gap:8px}
+  .bbcard .e{font-size:28px;line-height:1}
+  .bbcard .nm{font-family:'Fredoka',sans-serif;font-weight:600;font-size:14px;line-height:1.1}
+  .bbcard .nm small{display:block;font-size:11px;color:var(--ink-soft);font-weight:600}
+  .bbcard .bbar{height:7px;border-radius:7px;background:rgba(0,0,0,.12);overflow:hidden;margin:9px 0}
+  .bbcard .bbar > i{display:block;height:100%;background:linear-gradient(90deg,#aed581,#7cb342)}
+  .bbbtn{width:100%;font-family:'Fredoka',sans-serif;font-weight:600;font-size:13px;border:0;cursor:pointer;border-radius:11px;
+    padding:9px 4px;color:#fff;background:#d98a3d;box-shadow:0 3px 0 #a9692a;transition:transform .1s}
+  .bbbtn:active{transform:translateY(2px)}
+  .bbbtn[disabled]{opacity:.45;cursor:not-allowed;box-shadow:none;transform:none;background:#9fb0bf}
+  .bb-empty{grid-column:1/-1;text-align:center;font-family:'Fredoka',sans-serif;font-weight:600;color:#33424f;opacity:.8;padding:14px 0}
+
+  /* ===== kitchen (crafting) ===== */
+  .kitchen{background:linear-gradient(180deg,#f3dfc4,#e3c79e);border:7px solid var(--wood);border-radius:22px;padding:13px;
+    box-shadow:0 0 0 4px var(--wood-dk),0 14px 30px rgba(0,0,0,.3)}
+  .kt-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:11px;flex-wrap:wrap}
+  .kt-head .lede{font-family:'Fredoka',sans-serif;font-weight:600;color:#5a4326;font-size:14px;opacity:.95}
+  .kt-head .cap{font-family:'Fredoka',sans-serif;font-weight:600;color:#7a5800;font-size:13px;
+    background:#fff5e0;border:2px solid #d8b87a;border-radius:999px;padding:5px 12px}
+  .kt-head .cap.full{color:#b1402c;border-color:#d98a78}
+  .recipe .req .ok{color:#2e7d44;font-weight:700}
+  .recipe .req .no{color:#c0392b;font-weight:700}
+
+  /* ===== real estate ===== */
+  .estate{background:linear-gradient(180deg,#e7dcc9,#cbb893);border:7px solid var(--wood);border-radius:22px;padding:13px;
+    box-shadow:0 0 0 4px var(--wood-dk),0 14px 30px rgba(0,0,0,.3)}
+  .es-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:11px;flex-wrap:wrap}
+  .es-head .lede{font-family:'Fredoka',sans-serif;font-weight:600;color:#5a4a33;font-size:14px;opacity:.9}
+  .es-head .mood{font-family:'Fredoka',sans-serif;font-weight:600;font-size:13px;border-radius:999px;padding:5px 12px;border:2px solid}
+  .es-head .mood.boom{color:#2e7d44;background:#e2f5e6;border-color:#9ed4ab}
+  .es-head .mood.bust{color:#b1402c;background:#f7e3de;border-color:#dd9e90}
+  .es-head .mood.flat{color:#6a5a44;background:#efe7d7;border-color:#cbb893}
+  .es-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(192px,1fr));gap:11px}
+  .prop{background:var(--cream);border:3px solid #e7d6bf;border-radius:16px;padding:11px;box-shadow:0 4px 0 #e0cdb2;position:relative;overflow:hidden}
+  .prop.owned{border-color:var(--grass-dk);box-shadow:0 4px 0 var(--grass-dk)}
+  .prop .top{display:flex;align-items:center;gap:8px}
+  .prop .e{font-size:30px;line-height:1}
+  .prop .nm{font-family:'Fredoka',sans-serif;font-weight:600;font-size:15px;line-height:1.1}
+  .prop .nm small{display:block;font-size:11px;color:var(--ink-soft);font-weight:600}
+  .prop .badge{margin-left:auto;font-family:'Fredoka',sans-serif;font-weight:700;font-size:11px;color:#2e7d32;
+    background:#e2f5e6;border:2px solid #9ed4ab;border-radius:999px;padding:2px 9px}
+  .prop .val{font-family:'Fredoka',sans-serif;font-weight:700;font-size:20px;margin-top:7px;display:flex;align-items:baseline;gap:7px}
+  .prop .val .chg{font-size:12px;font-weight:800}
+  .prop .meta{font-size:11.5px;color:var(--ink-soft);margin-top:5px;line-height:1.5}
+  .prop .meta b{color:var(--ink);font-weight:800}
+  .prop .equity{font-size:11.5px;margin-top:3px;font-weight:700}
+  .prop .row{display:flex;gap:7px;margin-top:9px}
+  .pbtn{flex:1;font-family:'Fredoka',sans-serif;font-weight:600;font-size:13px;border:0;cursor:pointer;border-radius:11px;padding:8px 4px;color:#fff;transition:transform .1s}
+  .pbtn:active{transform:translateY(2px)}
+  .pbtn.buy{background:var(--grass);box-shadow:0 3px 0 var(--grass-dk)}
+  .pbtn.sell{background:#3e7fb5;box-shadow:0 3px 0 #2c5d88}
+  .pbtn[disabled]{opacity:.4;cursor:not-allowed;box-shadow:none;transform:none}
+  .prop .lockmsg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;
+    background:rgba(60,50,40,.78);color:#ffe39a;border-radius:13px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:14px}
+
+  /* ===== harvest toggle ===== */
+  .harvest-toggle{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 10px}
+  .harvest-toggle .ht-label{font-family:'Fredoka',sans-serif;font-weight:600;color:var(--cream);font-size:13px;
+    text-shadow:0 1px 2px rgba(0,0,0,.3)}
+  .ht-opt{font-family:'Fredoka',sans-serif;font-weight:600;font-size:13px;border:3px solid #e7d6bf;cursor:pointer;
+    border-radius:999px;padding:6px 13px;background:var(--cream);color:var(--ink-soft);box-shadow:0 3px 0 #e0cdb2;transition:transform .1s}
+  .ht-opt:active{transform:translateY(2px)}
+  .ht-opt.on{color:#fff;background:var(--grass);border-color:var(--grass-dk);box-shadow:0 3px 0 var(--grass-dk)}
+
+  /* ===== cellar ===== */
+  .cellar{background:linear-gradient(180deg,#5a3a4a,#3e2735);border:7px solid var(--wood);border-radius:22px;padding:14px;
+    box-shadow:0 0 0 4px var(--wood-dk),0 14px 30px rgba(0,0,0,.3)}
+  .cl-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:11px;flex-wrap:wrap}
+  .cl-head .lede{font-family:'Fredoka',sans-serif;font-weight:600;color:#f3e2ec;font-size:14px;opacity:.9}
+  .cl-head .cap{font-family:'Fredoka',sans-serif;font-weight:600;color:#ffe39a;font-size:13px;
+    background:rgba(0,0,0,.25);border:2px solid rgba(255,227,154,.35);border-radius:999px;padding:5px 12px}
+  .cl-head .cap.full{color:#ffb4a2;border-color:#dd9e90}
+  .pantry{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
+  .pantry .pitem{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.16);
+    border-radius:999px;padding:4px 11px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:13px;color:#fff}
+  .pantry .pitem .pe{font-size:16px}
+  .pantry .pitem b{color:#ffe39a}
+  .pantry .empty{color:#d9c7d2;font-size:13px;font-weight:600;opacity:.8;font-style:italic}
+  /* ===== pantry view ===== */
+  .pantry-view{background:linear-gradient(180deg,#cdb892,#b29a6f);border:7px solid var(--wood);border-radius:22px;padding:13px;
+    box-shadow:0 0 0 4px var(--wood-dk),0 14px 30px rgba(0,0,0,.3)}
+  .pv-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px;flex-wrap:wrap}
+  .pv-head .lede{font-family:'Fredoka',sans-serif;font-weight:600;color:#4a3a22;font-size:14px;opacity:.95}
+  .pv-sellall{font-family:'Fredoka',sans-serif;font-weight:600;font-size:13px;border:0;cursor:pointer;border-radius:999px;
+    padding:7px 15px;color:#fff;background:#d98a3d;box-shadow:0 3px 0 #a9692a;transition:transform .1s}
+  .pv-sellall:active{transform:translateY(2px)}
+  .pv-sellall[disabled]{opacity:.4;cursor:not-allowed;box-shadow:none;transform:none}
+  .pv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+  .pv-card{background:var(--cream);border:3px solid #e7d6bf;border-radius:16px;padding:10px;box-shadow:0 4px 0 #e0cdb2;text-align:center;position:relative}
+  .pv-card .e{font-size:30px;line-height:1}
+  .pv-card .nm{font-family:'Fredoka',sans-serif;font-weight:600;font-size:14px;margin-top:2px}
+  .pv-card .qty{font-family:'Fredoka',sans-serif;font-weight:700;font-size:13px;color:#2e7d32;margin-top:2px}
+  .pv-card .each{font-size:11.5px;color:var(--ink-soft);margin-top:1px}
+  .pv-card .each b{color:var(--ink)}
+  .pv-card .row{display:flex;gap:6px;margin-top:9px}
+  .pv-btn{flex:1;font-family:'Fredoka',sans-serif;font-weight:600;font-size:12.5px;border:0;cursor:pointer;border-radius:11px;padding:8px 4px;color:#fff;transition:transform .1s}
+  .pv-btn:active{transform:translateY(2px)}
+  .pv-btn.one{background:var(--grass);box-shadow:0 3px 0 var(--grass-dk)}
+  .pv-btn.all{background:#3e7fb5;box-shadow:0 3px 0 #2c5d88}
+  .pv-empty{grid-column:1/-1;text-align:center;font-family:'Fredoka',sans-serif;font-weight:600;color:#5a4a32;opacity:.8;padding:14px 0}
+  .recipe-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:11px}
+  .recipe{background:linear-gradient(180deg,#6b4858,#4a2f3d);border:2px solid rgba(255,255,255,.12);border-radius:14px;padding:11px;position:relative}
+  .recipe .nm{font-family:'Fredoka',sans-serif;font-weight:700;font-size:14px;color:#fff;display:flex;align-items:center;gap:6px}
+  .recipe .req{font-size:11.5px;color:#e6cdd9;margin-top:5px;line-height:1.5}
+  .recipe .req b{color:#ffd9a8}
+  .recipe .vals{font-size:11.5px;color:#e6cdd9;margin-top:3px}
+  .recipe .vals b{color:#ffe39a;font-family:'Fredoka',sans-serif}
+  .recipe .mk{width:100%;margin-top:9px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:13px;border:0;cursor:pointer;
+    border-radius:11px;padding:8px;color:#fff;background:#a3567a;box-shadow:0 3px 0 #7c3d5b;transition:transform .1s}
+  .recipe .mk:active{transform:translateY(2px)}
+  .recipe .mk[disabled]{opacity:.4;cursor:not-allowed;box-shadow:none;transform:none}
+  /* stainless-steel kitchen buttons */
+  #craftRecipes .mk{color:#2b3138;background:linear-gradient(180deg,#f4f6f8,#c3cad2 48%,#9aa3ad);
+    box-shadow:0 3px 0 #7c848d,inset 0 1px 0 rgba(255,255,255,.85);text-shadow:0 1px 0 rgba(255,255,255,.55)}
+  #craftRecipes .mk[disabled]{background:linear-gradient(180deg,#e4e7ea,#c8ccd0);color:#8a9099;
+    box-shadow:0 3px 0 #aeb4ba;opacity:.6;text-shadow:none}
+  #craftSlots .collect{color:#2b3138;background:linear-gradient(180deg,#f4f6f8,#c3cad2 48%,#9aa3ad);
+    box-shadow:0 2px 0 #7c848d,inset 0 1px 0 rgba(255,255,255,.85);text-shadow:0 1px 0 rgba(255,255,255,.5)}
+  #craftSlots .collect[disabled]{background:linear-gradient(180deg,#e4e7ea,#c8ccd0);color:#8a9099;box-shadow:0 2px 0 #aeb4ba}
+  /* kitchen recipe cards — clean cream + charcoal, not the cellar's wine purple */
+  #craftRecipes .recipe{background:linear-gradient(180deg,#fffaf2,#f0e6d4);border:2px solid #d9c6a8;
+    box-shadow:0 3px 0 #cbb795}
+  #craftRecipes .recipe .nm{color:#3a2e22}
+  #craftRecipes .recipe .req{color:#7a6a55}
+  #craftRecipes .recipe .req b{color:#3a2e22}
+  #craftRecipes .recipe .req .ok{color:#2e7d44}
+  #craftRecipes .recipe .req .no{color:#c0392b}
+  #craftRecipes .recipe .vals{color:#7a6a55}
+  #craftRecipes .recipe .vals b{color:#9c6b1c}
+  /* kitchen cooking slots — brushed steel pots, matching the appliances */
+  #craftSlots .cask{background:linear-gradient(180deg,#e7ebee,#cdd3d9);border:2px solid #b3bbc2;box-shadow:inset 0 1px 0 rgba(255,255,255,.7)}
+  #craftSlots .cask .cn{color:#2b3138}
+  #craftSlots .cask .st.ferment{color:#5a6470}
+  #craftSlots .cask .st.aging{color:#2e7d44}
+  #craftSlots .cask .cbar{background:rgba(0,0,0,.12)}
+  #craftSlots .cask .cbar > i{background:linear-gradient(90deg,#b6bdc4,#8a929b)}
+  .recipe .lockmsg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    background:rgba(40,25,33,.8);color:#ffe39a;border-radius:12px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:14px}
+  /* wonder wine — legendary look */
+  .recipe.wonder{background:linear-gradient(180deg,#4a2f6b,#3a2154);border-color:rgba(255,215,120,.45);
+    box-shadow:inset 0 0 0 1px rgba(255,215,120,.25),0 0 18px rgba(180,130,255,.25)}
+  .recipe.wonder .nm{color:#ffe9b0;text-shadow:0 0 8px rgba(255,210,120,.5)}
+  .recipe.wonder .req,.recipe.wonder .vals{color:#e6d6ff}
+  .recipe.wonder .req b,.recipe.wonder .vals b{color:#ffe39a}
+  .recipe.wonder .mk{background:linear-gradient(180deg,#ffe7a8,#e9b94a 55%,#caa23a);color:#4a3410;
+    box-shadow:0 3px 0 #9c7c22,inset 0 1px 0 rgba(255,255,255,.6);text-shadow:0 1px 0 rgba(255,255,255,.35)}
+  .cask.wondercask{background:linear-gradient(180deg,#4a2f6b,#311a4a);border-color:rgba(255,215,120,.5);
+    box-shadow:inset 0 0 0 1px rgba(255,215,120,.3),0 0 16px rgba(180,130,255,.3)}
+  .cask.wondercask .st{color:#ffe9b0}
+  .cask.wondercask .collect{background:linear-gradient(180deg,#ffe7a8,#e9b94a 55%,#caa23a);color:#4a3410;box-shadow:0 2px 0 #9c7c22}
+  .cask-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:9px;margin-top:12px}
+  .cask{background:linear-gradient(180deg,#7a5340,#56392b);border:2px solid rgba(255,255,255,.12);border-radius:13px;padding:9px;
+    text-align:center;position:relative;overflow:hidden}
+  .cask .glass{font-size:26px;line-height:1}
+  .cask .cn{font-family:'Fredoka',sans-serif;font-weight:600;font-size:11px;color:#fff;margin-top:2px;line-height:1.2}
+  .cask .st{font-size:11px;font-weight:700;margin-top:4px}
+  .cask .st.ferment{color:#ffd9a8}
+  .cask .st.aging{color:#9fe0b0}
+  .cask .cbar{height:5px;border-radius:5px;background:rgba(0,0,0,.3);overflow:hidden;margin-top:6px}
+  .cask .cbar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,#e0a06a,#c2703f)}
+  .cask .collect{width:100%;margin-top:7px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:12px;border:0;cursor:pointer;
+    border-radius:9px;padding:6px;color:#fff;background:var(--grass);box-shadow:0 2px 0 var(--grass-dk);transition:transform .1s}
+  .cask .collect:active{transform:translateY(2px)}
+  .cask .collect[disabled]{opacity:.45;cursor:not-allowed;box-shadow:none}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none !important}}
+</style>
+
+<div class="sky-layer" id="sky-morning"></div>
+<div class="sky-layer" id="sky-day"></div>
+<div class="sky-layer" id="sky-dusk"></div>
+<div class="sky-layer" id="sky-night"></div>
+<div id="stars"></div>
+<div id="celestial">☀️</div>
+<div class="cloud c1">☁️</div>
+<div class="cloud c2">☁️</div>
+<div id="rain"></div>
+
+<div class="game">
+  <div class="topbar">
+    <h1 class="title">Little Acre 🌻</h1>
+    <div class="hud">
+      <div class="cal" id="cal">
+        <div class="cal-date" id="calDate">Jan 1</div>
+        <div class="cal-sub" id="calSub">Yr 1 · Day</div>
+      </div>
+      <div class="lvl">Lv <span id="lvlVal">1</span></div>
+      <div class="coins" id="coins"><span class="coin"></span><span id="coinVal">0</span><span class="debt-badge" id="debtBadge">+10%/day</span></div>
+    </div>
+  </div>
+
+  <div class="statusrow">
+    <div class="xpwrap">
+      <div class="xpbar"><i id="xpFill"></i></div>
+      <span class="xptext" id="xpText">0 / 25 XP</span>
+    </div>
+    <div class="wpill" id="wpill">☀️ Sunny · Day</div>
+  </div>
+
+  <div class="tabbar" id="tabbar">
+    <button class="tab on" data-page="farm">🌻 Farm</button>
+    <button class="tab" data-page="pantry">📦 Pantry</button>
+  </div>
+
+  <div class="pages" id="pages">
+  <section class="page on" id="page-farm">
+  <h2 class="sec">🌱 Crops</h2>
+  <div class="harvest-toggle" id="harvestToggle" role="group" aria-label="Harvest mode">
+    <span class="ht-label">When I harvest:</span>
+    <button class="ht-opt" data-mode="sell">💰 Sell for coins</button>
+    <button class="ht-opt" data-mode="store">📦 Store in inventory</button>
+  </div>
+  <div class="field"><div class="grid" id="grid"></div></div>
+
+  <h2 class="sec">🛒 Seed Shop</h2>
+  <div class="shop" id="shop"></div>
+
+  <h2 class="sec">🐔 Barnyard</h2>
+  <div class="barn"><div class="pens" id="pens"></div></div>
+
+  <h2 class="sec">🏡 Buy Animals</h2>
+  <div class="shop" id="animalShop"></div>
+
+  <h2 class="sec">🧾 Farm Finances</h2>
+  <div class="finances" id="finances"></div>
+
+  <h2 class="sec">🧺 Commodities Stall</h2>
+  <div class="stall"><div class="stall-grid" id="commodities"></div></div>
+
+  <h2 class="sec">📈 The Acre Exchange</h2>
+  <div class="exchange">
+    <div class="ex-head">
+      <span class="lede">Buy low, sell high. Prices wander every few seconds.</span>
+      <span class="port" id="portfolio">Holdings: 0</span>
+    </div>
+    <div class="ex-grid" id="stocks"></div>
+  </div>
+
+  <h2 class="sec">📦 Big-Box Buyer</h2>
+  <div class="bigbox">
+    <div class="bb-head">
+      <span class="lede">Stockpile your own produce, then sell a full pallet for a flat bulk premium.</span>
+    </div>
+    <div class="bb-grid" id="bigbox"></div>
+  </div>
+
+  <h2 class="sec">🏘️ Acre Estates</h2>
+  <div class="estate">
+    <div class="es-head">
+      <span class="lede">Buy property for more farm plots, rent income, and resale gains.</span>
+      <span class="mood flat" id="esMood">Market: steady</span>
+    </div>
+    <div class="es-grid" id="estates"></div>
+  </div>
+  </section>
+
+  <section class="page" id="page-pantry">
+  <h2 class="sec">📦 Inventory</h2>
+  <div class="pantry-view">
+    <div class="pv-head">
+      <span class="lede">Everything you've stored — crops, products, meat cuts, and crafted goods.</span>
+      <button class="pv-sellall" id="invSellAll">Sell everything</button>
+    </div>
+    <div class="pv-grid" id="inventoryView"></div>
+  </div>
+
+  <h2 class="sec">🍳 Kitchen</h2>
+  <div class="kitchen">
+    <div class="kt-head">
+      <span class="lede">Combine raw goods into higher-value dishes.</span>
+      <span class="cap" id="kitchenCap">Stations: 0 / 0</span>
+    </div>
+    <div class="recipe-grid" id="craftRecipes"></div>
+    <div class="cask-grid" id="craftSlots"></div>
+  </div>
+
+  <h2 class="sec">🍷 The Cellar</h2>
+  <div class="cellar">
+    <div class="cl-head">
+      <span class="lede">Ferment inventory crops into craft drinks. Let bottles age for a richer price.</span>
+      <span class="cap" id="cellarCap">Casks: 0 / 0</span>
+    </div>
+    <div class="pantry" id="pantry"></div>
+    <div class="recipe-grid" id="recipes"></div>
+    <div class="cask-grid" id="casks"></div>
+  </div>
+  </section>
+  </div>
+
+  <div class="actions">
+    <button class="btn" id="collectAll">Collect all</button>
+    <button class="btn ghost" id="restore">Restore backup</button>
+    <button class="btn ghost" id="reset">New farm</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  /* ============================================================================
+     LITTLE ACRE — TUNING CONTROL PANEL
+     ----------------------------------------------------------------------------
+     This header lists every value you can safely change to rebalance the game.
+     Edit the numbers in the `const` blocks below; you do NOT need to touch any
+     function logic. After editing, bump VERSION (search "const VERSION") by 1 so
+     existing saves migrate cleanly. Times are in milliseconds unless noted
+     (MIN = 1 minute, HOUR = 1 hour).
+
+     WHERE TO CHANGE WHAT:
+
+     • CROPS {}        — each crop's: cost (to plant), grow (time to ripen),
+                         sell (coins when harvested), xp, lvl (level to unlock).
+     • ANIMALS {}      — each animal's: cost, cycle (time per product), sell
+                         (product price), xp, lvl, pid (product id; null = none).
+     • CUTS {}         — what meat cuts you get when butchering each animal.
+     • PRODUCTS {}     — every storable item (animal products, meat cuts, crafted
+                         goods) and its `base` value (drives sell + pallet price).
+     • CRAFT {}        — kitchen recipes: ingredients (ing), output (out),
+                         cook time (time), unlock level (lvl).
+     • RECIPES {}      — cellar drinks: ingredient + qty, ferment time, sell value,
+                         ageBonus/agePeak (how much aging adds). Wonder Wine is
+                         flagged `wonder:true` and grows by WONDER_PER_YEAR forever.
+     • PALLETS {}      — bulk-sale pallet sizes per item. PALLET_MULT is the
+                         premium (1.6 = +60% vs selling singles).
+     • COMMODITIES {}  — the commodities-stall goods and their price bands.
+     • STOCKS {}       — the stock market tickers, base price, volatility, drift.
+     • PROPERTIES {}   — real estate: price, rent (per market tick), slots (bonus
+                         farm plots when owned), growth/vol (value drift). Value is
+                         capped to 0.55x–1.75x of price (see rollMarket()).
+     • WEATHER {}      — growth-speed multipliers for sun/cloud/rain.
+
+     KEY SINGLE-VALUE DIALS (search for these consts):
+       CYCLE              = length of ONE in-game day (currently 7 real minutes).
+       DAYS_PER_YEAR/WEEK = calendar lengths (feed is weekly, tax is yearly).
+       CROP_SPOIL_MS      = how long a ripe crop survives before withering (24h).
+       FEED_PER_ANIMAL{}  = weekly feed cost per animal type.
+       FOX_DAILY_CHANCE   = daily chance a fox takes a small animal (0.01 = 1%).
+       SMALL_ANIMALS[]    = which animals foxes can take.
+       OLDAGE_START_DAYS  = age (in in-game days) when old-age death risk begins.
+       TAX_RATE           = yearly income tax (0.20 = 20% of gross earned).
+       CAPGAINS_RATE      = tax on stock/property SALE profit (0.25 = 25%).
+       DEBT_DAILY_INTEREST= daily compounding interest while coins < 0 (0.10=10%).
+       WONDER_PER_YEAR    = Wonder Wine's value gain per in-game year.
+       GRID               = base farm plots (16); properties add more via slots.
+       START_UNLOCKED     = how many plots are usable at the start.
+       ANIMAL_CAP         = max animals in the barnyard.
+       KITCHEN_CAP_BASE   = base kitchen craft slots (+1 every 3 levels).
+       CELLAR_CAP_BASE    = base cellar ferment slots (+1 every 3 levels).
+       unlockPrice()      = formula for clearing the next base plot.
+       req(L)             = XP needed for each level.
+
+     STARTING CONDITIONS: see freshState() — starting coins, level, etc.
+     SAVES: stored in IndexedDB + localStorage (see STORE). Migrated forward by
+     adopt(). MIN_MIGRATABLE is the oldest save version still upgradable.
+     ============================================================================ */
+  // ---------- config ----------
+  // Growth times follow a patience curve: quick early crops (seconds–minutes),
+  // premium crops take hours, top-tier crops take a day or more. (ms)
+  const MIN=60000, HOUR=3600000;
+  const CROPS = {
+    // quick starters (under ~3 min)
+    carrot:    {emoji:'🥕', name:'Carrot',      lvl:1,  cost:5,    grow:1*MIN,    sell:10,    xp:2 },
+    radish:    {emoji:'🌶️', name:'Radish',      lvl:1,  cost:8,    grow:2*MIN,    sell:18,    xp:3 },
+    lettuce:   {emoji:'🥬', name:'Lettuce',     lvl:2,  cost:12,   grow:3*MIN,    sell:28,    xp:4 },
+    corn:      {emoji:'🌽', name:'Corn',        lvl:2,  cost:15,   grow:5*MIN,    sell:42,    xp:5 },
+    // short (5–20 min)
+    potato:    {emoji:'🥔', name:'Potato',      lvl:3,  cost:22,   grow:8*MIN,    sell:70,    xp:7 },
+    tomato:    {emoji:'🍅', name:'Tomato',      lvl:3,  cost:28,   grow:12*MIN,   sell:105,   xp:9 },
+    onion:     {emoji:'🧅', name:'Onion',       lvl:4,  cost:34,   grow:18*MIN,   sell:150,   xp:11},
+    cucumber:  {emoji:'🥒', name:'Cucumber',    lvl:4,  cost:40,   grow:25*MIN,   sell:205,   xp:13},
+    // medium (30–90 min)
+    strawberry:{emoji:'🍓', name:'Strawberry',  lvl:5,  cost:50,   grow:35*MIN,   sell:300,   xp:16},
+    pepper:    {emoji:'🫑', name:'Bell Pepper',  lvl:5,  cost:62,   grow:45*MIN,   sell:380,   xp:19},
+    eggplant:  {emoji:'🍆', name:'Eggplant',    lvl:6,  cost:78,   grow:60*MIN,   sell:500,   xp:23},
+    pumpkin:   {emoji:'🎃', name:'Pumpkin',     lvl:6,  cost:95,   grow:90*MIN,   sell:760,   xp:28},
+    // long (2–5 hours)
+    grapes:    {emoji:'🍇', name:'Grapes',      lvl:7,  cost:120,  grow:2*HOUR,   sell:1050,  xp:34},
+    pineapple: {emoji:'🍍', name:'Pineapple',   lvl:7,  cost:150,  grow:3*HOUR,   sell:1500,  xp:40},
+    melon:     {emoji:'🍈', name:'Honeydew',    lvl:8,  cost:185,  grow:4*HOUR,   sell:1950,  xp:47},
+    chili:     {emoji:'🌶️', name:'Ghost Chili',  lvl:8,  cost:220,  grow:5*HOUR,   sell:2500,  xp:55},
+    // premium (8–24 hours)
+    watermelon:{emoji:'🍉', name:'Watermelon',  lvl:9,  cost:300,  grow:8*HOUR,   sell:4200,  xp:70},
+    sunflower: {emoji:'🌻', name:'Sunflower',   lvl:9,  cost:380,  grow:12*HOUR,  sell:6400,  xp:90},
+    truffle:   {emoji:'🍄', name:'Truffle',     lvl:10, cost:500,  grow:18*HOUR,  sell:9800,  xp:120},
+    goldwheat: {emoji:'🌾', name:'Golden Wheat', lvl:10, cost:650,  grow:24*HOUR,  sell:14000, xp:160},
+  };
+  const ANIMALS = {
+    chicken:{emoji:'🐔', name:'Chicken', lvl:3, cost:80,   cycle:10*MIN,  sell:55,  xp:6,  pid:'egg',  pe:'🥚'},
+    cow:    {emoji:'🐄', name:'Cow',     lvl:5, cost:220,  cycle:45*MIN,  sell:240, xp:16, pid:'milk', pe:'🥛'},
+    sheep:  {emoji:'🐑', name:'Sheep',   lvl:7, cost:480,  cycle:2*HOUR,  sell:620, xp:30, pid:'wool', pe:'🧶'},
+    goat:   {emoji:'🐐', name:'Goat',    lvl:8, cost:900,  cycle:6*HOUR,  sell:1900,xp:60, pid:'goatcheese',pe:'🧀'},
+    pig:    {emoji:'🐷', name:'Pig',     lvl:6, cost:600,  cycle:3*HOUR,  sell:0,   xp:40, pid:null, pe:''},
+    bee:    {emoji:'🐝', name:'Beehive', lvl:9, cost:1500, cycle:12*HOUR, sell:4200,xp:110,pid:'combhoney',pe:'🍯'},   // no meat
+    iguana: {emoji:'🦎', name:'Iguana',  lvl:8, cost:1100, cycle:24*HOUR, sell:5500,xp:130,pid:'iguanatail',pe:'🦴'}, // tails take a very long time
+  };
+  const WEATHER = {
+    sun:  {emoji:'☀️', label:'Sunny',  speed:1.1, mod:'+10% growth'},
+    cloud:{emoji:'⛅', label:'Cloudy', speed:1.0, mod:'normal growth'},
+    rain: {emoji:'🌧️', label:'Rainy',  speed:1.4, mod:'+40% growth'},
+  };
+  // Commodities: cozy goods you stockpile and resell. Each has a wandering price.
+  const COMMODITIES = {
+    grain:  {emoji:'🌾', name:'Grain',     base:8,   lo:0.55, hi:1.7,  vol:0.10},
+    hay:    {emoji:'🌿', name:'Hay Bale',  base:14,  lo:0.6,  hi:1.6,  vol:0.09},
+    honey:  {emoji:'🍯', name:'Honey Jar', base:26,  lo:0.5,  hi:1.9,  vol:0.13},
+    seeds:  {emoji:'🫘', name:'Rare Seeds',base:40,  lo:0.4,  hi:2.4,  vol:0.18},
+    cheese: {emoji:'🧀', name:'Cheese',    base:55,  lo:0.6,  hi:1.7,  vol:0.11},
+  };
+  // Stocks: farm-world companies. Share price drifts with small chance of a jump.
+  const STOCKS = {
+    SPRT:{name:'Sprout Seed Co.',     emoji:'🌱', base:40,  vol:0.05, drift:0.004},
+    TRAK:{name:'Tractoramatic Ltd.',  emoji:'🚜', base:95,  vol:0.06, drift:0.003},
+    CLUK:{name:'Cluckworks Poultry',  emoji:'🐔', base:28,  vol:0.07, drift:0.005},
+    MOOO:{name:'Moo Dairy United',    emoji:'🥛', base:62,  vol:0.045,drift:0.003},
+    SKYW:{name:'Skywatch Weather',    emoji:'🛰️', base:130, vol:0.09, drift:0.002},
+  };
+  const SPARK_LEN=18;
+  // Warehouse club: buy a case, get `units` singles. Sell singles at retail markup,
+  // or sell whole sealed cases on the wholesale market — case value ripens the longer
+  // you store it, rewarding patient bulk holders. Storage is capped.
+  // ===== Unified produce inventory =====
+  // Every storable good has an id, emoji, display name, and a base unit value (used for
+  // both single-sell and as the basis for pallet pricing). Raw goods come from the farm;
+  // crafted goods are made in the Kitchen from raw goods.
+  const PRODUCTS = {
+    // animal products
+    egg:       {emoji:'🥚', name:'Eggs',        base:18,   raw:true},
+    milk:      {emoji:'🥛', name:'Milk',        base:42,   raw:true},
+    wool:      {emoji:'🧶', name:'Wool',        base:90,   raw:true},
+    goatcheese:{emoji:'🧀', name:'Goat Cheese', base:240,  raw:true},
+    combhoney: {emoji:'🍯', name:'Honeycomb',   base:520,  raw:true},
+    iguanatail:{emoji:'🦴', name:'Iguana Tail',  base:5500, raw:true},
+    // butcher cuts — produced when an animal is processed (see CUTS)
+    chickenbreast:{emoji:'🍗', name:'Chicken Breast', base:90,  raw:true},
+    chickenthigh: {emoji:'🍗', name:'Chicken Thigh',  base:60,  raw:true},
+    chickenwing:  {emoji:'🍗', name:'Chicken Wing',   base:35,  raw:true},
+    drumstick:    {emoji:'🍖', name:'Drumstick',      base:55,  raw:true},
+    steak:        {emoji:'🥩', name:'Steak',          base:420, raw:true},
+    groundbeef:   {emoji:'🍔', name:'Ground Beef',    base:240, raw:true},
+    brisket:      {emoji:'🥩', name:'Brisket',        base:360, raw:true},
+    ribs:         {emoji:'🍖', name:'Ribs',           base:300, raw:true},
+    lambchop:     {emoji:'🍖', name:'Lamb Chop',      base:520, raw:true},
+    lambshoulder: {emoji:'🍖', name:'Lamb Shoulder',  base:380, raw:true},
+    goatleg:      {emoji:'🍖', name:'Goat Leg',       base:900, raw:true},
+    goatloin:     {emoji:'🍖', name:'Goat Loin',      base:780, raw:true},
+    porkchop:     {emoji:'🥓', name:'Pork Chop',      base:520, raw:true},
+    bacon:        {emoji:'🥓', name:'Bacon',          base:640, raw:true},
+    ham:          {emoji:'🍖', name:'Ham',            base:580, raw:true},
+    // crafted goods (made in the Kitchen)
+    flour:     {emoji:'🌾', name:'Flour',       base:60,    craft:true},
+    dough:     {emoji:'🥟', name:'Dough',       base:130,   craft:true},
+    bread:     {emoji:'🍞', name:'Bread',       base:240,   craft:true},
+    cheese_:   {emoji:'🧀', name:'Cheese Wheel',base:380,   craft:true},
+    pizza:     {emoji:'🍕', name:'Pizza',       base:780,   craft:true},
+    hotdog:    {emoji:'🌭', name:'Hot Dog',     base:560,   craft:true},
+    burger:    {emoji:'🍔', name:'Burger',      base:1150,  craft:true},
+    pie:       {emoji:'🥧', name:'Fruit Pie',   base:920,   craft:true},
+    sandwich:  {emoji:'🥪', name:'Sandwich',    base:680,   craft:true},
+    cake:      {emoji:'🎂', name:'Cake',        base:1850,  craft:true},
+  };
+  // Butcher cuts per animal: processing yields these quantities of each cut.
+  const CUTS = {
+    chicken:[{id:'chickenbreast',qty:2},{id:'chickenthigh',qty:2},{id:'drumstick',qty:2},{id:'chickenwing',qty:2}],
+    cow:    [{id:'steak',qty:2},{id:'groundbeef',qty:3},{id:'brisket',qty:1},{id:'ribs',qty:2}],
+    sheep:  [{id:'lambchop',qty:3},{id:'lambshoulder',qty:2}],
+    goat:   [{id:'goatleg',qty:2},{id:'goatloin',qty:2}],
+    pig:    [{id:'porkchop',qty:3},{id:'bacon',qty:3},{id:'ham',qty:1}],
+  };
+  // Crafting recipes: combine inventory goods (crops + products) into a crafted product.
+  // ing is a map of {inventoryId: qty}. out is how many of the crafted good you get.
+  const CRAFT = {
+    flour:   {out:1, lvl:2, time:2*MIN,  ing:{goldwheat:1}},
+    dough:   {out:1, lvl:3, time:3*MIN,  ing:{flour:2, egg:1}},
+    bread:   {out:1, lvl:3, time:6*MIN,  ing:{dough:2}},
+    cheese_: {out:1, lvl:4, time:8*MIN,  ing:{milk:3}},
+    sandwich:{out:1, lvl:4, time:5*MIN,  ing:{bread:1, cheese_:1, tomato:1}},
+    pizza:   {out:1, lvl:5, time:10*MIN, ing:{dough:1, cheese_:1, tomato:2}},
+    hotdog:  {out:2, lvl:5, time:8*MIN,  ing:{porkchop:1, flour:2}},
+    burger:  {out:1, lvl:6, time:10*MIN, ing:{groundbeef:1, bread:1, lettuce:1}},
+    pie:     {out:1, lvl:6, time:12*MIN, ing:{dough:1, strawberry:3}},
+    cake:    {out:1, lvl:7, time:15*MIN, ing:{flour:3, egg:2, milk:2, strawberry:2}},
+  };
+  const KITCHEN_CAP_BASE=4;     // simultaneous craft slots; +1 every 3 levels
+  // Big-box pallets: sell EXACTLY `size` units of a good for a flat premium over singles.
+  // premium is a multiplier on (base*size). Only goods with meaningful volume get pallets.
+  const PALLET_MULT=1.6;        // flat 60% premium for selling a full pallet vs singles
+  const PALLETS = {
+    // raw farm goods
+    carrot:{size:50}, corn:{size:40}, potato:{size:40}, tomato:{size:30}, strawberry:{size:30},
+    pumpkin:{size:20}, grapes:{size:20}, watermelon:{size:12}, goldwheat:{size:20},
+    egg:{size:60}, milk:{size:40}, wool:{size:24}, goatcheese:{size:16}, combhoney:{size:12}, iguanatail:{size:8},
+    steak:{size:16}, groundbeef:{size:20}, porkchop:{size:18}, bacon:{size:20}, chickenbreast:{size:24}, lambchop:{size:14}, goatleg:{size:10},
+    // crafted goods
+    flour:{size:30}, bread:{size:20}, pizza:{size:12}, hotdog:{size:24}, burger:{size:16},
+    pie:{size:12}, sandwich:{size:16}, cake:{size:8}, cheese_:{size:16},
+  };
+  // Real estate: buy a property, collect rent each market tick while held, sell at
+  // current market value. Values drift (mostly up) and are nudged by a shared market mood.
+  const PROPERTIES = {
+    cottage: {emoji:'🏡', name:'Acorn Cottage',     lvl:1,  price:185000,  rent:1100,  vol:0.04, growth:0.010, slots:2},
+    loft:    {emoji:'🚜', name:'Barn Loft',          lvl:3,  price:320000,  rent:1850,  vol:0.05, growth:0.012, slots:3},
+    cabin:   {emoji:'🛖', name:'Lakeside Cabin',     lvl:5,  price:540000,  rent:3000,  vol:0.06, growth:0.013, slots:4},
+    townhouse:{emoji:'🏘️', name:'Village Townhouse', lvl:6,  price:780000,  rent:4200,  vol:0.06, growth:0.014, slots:5},
+    orchard: {emoji:'🌳', name:'Orchard Estate',     lvl:7,  price:1250000, rent:6500,  vol:0.07, growth:0.015, slots:6},
+    manor:   {emoji:'🏰', name:'Windmill Manor',     lvl:9,  price:2400000, rent:12000, vol:0.09, growth:0.016, slots:7},
+    vineyard:{emoji:'🍇', name:'Hillside Vineyard',  lvl:10, price:4200000, rent:21000, vol:0.10, growth:0.017, slots:8},
+  };
+  // Cellar: ferment harvested crops (stored in the pantry) into craft drinks.
+  // Fermenting follows the patience curve too — quick ciders, multi-hour fine wines.
+  const RECIPES = {
+    cider:   {emoji:'🍎', glass:'🍺', name:'Corn Cider',          lvl:3, ing:'corn',       qty:4,  ferment:8*MIN,   sell:280,   ageBonus:0.6, agePeak:30*MIN},
+    cordial: {emoji:'🍓', glass:'🥤', name:'Strawberry Cordial',  lvl:5, ing:'strawberry', qty:3,  ferment:20*MIN,  sell:780,   ageBonus:0.6, agePeak:60*MIN},
+    mead:    {emoji:'🌻', glass:'🍯', name:'Sunflower Mead',      lvl:6, ing:'pumpkin',    qty:4,  ferment:40*MIN,  sell:1600,  ageBonus:0.8, agePeak:2*HOUR},
+    liqueur: {emoji:'🌶️', glass:'🍶', name:'Ghost Chili Liqueur', lvl:8, ing:'chili',      qty:3,  ferment:90*MIN,  sell:5200,  ageBonus:0.9, agePeak:4*HOUR},
+    wine:    {emoji:'🍇', glass:'🍷', name:'Acre Reserve Wine',   lvl:7, ing:'grapes',     qty:3,  ferment:3*HOUR,  sell:3400,  ageBonus:1.4, agePeak:12*HOUR},
+    brandy:  {emoji:'🍉', glass:'🥃', name:'Melon Brandy',        lvl:9, ing:'watermelon', qty:2,  ferment:6*HOUR,  sell:9000,  ageBonus:1.6, agePeak:24*HOUR},
+    whiskey: {emoji:'🌾', glass:'🥃', name:'Golden Wheat Whiskey',lvl:10,ing:'goldwheat',  qty:2,  ferment:12*HOUR, sell:22000, ageBonus:2.0, agePeak:48*HOUR},
+    // Wonder Wine: legendary endgame brew. Costs 1000 of EVERY crop. Once bottled it never
+    // stops appreciating — its value rises by WONDER_PER_YEAR for each in-game year it ages.
+    wonder:  {emoji:'✨', glass:'🍷', name:'Wonder Wine',         lvl:10, wonder:true, allCrops:1000, ferment:1*HOUR, sell:50000},
+  };
+  const WONDER_PER_YEAR=10000;   // +$10,000 of value per in-game year, forever
+  const CELLAR_CAP_BASE=4;       // base simultaneous ferments; +1 every 3 levels
+  // crops that can be stored in the pantry (all of them)
+  const GRID=16, START_UNLOCKED=8, ANIMAL_CAP=8;
+  const CYCLE=420000;           // full day length: 7 real minutes
+  const CROP_SPOIL_MS=24*3600000; // a crop dies if left untended for 24 real hours
+  const DAYS_PER_YEAR=365, DAYS_PER_WEEK=7;
+  const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const MONTH_LEN=[31,28,31,30,31,30,31,31,30,31,30,31];
+  // Expenses & risk
+  const FEED_PER_ANIMAL={chicken:100, cow:500, sheep:500, goat:500, pig:500, bee:100, iguana:500};  // weekly feed: 500 large, 100 small
+  const SMALL_ANIMALS=['chicken','bee'];      // vulnerable to foxes
+  const FOX_DAILY_CHANCE=0.01;                // 1% per small animal per day
+  const OLDAGE_START_DAYS=40;                 // animals start risking old-age death after this age (in-game days)
+  const TAX_RATE=0.20;                        // 20% of gross yearly earnings
+  const CAPGAINS_RATE=0.25;                   // 25% tax on PROFIT from stock & property sales
+  const DEBT_DAILY_INTEREST=0.10;             // 10% compounding daily while in debt
+  const SAVE_KEY='littleacre:save'; const VERSION=17;
+  const BACKUP_KEY='littleacre:save:backup';   // last-known-good snapshot ("save folder")
+  const MIN_MIGRATABLE=13;                       // saves at/after this version migrate forward instead of resetting
+  // Storage backend. Priority: artifact sandbox > IndexedDB+localStorage mirror > localStorage > none.
+  // IndexedDB is the durable primary on iOS/Safari because, unlike localStorage, it is NOT cleared
+  // by Safari's ~7-day eviction of unused web apps. We mirror writes to localStorage too for a fast
+  // synchronous fallback, and read from whichever has data (preferring IndexedDB).
+  const IDB_NAME='littleacre', IDB_STORE='kv';
+  // Open (or create) the IndexedDB database used for durable saves.
+  function idbOpen(){
+    return new Promise((resolve,reject)=>{
+      try{
+        if(typeof indexedDB==='undefined') return reject('no-idb');
+        const req=indexedDB.open(IDB_NAME,1);
+        req.onupgradeneeded=()=>{ const db=req.result; if(!db.objectStoreNames.contains(IDB_STORE)) db.createObjectStore(IDB_STORE); };
+        req.onsuccess=()=>resolve(req.result);
+        req.onerror=()=>reject(req.error||'idb-open-error');
+      }catch(e){ reject(e); }
+    });
+  }
+  // Read one key from IndexedDB; resolves null if absent.
+  function idbGet(db,k){ return new Promise((res,rej)=>{ try{
+    const tx=db.transaction(IDB_STORE,'readonly').objectStore(IDB_STORE).get(k);
+    tx.onsuccess=()=>res(tx.result!=null?tx.result:null); tx.onerror=()=>rej(tx.error);
+  }catch(e){ rej(e); } }); }
+  // Write one key/value to IndexedDB.
+  function idbSet(db,k,v){ return new Promise((res,rej)=>{ try{
+    const tx=db.transaction(IDB_STORE,'readwrite').objectStore(IDB_STORE).put(v,k);
+    tx.onsuccess=()=>res(true); tx.onerror=()=>rej(tx.error);
+  }catch(e){ rej(e); } }); }
+
+  // Detect whether localStorage is usable (false in private mode).
+  function lsAvailable(){ try{ if(typeof window==='undefined'||!window.localStorage) return false;
+    const t='__la_test__'; window.localStorage.setItem(t,'1'); window.localStorage.removeItem(t); return true; }catch(e){ return false; } }
+
+  const STORE = (function(){
+    if(typeof window!=='undefined' && window.storage){
+      return { kind:'artifact', ready:Promise.resolve(),
+        async get(k){ const r=await window.storage.get(k); return r&&r.value!=null?r.value:null; },
+        set(k,v){ try{ window.storage.set(k,v); }catch(e){} } };
+    }
+    const hasLS=lsAvailable();
+    // Try to bring up IndexedDB; until it's ready, reads/writes still work via localStorage.
+    let db=null;
+    const ready=idbOpen().then(d=>{ db=d; }).catch(()=>{ db=null; });
+    if(hasLS || typeof indexedDB!=='undefined'){
+      return {
+        kind: 'durable', ready,
+        async get(k){
+          await ready;
+          // Prefer IndexedDB; fall back to localStorage (covers first-run-after-update + IDB blocked)
+          if(db){ try{ const v=await idbGet(db,k); if(v!=null) return v; }catch(e){} }
+          if(hasLS){ try{ const v=window.localStorage.getItem(k); if(v!=null) return v; }catch(e){} }
+          return null;
+        },
+        set(k,v){
+          if(hasLS){ try{ window.localStorage.setItem(k,v); }catch(e){} }   // fast synchronous mirror
+          if(db){ idbSet(db,k,v).catch(()=>{}); }                          // durable async write
+          else { ready.then(()=>{ if(db) idbSet(db,k,v).catch(()=>{}); }); }
+        }
+      };
+    }
+    return { kind:'none', ready:Promise.resolve(), async get(){ return null; }, set(){} };
+  })();
+  const hasStore = STORE.kind!=='none';
+  const SELLABLE = Object.keys(CROPS).concat(Object.keys(PRODUCTS));
+
+  let state, selected='carrot', lastTick=Date.now();
+  const plotEls=[];
+
+  // ---------- state ----------
+  // Build the starting price-multiplier table for every sellable item.
+  function freshMarket(){ const m={}; SELLABLE.forEach(id=>m[id]={mult:1,prev:1}); return m; }
+  // Build the starting state for the commodities stall.
+  function freshCommodities(){ const c={}; for(const id in COMMODITIES) c[id]={mult:1,prev:1,owned:0}; return c; }
+  // Build the starting state for the stock market (prices + history).
+  function freshStocks(){ const s={}; for(const sym in STOCKS){ const b=STOCKS[sym].base;
+    s[sym]={price:b,prev:b,shares:0,cost:0,hist:Array.from({length:SPARK_LEN},()=>b)}; } return s; }
+  // Build the starting real-estate state (all unowned, at base price).
+  function freshEstates(){ const e={}; for(const id in PROPERTIES){ const p=PROPERTIES[id].price;
+    e[id]={owned:false, value:p, prev:p, paid:0}; } return e; }
+  // Return a brand-new game state (STARTING CONDITIONS live here).
+  function freshState(){
+    return {version:VERSION, coins:50, level:1, xp:0, unlocked:START_UNLOCKED,
+      plots:Array.from({length:GRID},()=>({crop:null,growth:0,ready:false})),
+      animals:[], market:freshMarket(),
+      commodities:freshCommodities(), stocks:freshStocks(),
+      estates:freshEstates(), housing:0,
+      inventory:{}, kitchen:[], cellar:[], harvestMode:'sell',
+      weather:'sun', nextWeather:Date.now()+40000, nextMarket:Date.now()+22000,
+      dayClock:30000,
+      day:1, year:1, lastDay:1,          // calendar (day is 1..365, absolute progression)
+      nextFeedDay:DAYS_PER_WEEK+1,       // first feed bill after week 1
+      earnedThisYear:0,                  // gross income this year (for tax)
+      inDebt:false,
+      savedAt:Date.now()};
+  }
+  // XP required to reach level L (raise the 45 to slow leveling).
+  function req(L){ return 25 + (L-1)*45; }
+  // Coin cost to clear the next base farm plot.
+  function unlockPrice(){ return 50 + (state.unlocked-START_UNLOCKED)*30; }
+  // Total farmable plots = base grid + bonus slots from every owned property.
+  // Total bonus farm plots granted by owned properties.
+  function propertySlots(){ let n=0; if(state.estates) for(const id in PROPERTIES){ if(state.estates[id]&&state.estates[id].owned) n+=PROPERTIES[id].slots||0; } return n; }
+  // Total farmable plots = base GRID + property bonus slots.
+  function totalPlots(){ return GRID + propertySlots(); }
+  // A sellable item's current price = base * its live market multiplier.
+  function priceOf(id, base){ const m=state.market[id]; return Math.max(1, Math.round(base*(m?m.mult:1))); }
+  // Unified item lookup: works for crops and products alike.
+  // Look up emoji/name/base value for any crop or product id.
+  function itemInfo(id){
+    if(CROPS[id]) return {emoji:CROPS[id].emoji, name:CROPS[id].name, base:CROPS[id].sell};
+    if(PRODUCTS[id]) return {emoji:PRODUCTS[id].emoji, name:PRODUCTS[id].name, base:PRODUCTS[id].base};
+    return {emoji:'📦', name:id, base:1};
+  }
+  // How many of an item are in the inventory.
+  function invCount(id){ return (state.inventory && state.inventory[id])||0; }
+  // Add n of an item to the inventory.
+  function invAdd(id,n){ if(!state.inventory) state.inventory={}; state.inventory[id]=(state.inventory[id]||0)+n; }
+  // Remove n of an item from inventory (false if not enough).
+  function invRemove(id,n){ if(!state.inventory) return false; if((state.inventory[id]||0)<n) return false; state.inventory[id]-=n; return true; }
+  // Current single-unit coin value of an inventory item.
+  function itemUnitPrice(id){ const info=itemInfo(id); return priceOf(id, info.base); }
+  // All coin INFLOWS go through earn() so gross yearly income is tracked for tax.
+  // Add coins as INCOME (tracked for yearly tax); clears debt flag if positive.
+  function earn(n){ if(n>0){ state.coins+=n; state.earnedThisYear+=n; if(state.coins>=0) state.inDebt=false; } }
+
+  // Load the main save from storage (IndexedDB/localStorage).
+  async function load(){ if(!hasStore) return null;
+    try{ const v=await STORE.get(SAVE_KEY); return v?JSON.parse(v):null; }catch(e){ return null; } }
+  // Load the backup snapshot used by the Restore button.
+  async function loadBackup(){ if(!hasStore) return null;
+    try{ const v=await STORE.get(BACKUP_KEY); return v?JSON.parse(v):null; }catch(e){ return null; } }
+  let saveTimer=null;
+  // Debounced save of the whole game state to storage.
+  function save(){ if(!hasStore) return; state.savedAt=Date.now(); clearTimeout(saveTimer);
+    saveTimer=setTimeout(()=>{ try{ STORE.set(SAVE_KEY, JSON.stringify(state)); }catch(e){} },250); }
+
+  // Take a loaded save and migrate it forward to the current VERSION (or reset if too old).
+  function adopt(saved){
+    // Reset only if the save is unrecognizable or predates the migration system.
+    // Otherwise migrate it forward: the defensive backfill below fills in any new fields,
+    // and we re-stamp the current VERSION so coins/level/inventory/etc. all carry over.
+    if(!saved || !Array.isArray(saved.plots)) return freshState();
+    if(typeof saved.version==='number' && saved.version<MIN_MIGRATABLE) return freshState();
+    const migrated = (saved.version!==VERSION);
+    const s=saved;
+    // backfill any missing pieces defensively
+    if(!s.market) s.market=freshMarket(); else SELLABLE.forEach(id=>{ if(!s.market[id]) s.market[id]={mult:1,prev:1}; });
+    if(!s.commodities) s.commodities=freshCommodities();
+    else for(const id in COMMODITIES){ if(!s.commodities[id]) s.commodities[id]={mult:1,prev:1,owned:0}; }
+    if(!s.stocks) s.stocks=freshStocks();
+    else for(const sym in STOCKS){ const b=STOCKS[sym].base;
+      if(!s.stocks[sym]) s.stocks[sym]={price:b,prev:b,shares:0,cost:0,hist:Array.from({length:SPARK_LEN},()=>b)};
+      else if(!Array.isArray(s.stocks[sym].hist)) s.stocks[sym].hist=Array.from({length:SPARK_LEN},()=>s.stocks[sym].price||b); }
+    if(!s.estates) s.estates=freshEstates();
+    else for(const id in PROPERTIES){ if(!s.estates[id]) s.estates[id]={owned:false,value:PROPERTIES[id].price,prev:PROPERTIES[id].price,paid:0}; }
+    // One-time correction: clamp any runaway (pre-cap) estate values back into the sane band.
+    for(const id in PROPERTIES){ const e=s.estates[id]; if(!e) continue;
+      const lo=Math.round(PROPERTIES[id].price*0.55), hi=Math.round(PROPERTIES[id].price*1.75);
+      if(typeof e.value!=='number' || e.value>hi) e.value=Math.min(hi, PROPERTIES[id].price);
+      if(e.value<lo) e.value=lo; e.prev=e.value;
+      if(e.paid>hi) e.paid=Math.min(e.paid, hi);   // also rein in absurd cost-basis from old buys
+    }
+    if(typeof s.housing!=='number') s.housing=0;
+    if(!s.inventory || typeof s.inventory!=='object') s.inventory={};
+    if(!Array.isArray(s.kitchen)) s.kitchen=[];
+    if(!Array.isArray(s.cellar)) s.cellar=[];
+    if(s.harvestMode!=='store') s.harvestMode='sell';
+    if(!Array.isArray(s.animals)) s.animals=[];
+    s.animals.forEach(a=>{ if(typeof a.age!=='number') a.age=0; if(typeof a.starving!=='boolean') a.starving=false; });
+    if(typeof s.day!=='number') s.day=1;
+    if(typeof s.year!=='number') s.year=1;
+    if(typeof s.lastDay!=='number') s.lastDay=s.day;
+    if(typeof s.nextFeedDay!=='number') s.nextFeedDay=DAYS_PER_WEEK+1;
+    if(typeof s.earnedThisYear!=='number') s.earnedThisYear=0;
+    if(typeof s.inDebt!=='boolean') s.inDebt=false;
+    { let extra=0; for(const id in PROPERTIES){ if(s.estates&&s.estates[id]&&s.estates[id].owned) extra+=PROPERTIES[id].slots||0; }
+      const need=GRID+extra; while(s.plots.length<need) s.plots.push({crop:null,growth:0,ready:false}); }
+    s.weather=s.weather||'sun'; s.dayClock=s.dayClock||0;
+    s.nextWeather=s.nextWeather||Date.now()+40000; s.nextMarket=s.nextMarket||Date.now()+22000;
+    // offline catch-up: time passes while the app is closed. Cap raised to 14 days so the
+    // 1-hour day and 24-hour crop-spoil window resolve correctly across long absences.
+    const away=Math.min(Date.now()-(s.savedAt||Date.now()), 14*24*3600*1000);
+    if(away>1000){
+      const wspeed=(WEATHER[s.weather]&&WEATHER[s.weather].speed)||1;
+      s.plots.forEach(p=>{ if(!p.crop) return;
+        if(!p.ready){
+          const need=CROPS[p.crop].grow-p.growth;          // growth time remaining (ms, weather-adjusted)
+          const needReal=need/wspeed;
+          if(away>=needReal){ p.ready=true; p.readyMs=(p.readyMs||0)+(away-needReal); }
+          else p.growth+=away*wspeed;
+        } else { p.readyMs=(p.readyMs||0)+away; }
+        if(p.ready && (p.readyMs||0)>=CROP_SPOIL_MS){ p.crop=null; p.growth=0; p.ready=false; p.readyMs=0; }
+      });
+      s.animals.forEach(a=>{ const A=ANIMALS[a.type]; if(A.pid && !a.ready){ a.growth+=away; if(a.growth>=A.cycle) a.ready=true; }});
+      s.dayClock=(s.dayClock||0)+away;   // calendar advances while away; processed on first tick
+      s._offlineCatchup=true;            // suppress per-day toasts during the catch-up burst
+    }
+    if(migrated){ s.version=VERSION; s._migratedFrom=saved.version; }   // carry the save forward
+    return s;
+  }
+
+  // ---------- economy ----------
+  let coinsEl,coinVal;
+  // Briefly pulse the coin counter for feedback.
+  function bumpCoins(){ coinsEl.classList.add('pulse'); setTimeout(()=>coinsEl.classList.remove('pulse'),160); }
+  // Award XP and handle level-ups.
+  function gainXP(n){
+    state.xp+=n;
+    while(state.xp>=req(state.level)){ state.xp-=req(state.level); state.level++; announceLevel(state.level); }
+  }
+  // Show the level-up banner and any newly unlocked content.
+  function announceLevel(L){
+    const unlocks=[];
+    for(const k in CROPS) if(CROPS[k].lvl===L) unlocks.push(CROPS[k].name);
+    for(const k in ANIMALS) if(ANIMALS[k].lvl===L) unlocks.push(ANIMALS[k].name);
+    toast('⭐ Level '+L+'!'+(unlocks.length?'  Unlocked: '+unlocks.join(', '):''), 2400);
+  }
+
+  // ---------- market & weather ----------
+  // Advance all markets one tick: commodities, stocks, property values+rent (value is CAPPED here).
+  function rollMarket(){
+    SELLABLE.forEach(id=>{ const m=state.market[id]; m.prev=m.mult;
+      m.mult=Math.max(0.6, Math.min(1.5, m.mult+(Math.random()*0.36-0.18))); });
+    // commodities wander within their own band
+    for(const id in COMMODITIES){ const cfg=COMMODITIES[id], c=state.commodities[id]; c.prev=c.mult;
+      c.mult=Math.max(cfg.lo, Math.min(cfg.hi, c.mult+(Math.random()*2-1)*cfg.vol)); }
+    // stocks drift with occasional jumps
+    for(const sym in STOCKS){ const cfg=STOCKS[sym], st=state.stocks[sym]; st.prev=st.price;
+      let pct=(Math.random()*2-1)*cfg.vol + cfg.drift;
+      if(Math.random()<0.06) pct+=(Math.random()*2-1)*cfg.vol*4;   // rare jump
+      let np=st.price*(1+pct);
+      np=Math.max(cfg.base*0.25, Math.min(cfg.base*4, np));          // keep it sane
+      st.price=Math.round(np*100)/100;
+      st.hist.push(st.price); if(st.hist.length>SPARK_LEN) st.hist.shift(); }
+    // housing mood drifts slowly between booms and busts; nudges every property
+    state.housing=Math.max(-1, Math.min(1, state.housing+(Math.random()*2-1)*0.18));
+    let rentDue=0;
+    for(const id in PROPERTIES){ const cfg=PROPERTIES[id], e=state.estates[id]; e.prev=e.value;
+      // Gentle per-tick drift, bounded so value never runs away. Values stay within
+      // 0.55x–1.75x of the base price — a believable housing-market band, not exponential.
+      const noise=(Math.random()*2-1)*cfg.vol;
+      const pct=cfg.growth*0.15 + noise + state.housing*0.012;
+      const lo=Math.round(cfg.price*0.55), hi=Math.round(cfg.price*1.75);
+      e.value=Math.max(lo, Math.min(hi, Math.round(e.value*(1+pct))));
+      if(e.owned) rentDue+=cfg.rent;
+    }
+    if(rentDue>0){ earn(rentDue); rentToast=rentDue; }
+    state.nextMarket=Date.now()+18000+Math.random()*9000;
+  }
+  let rentToast=0;
+
+  // ---------- commodities ----------
+  // Current coin price of a commodity.
+  function comPrice(id){ const cfg=COMMODITIES[id]; return Math.max(1, Math.round(cfg.base*state.commodities[id].mult)); }
+  // Buy 1 commodity (can overdraft into debt).
+  function buyCommodity(id){ const px=comPrice(id), c=state.commodities[id];
+    spend(px); c.owned++; bumpCoins(); save(); render();
+  }
+  // Sell 1 owned commodity.
+  function sellCommodity(id){ const c=state.commodities[id];
+    if(c.owned<=0){ toast('No '+COMMODITIES[id].name+' to sell'); return; }
+    const px=comPrice(id); earn(px); c.owned--; bumpCoins(); save(); render();
+  }
+
+  // ---------- stocks ----------
+  // Buy 1 share of a stock (can overdraft into debt).
+  function buyShare(sym){ const st=state.stocks[sym], px=st.price;
+    spend(px); st.cost+=px; st.shares++; bumpCoins(); save(); render();
+  }
+  // Sell 1 share; applies 25% capital-gains tax on profit.
+  function sellShare(sym){ const st=state.stocks[sym];
+    if(st.shares<=0){ toast('No '+sym+' shares to sell'); return; }
+    const avg=st.cost/st.shares; const profit=st.price-avg;
+    earn(st.price);
+    const tax=profit>0?Math.round(profit*CAPGAINS_RATE):0;
+    if(tax>0){ spend(tax); toast('📈 Sold '+sym+' · capital gains tax -'+tax+' (25% of '+Math.round(profit)+' profit)', 2600); }
+    st.cost-=avg; st.shares--; if(st.shares===0) st.cost=0;
+    bumpCoins(); save(); render();
+  }
+  // Build the SVG path for a stock's mini sparkline chart.
+  function sparkPath(hist,w,h){
+    const lo=Math.min(...hist), hi=Math.max(...hist), span=(hi-lo)||1;
+    return hist.map((v,i)=>{ const x=(i/(hist.length-1))*w, y=h-((v-lo)/span)*(h-4)-2;
+      return (i?'L':'M')+x.toFixed(1)+' '+y.toFixed(1); }).join(' ');
+  }
+
+  // ---------- kitchen (crafting) ----------
+  // Number of simultaneous kitchen craft slots (grows with level).
+  function kitchenCap(){ return KITCHEN_CAP_BASE + Math.floor((state.level-1)/3); }
+  // Whether the inventory holds enough ingredients for a recipe.
+  function canCraft(key){ const r=CRAFT[key]; for(const id in r.ing){ if(invCount(id)<r.ing[id]) return false; } return true; }
+  // Begin cooking a kitchen recipe (consumes ingredients).
+  function startCraft(key){ const r=CRAFT[key];
+    if(state.level<r.lvl){ toast('Reach Level '+r.lvl+' to make '+PRODUCTS[key].name); return; }
+    if(state.kitchen.length>=kitchenCap()){ toast('Kitchen is full — collect a finished dish first'); return; }
+    if(!canCraft(key)){ toast('Missing ingredients for '+PRODUCTS[key].name); return; }
+    for(const id in r.ing) invRemove(id, r.ing[id]);
+    state.kitchen.push({key, start:Date.now(), done:Date.now()+r.time});
+    save(); render(); toast('Cooking '+PRODUCTS[key].name+'…');
+  }
+  // Collect a finished kitchen dish into inventory.
+  function collectCraft(i){ const c=state.kitchen[i]; if(!c) return; const r=CRAFT[c.key];
+    if(Date.now()<c.done){ toast(PRODUCTS[c.key].name+' still cooking'); return; }
+    invAdd(c.key, r.out); gainXP(Math.round(PRODUCTS[c.key].base/40));
+    state.kitchen.splice(i,1); save(); render();
+    toast('Made '+r.out+'× '+PRODUCTS[c.key].name+' '+PRODUCTS[c.key].emoji);
+  }
+
+  // ---------- big-box pallets (bulk sale of your own produce) ----------
+  // Coin value of a full bulk pallet of an item (with PALLET_MULT premium).
+  function palletPrice(id){ const p=PALLETS[id]; if(!p) return 0;
+    return Math.round(itemUnitPrice(id)*p.size*PALLET_MULT); }
+  // Sell a full pallet of an item for the bulk premium.
+  function sellPallet(id){ const p=PALLETS[id]; if(!p) return;
+    if(invCount(id)<p.size){ toast('Need '+p.size+' '+itemInfo(id).name+' for a pallet'); return; }
+    invRemove(id, p.size); const val=palletPrice(id); earn(val); bumpCoins(); save(); render();
+    toast('📦 Sold a pallet of '+p.size+'× '+itemInfo(id).name+' for '+val+'!', 2600);
+  }
+
+  // ---------- real estate ----------
+  // Buy a property: adds farm slots + rent (can overdraft into debt).
+  function buyProperty(id){ const cfg=PROPERTIES[id], e=state.estates[id];
+    if(state.level<cfg.lvl){ toast('Reach Level '+cfg.lvl+' to buy '+cfg.name); return; }
+    if(e.owned){ toast('You already own '+cfg.name); return; }
+    spend(e.value); e.owned=true; e.paid=e.value; bumpCoins(); buildGrid(); save(); render();
+    toast('Bought '+cfg.name+' — +'+cfg.slots+' farm plots, +'+cfg.rent+' rent/cycle', 3000);
+  }
+  // Sell a property; applies capital-gains tax and removes its farm slots.
+  function sellProperty(id){ const cfg=PROPERTIES[id], e=state.estates[id];
+    if(!e.owned){ toast('You don\'t own '+cfg.name); return; }
+    const gain=e.value-e.paid;
+    earn(e.value);
+    const tax=gain>0?Math.round(gain*CAPGAINS_RATE):0;
+    if(tax>0) spend(tax);
+    e.owned=false; e.paid=0; bumpCoins();
+    // freed property slots are removed from the end of the farm
+    const total=totalPlots(); if(state.plots.length>total) state.plots.length=total;
+    buildGrid(); save(); render();
+    const net=e.value-tax;
+    toast('Sold '+cfg.name+' for '+fmtMoney(e.value)+(tax>0?' · gains tax -'+fmtMoney(tax)+' (net '+fmtMoney(net)+')':' (no taxable gain)'), 3200);
+  }
+
+  // ---------- cellar / distilling ----------
+  // Number of simultaneous cellar ferment slots (grows with level).
+  function cellarCap(){ return CELLAR_CAP_BASE + Math.floor((state.level-1)/3); }
+  // Absolute in-game day as a fraction (used for Wonder Wine aging).
+  function absDay(){ // absolute in-game day, fractional (includes progress through current day)
+    const frac=(state.dayClock%CYCLE)/CYCLE;
+    return (state.year-1)*DAYS_PER_YEAR + state.day + frac;
+  }
+  // Current sell value of a brew (Wonder Wine grows by year; others by aging).
+  function bottleValue(key, doneAt, batch){ const r=RECIPES[key];
+    if(r.wonder){ // value grows by WONDER_PER_YEAR for every in-game year since bottling, forever
+      const years=Math.max(0, (absDay()-(batch&&batch.bornDay||absDay()))/DAYS_PER_YEAR);
+      return Math.round(r.sell + WONDER_PER_YEAR*years);
+    }
+    const age=Math.max(0, Date.now()-doneAt);
+    const t=Math.min(1, age/r.agePeak);
+    return Math.round(r.sell*(1+r.ageBonus*t));
+  }
+  // Begin fermenting a cellar drink (Wonder Wine needs 1000 of every crop).
+  function startBrew(key){ const r=RECIPES[key];
+    if(state.level<r.lvl){ toast('Reach Level '+r.lvl+' to make '+r.name); return; }
+    if(state.cellar.length>=cellarCap()){ toast('Cellar is full — bottle something first'); return; }
+    if(r.wonder){
+      // requires `allCrops` of every crop
+      const need=r.allCrops, missing=Object.keys(CROPS).find(c=>invCount(c)<need);
+      if(missing){ toast('Wonder Wine needs '+need+' of every crop — short on '+CROPS[missing].name); return; }
+      Object.keys(CROPS).forEach(c=>invRemove(c,need));
+      state.cellar.push({key, start:Date.now(), done:Date.now()+r.ferment, bornDay:absDay()});
+      save(); render(); toast('✨ The Wonder Wine has begun fermenting…', 2600); return;
+    }
+    if(invCount(r.ing)<r.qty){ toast('Need '+r.qty+' '+CROPS[r.ing].name+' in inventory'); return; }
+    invRemove(r.ing,r.qty);
+    state.cellar.push({key, start:Date.now(), done:Date.now()+r.ferment});
+    save(); render(); toast('Started fermenting '+r.name);
+  }
+  // Bottle and sell a finished/aged cellar drink.
+  function collectBrew(i){ const b=state.cellar[i]; if(!b) return; const r=RECIPES[b.key];
+    if(Date.now()<b.done){ toast(r.name+' still fermenting'); return; }
+    const val=bottleValue(b.key, b.done, b);
+    earn(val); gainXP(Math.round(r.sell/20)); state.cellar.splice(i,1);
+    bumpCoins(); save(); render(); toast('Bottled & sold '+r.name+' for '+val);
+  }
+
+  // ---------- inventory selling (singles, at the normal coin price) ----------
+  // Sell one unit of an inventory item.
+  function sellInvOne(id){ if(invCount(id)<=0) return;
+    const val=itemUnitPrice(id); invRemove(id,1); earn(val); bumpCoins(); save(); render();
+  }
+  // Sell the entire stack of one inventory item.
+  function sellInvAllOf(id){ const n=invCount(id); if(n<=0) return;
+    const val=itemUnitPrice(id)*n; invRemove(id,n); earn(val); bumpCoins(); save(); render();
+    toast('Sold '+n+'× '+itemInfo(id).name+' for '+val);
+  }
+  // Sell the entire inventory at once.
+  function sellInvEverything(){ let total=0, count=0;
+    Object.keys(state.inventory||{}).forEach(id=>{ const n=invCount(id); if(n>0){ total+=itemUnitPrice(id)*n; count+=n; state.inventory[id]=0; } });
+    if(count>0){ earn(total); bumpCoins(); save(); render(); toast('Sold '+count+' items for '+total+' coins'); }
+    else toast('Inventory is empty');
+  }
+  // Pick the next weather (affects crop growth speed) and toggle rain visuals.
+  function rollWeather(){
+    const r=Math.random(); state.weather = r<0.5?'sun' : r<0.8?'cloud' : 'rain';
+    state.nextWeather=Date.now()+35000+Math.random()*22000;
+    document.body.classList.toggle('raining', state.weather==='rain');
+    document.getElementById('rain').classList.toggle('on', state.weather==='rain');
+  }
+
+  // ---------- calendar & expenses ----------
+  // Total elapsed days come from dayClock / CYCLE. We process each new day exactly once.
+  // Convert the in-game day number into a month + day label.
+  function calendarLabel(){
+    let d=state.day, mi=0;
+    while(mi<11 && d>MONTH_LEN[mi]){ d-=MONTH_LEN[mi]; mi++; }
+    return {month:MONTHS[mi], dom:d};
+  }
+  // Spend coins as a COST; pushes coins negative (into debt) if unaffordable.
+  function spend(n){ // n>0 cost; pushes into debt if unaffordable (coins go negative)
+    state.coins-=n; if(state.coins<0) state.inDebt=true;
+  }
+  // Roll the calendar forward, processing each new day (and offline catch-up).
+  function advanceCalendar(){
+    const totalDays=1+Math.floor(state.dayClock/CYCLE);
+    if(totalDays<=state.lastDay) return;            // no new day yet
+    const offline=state._offlineCatchup; if(offline) calcSummary={feed:0,tax:0,foxed:0,died:0,starved:0,interest:0};
+    while(state.lastDay<totalDays){
+      state.lastDay++;
+      state.day++;
+      state.animals.forEach(a=>a.age++);
+      processDay(offline);
+      if(state.day>DAYS_PER_YEAR){ state.day=1; processYearEnd(offline); }
+    }
+    if(offline){ state._offlineCatchup=false;
+      const sm=calcSummary, parts=[];
+      if(sm.feed)    parts.push('feed -'+sm.feed);
+      if(sm.tax)     parts.push('tax -'+sm.tax);
+      if(sm.interest)parts.push('interest -'+sm.interest);
+      if(sm.foxed)   parts.push(sm.foxed+' to foxes');
+      if(sm.died)    parts.push(sm.died+' to old age');
+      if(sm.starved) parts.push(sm.starved+' starved');
+      if(parts.length) toast('While away: '+parts.join(' · '), 4000);
+    }
+  }
+  let calcSummary=null;
+  // One day's events: debt interest, fox attacks, old-age/starvation deaths, weekly feed.
+  function processDay(offline){
+    // 1) debt interest compounds first
+    if(state.coins<0){ const interest=Math.ceil(-state.coins*DEBT_DAILY_INTEREST);
+      state.coins-=interest; state.inDebt=true;
+      if(offline) calcSummary.interest+=interest;
+      else toast('💸 Debt interest: -'+interest+' ('+DEBT_DAILY_INTEREST*100+'%/day)', 2600); }
+    // 2) fox attacks on small animals (1% each per day)
+    let foxed=0;
+    state.animals=state.animals.filter(a=>{
+      if(SMALL_ANIMALS.includes(a.type) && Math.random()<FOX_DAILY_CHANCE){ foxed++; return false; }
+      return true;
+    });
+    if(foxed){ if(offline) calcSummary.foxed+=foxed; else toast('🦊 A fox took '+foxed+' small animal'+(foxed>1?'s':'')+'!', 2600); }
+    // 3) old-age death: chance rises with age past threshold
+    let died=0;
+    state.animals=state.animals.filter(a=>{
+      if(a.age>OLDAGE_START_DAYS){ const over=a.age-OLDAGE_START_DAYS;
+        const chance=Math.min(0.25, over*0.005);    // +0.5%/day over, capped 25%
+        if(Math.random()<chance){ died++; return false; } }
+      return true;
+    });
+    if(died){ if(offline) calcSummary.died+=died; else toast('🪦 '+died+' animal'+(died>1?'s':'')+' passed of old age', 2600); }
+    // 4) starving animals (from a prior unpaid feed bill) may die
+    let starved=0;
+    state.animals=state.animals.filter(a=>{
+      if(a.starving && Math.random()<0.5){ starved++; return false; }
+      return true;
+    });
+    if(starved){ if(offline) calcSummary.starved+=starved; else toast('🥀 '+starved+' animal'+(starved>1?'s':'')+' starved (unpaid feed)', 2800); }
+    // 5) weekly feed bill (every DAYS_PER_WEEK days on the absolute counter)
+    if(state.lastDay>=state.nextFeedDay) chargeFeed(offline);
+  }
+  // Charge the weekly feed bill; unpaid = animals start starving.
+  function chargeFeed(offline){
+    state.nextFeedDay=state.lastDay+DAYS_PER_WEEK;
+    if(!state.animals.length) return;
+    let bill=0; state.animals.forEach(a=>bill+=FEED_PER_ANIMAL[a.type]||10);
+    if(state.coins>=bill){ spend(bill); state.animals.forEach(a=>a.starving=false);
+      if(offline) calcSummary.feed+=bill; else toast('🌾 Weekly feed paid: -'+bill, 2400); }
+    else { spend(bill); state.animals.forEach(a=>a.starving=true);
+      if(offline) calcSummary.feed+=bill; else toast('⚠️ Couldn\'t afford feed (-'+bill+'). Animals are starving!', 3000); }
+  }
+  // On New Year: charge 20% income tax on the year's gross earnings.
+  function processYearEnd(offline){
+    state.year++;
+    const tax=Math.round(state.earnedThisYear*TAX_RATE);
+    if(tax>0){ spend(tax);
+      if(offline) calcSummary.tax+=tax; else toast('🧾 Year '+(state.year-1)+' tax: -'+tax+' (20% of '+state.earnedThisYear+' earned)', 3400); }
+    state.earnedThisYear=0;
+  }
+
+  // ---------- day / night ----------
+  const SEG=[[0,'morning'],[0.30,'day'],[0.55,'dusk'],[0.75,'night'],[1,'morning']];
+  // Update the day/night sky gradient and time-of-day label.
+  function skyUpdate(){
+    const phase=(state.dayClock%CYCLE)/CYCLE;
+    const w={morning:0,day:0,dusk:0,night:0};
+    for(let i=0;i<SEG.length-1;i++){ const a=SEG[i][0],b=SEG[i+1][0];
+      if(phase>=a&&phase<b){ const f=(phase-a)/((b-a)||1); w[SEG[i][1]]+=1-f; w[SEG[i+1][1]]+=f; break; } }
+    document.getElementById('sky-morning').style.opacity=w.morning.toFixed(2);
+    document.getElementById('sky-day').style.opacity=w.day.toFixed(2);
+    document.getElementById('sky-dusk').style.opacity=w.dusk.toFixed(2);
+    document.getElementById('sky-night').style.opacity=w.night.toFixed(2);
+    document.getElementById('stars').style.opacity=w.night.toFixed(2);
+    const cel=document.getElementById('celestial'), dayPart=0.72;
+    let p, isDay=phase<dayPart;
+    p = isDay ? phase/dayPart : (phase-dayPart)/(1-dayPart);
+    cel.textContent = isDay ? '☀️' : '🌙';
+    cel.style.left=(6+p*86)+'%'; cel.style.top=(86-Math.sin(p*Math.PI)*58)+'px';
+    cel.style.opacity = isDay ? (1-w.night).toFixed(2) : '1';
+    state._tod = w.night>0.5?'Night' : w.dusk>0.45?'Evening' : w.morning>0.55?'Morning' : 'Day';
+  }
+
+  // ---------- build static UI ----------
+  // Generate the night-sky stars once at startup.
+  function buildStars(){ const c=document.getElementById('stars'); let html='';
+    for(let i=0;i<34;i++){ html+=`<span style="left:${Math.random()*100}%;top:${Math.random()*42}%;animation-delay:${(Math.random()*3).toFixed(1)}s"></span>`; }
+    c.innerHTML=html; }
+  // Build the farm plot buttons (sized to totalPlots()).
+  function buildGrid(){ const g=document.getElementById('grid'); g.innerHTML=''; plotEls.length=0;
+    const total=totalPlots();
+    while(state.plots.length<total) state.plots.push({crop:null,growth:0,ready:false});
+    for(let i=0;i<total;i++){ const b=document.createElement('button'); b.className='plot';
+      b.setAttribute('aria-label','Plot '+(i+1)); b.addEventListener('click',()=>onPlot(i,b)); g.appendChild(b); plotEls[i]=b; } }
+  // Build the seed-shop cards once.
+  function buildShop(){ const shop=document.getElementById('shop'); shop.innerHTML='';
+    for(const key in CROPS){ const c=CROPS[key]; const el=document.createElement('button');
+      el.className='card'; el.dataset.crop=key;
+      el.addEventListener('click',()=>{ if(state.level<c.lvl){ toast('Reach Level '+c.lvl+' to grow '+c.name); return; } selected=key; renderShop(); });
+      shop.appendChild(el); } }
+  // Build the animal-shop cards once.
+  function buildAnimalShop(){ const shop=document.getElementById('animalShop'); shop.innerHTML='';
+    for(const key in ANIMALS){ const a=ANIMALS[key]; const el=document.createElement('button');
+      el.className='card'; el.dataset.animal=key;
+      el.addEventListener('click',()=>buyAnimal(key)); shop.appendChild(el); } }
+
+  // ---------- interactions ----------
+  // Handle a tap on a farm plot: unlock, plant, or harvest.
+  function onPlot(i,el){
+    const p=state.plots[i];
+    if(i<GRID && i>=state.unlocked){ const price=unlockPrice();
+      spend(price); state.unlocked++; float(el,'-'+price,'cost'); bumpCoins(); save(); render(); return; }
+    if(p.ready){ const cropId=p.crop, c=CROPS[cropId];
+      if(state.harvestMode==='store'){
+        invAdd(cropId,1); gainXP(c.xp);
+        float(el,'+'+c.emoji,'gain'); p.crop=null;p.growth=0;p.ready=false;p.readyMs=0; save(); render(); return;
+      }
+      const val=priceOf(cropId,c.sell);
+      earn(val); gainXP(c.xp); float(el,'+'+val,'gain'); p.crop=null;p.growth=0;p.ready=false;p.readyMs=0; bumpCoins(); save(); render(); return; }
+    if(!p.crop){ const c=CROPS[selected];
+      if(state.level<c.lvl){ toast('Reach Level '+c.lvl+' to grow '+c.name); return; }
+      spend(c.cost); p.crop=selected; p.growth=0; p.ready=false; p.readyMs=0;
+      float(el,'-'+c.cost,'cost'); bumpCoins(); save(); render(); return; }
+    const left=(CROPS[p.crop].grow-p.growth)/(1000*WEATHER[state.weather].speed);
+    toast(CROPS[p.crop].name+' ready in ~'+fmtTime(left));
+  }
+  // Buy an animal into the barnyard (can overdraft into debt).
+  function buyAnimal(key){ const a=ANIMALS[key];
+    if(state.level<a.lvl){ toast('Reach Level '+a.lvl+' for a '+a.name); return; }
+    if(state.animals.length>=ANIMAL_CAP){ toast('Barnyard is full'); return; }
+    spend(a.cost); state.animals.push({type:key,growth:0,ready:false,age:0,starving:false}); bumpCoins(); save(); render();
+    toast('Welcome, new '+a.name+'! '+a.emoji);
+  }
+  // Handle a tap on an animal pen: collect its product.
+  function onAnimal(i,el){ const an=state.animals[i], a=ANIMALS[an.type];
+    if(an.ready){
+      if(state.harvestMode==='store'){ invAdd(a.pid,1); gainXP(a.xp); float(el,'+'+a.pe,'gain');
+        an.growth=0; an.ready=false; save(); render(); return; }
+      const val=priceOf(a.pid,a.sell); earn(val); gainXP(a.xp); float(el,'+'+val,'gain');
+      an.growth=0; an.ready=false; bumpCoins(); save(); render(); return; }
+    const left=(a.cycle-an.growth)/1000;
+    if(a.pid) toast(a.name+' has '+a.pe+' in ~'+fmtTime(left));
+    else toast(a.name+' — raise it, then process with 🔪 for cuts'); }
+  // Process an animal into meat cuts (permanent; ends its product income).
+  function butcherAnimal(i){ const an=state.animals[i]; if(!an) return; const a=ANIMALS[an.type];
+    const cuts=CUTS[an.type];
+    if(!cuts){ toast(a.name+' can\'t be processed for meat'); return; }
+    const incomeNote = a.pid ? (' and its '+a.pe+' income') : '';
+    const storing = state.harvestMode==='store';
+    const cutList = cuts.map(c=>c.qty+'× '+PRODUCTS[c.id].name).join(', ');
+    const total = cuts.reduce((s,c)=>s+priceOf(c.id,PRODUCTS[c.id].base)*c.qty, 0);
+    if(!confirm('Process this '+a.name+' into cuts?\n\nYields: '+cutList+'\n'+(storing?'Cuts go to your inventory.':'Sells for ~'+total+' coins.')+'\nThis permanently removes the animal'+incomeNote+'.')) return;
+    if(storing){ cuts.forEach(c=>invAdd(c.id,c.qty)); gainXP(Math.round(a.xp/2)); state.animals.splice(i,1); save(); render();
+      toast('Processed '+a.name+' → '+cutList+' to inventory', 2800); return; }
+    let val=0; cuts.forEach(c=>{ val+=priceOf(c.id,PRODUCTS[c.id].base)*c.qty; });
+    earn(val); gainXP(Math.round(a.xp/2)); state.animals.splice(i,1);
+    bumpCoins(); save(); render();
+    toast('Processed '+a.name+' → '+cutList+' for '+val+' coins', 2800);
+  }
+
+  document.querySelectorAll('#harvestToggle .ht-opt').forEach(b=>
+    b.addEventListener('click',()=>{ state.harvestMode=b.dataset.mode; save(); renderHarvestToggle();
+      toast(b.dataset.mode==='store'?'Harvests now go to inventory 📦':'Harvests now sell for coins 💰'); }));
+
+  document.getElementById('invSellAll').addEventListener('click', sellInvEverything);
+
+  // ---------- Farm | Pantry page navigation ----------
+  let curPage='farm';
+  // Switch between the Farm and Pantry pages.
+  function showPage(name,dir){
+    if(name===curPage) return;
+    curPage=name;
+    document.querySelectorAll('#tabbar .tab').forEach(t=>t.classList.toggle('on', t.dataset.page===name));
+    document.querySelectorAll('.page').forEach(p=>{
+      const on = p.id==='page-'+name;
+      p.classList.remove('from-left');
+      if(on && dir==='left') p.classList.add('from-left');
+      p.classList.toggle('on', on);
+    });
+    window.scrollTo(0,0);
+  }
+  document.querySelectorAll('#tabbar .tab').forEach(t=>t.addEventListener('click',()=>{
+    showPage(t.dataset.page, t.dataset.page==='farm'?'left':'right');
+  }));
+  // swipe between pages
+  (function(){ let x0=null,y0=null;
+    const area=document.getElementById('pages');
+    area.addEventListener('touchstart',e=>{ const t=e.changedTouches[0]; x0=t.clientX; y0=t.clientY; },{passive:true});
+    area.addEventListener('touchend',e=>{ if(x0===null) return; const t=e.changedTouches[0];
+      const dx=t.clientX-x0, dy=t.clientY-y0;
+      if(Math.abs(dx)>60 && Math.abs(dx)>Math.abs(dy)*1.6){
+        if(dx<0) showPage('pantry','right'); else showPage('farm','left');
+      }
+      x0=y0=null; },{passive:true});
+  })();
+
+  document.getElementById('collectAll').addEventListener('click',()=>{
+    let earned=0,n=0,stored=0; const storing=state.harvestMode==='store';
+    state.plots.forEach(p=>{ if(p.ready){ const c=CROPS[p.crop]; gainXP(c.xp); n++;
+      if(storing){ invAdd(p.crop,1); stored++; }
+      else earned+=priceOf(p.crop,c.sell);
+      p.crop=null;p.growth=0;p.ready=false;p.readyMs=0; }});
+    state.animals.forEach(an=>{ if(an.ready){ const a=ANIMALS[an.type]; gainXP(a.xp); n++;
+      if(storing){ invAdd(a.pid,1); stored++; }
+      else earned+=priceOf(a.pid,a.sell);
+      an.growth=0; an.ready=false; }});
+    if(n){ earn(earned); bumpCoins(); float(plotEls[0], earned>0?'+'+earned:'+'+stored+'📦','gain'); save(); render();
+      toast('Collected '+n+(stored?' · '+stored+' to inventory':'')+(earned?' for '+earned+' coins':'')); }
+    else toast('Nothing ready yet');
+  });
+  document.getElementById('reset').addEventListener('click',()=>{
+    if(confirm('Start a brand-new farm? All progress will be cleared.')){ state=freshState(); selected='carrot'; rollWeather(); save(); render(); }
+  });
+  document.getElementById('restore').addEventListener('click',async()=>{
+    const b=await loadBackup();
+    if(!b){ toast('No backup found yet'); return; }
+    if(confirm('Restore your backed-up save? This replaces the current farm with the last snapshot.')){
+      state=adopt(b); selected='carrot'; save(); render();
+      toast('✅ Restored from backup');
+    }
+  });
+
+  // ---------- feedback ----------
+  // Show a small floating +/- number on an element.
+  function float(el,txt,kind){ const f=document.createElement('span'); f.className='float '+kind; f.textContent=txt;
+    el.appendChild(f); setTimeout(()=>f.remove(),850); }
+  let toastTimer=null;
+  // Show a brief message toast at the bottom of the screen.
+  function toast(msg,ms){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+    clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'), ms||1700); }
+
+  // ---------- render ----------
+  // Format large numbers compactly (e.g. 185000 -> 185K, 2.4M, 1.5B).
+  function fmtMoney(n){ n=Math.round(n);
+    const neg=n<0; n=Math.abs(n); let s;
+    if(n>=1e9) s=(n/1e9).toFixed(n>=1e10?0:1).replace(/\.0$/,'')+'B';
+    else if(n>=1e6) s=(n/1e6).toFixed(n>=1e7?0:1).replace(/\.0$/,'')+'M';
+    else if(n>=1e4) s=(n/1e3).toFixed(0)+'K';
+    else s=String(n);
+    return (neg?'-':'')+s; }
+  // Format a duration in seconds as s / m:ss / h / d.
+  function fmtTime(sec){ sec=Math.max(0,Math.ceil(sec));
+    if(sec>=86400){ const d=Math.floor(sec/86400), h=Math.floor((sec%86400)/3600); return d+'d'+(h?' '+h+'h':''); }
+    if(sec>=3600){ const h=Math.floor(sec/3600), m=Math.floor((sec%3600)/60); return h+'h'+(m?' '+m+'m':''); }
+    if(sec>=60){ return Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0'); }
+    return sec+'s'; }
+  // Up/down/flat arrow markup for an item's recent price move.
+  function trendSpan(id){ const m=state.market[id]; if(!m) return '';
+    if(m.mult>m.prev+0.01) return '<span class="trend up">▲</span>';
+    if(m.mult<m.prev-0.01) return '<span class="trend down">▼</span>'; return '<span class="trend flat">—</span>'; }
+  // CSS class ('up'/'down') for an item's current price vs base.
+  function priceClass(id){ const m=state.market[id]; return m&&m.mult>=1?'up':'down'; }
+
+  // Redraw the seed shop (prices, affordability).
+  function renderShop(){
+    document.querySelectorAll('#shop .card').forEach(el=>{ const key=el.dataset.crop, c=CROPS[key];
+      const locked=state.level<c.lvl, price=priceOf(key,c.sell);
+      el.classList.toggle('selected', key===selected && !locked);
+      el.classList.toggle('locked', locked);
+      el.classList.toggle('broke', !locked && state.coins<c.cost);
+      el.innerHTML=`<div class="e">${c.emoji}</div><div class="n">${c.name}</div>
+        <div class="meta buyline">Buy <b>${c.cost}</b> · ${fmtTime(c.grow/1000)}</div>
+        <div class="meta">Sell <span class="sell ${priceClass(key)}">${price}</span>${trendSpan(key)}</div>
+        ${locked?`<div class="lockmsg">🔒<span>Level ${c.lvl}</span></div>`:''}`;
+    });
+  }
+  // Redraw the animal shop (prices, yields).
+  function renderAnimalShop(){
+    document.querySelectorAll('#animalShop .card').forEach(el=>{ const key=el.dataset.animal, a=ANIMALS[key];
+      const locked=state.level<a.lvl;
+      el.classList.toggle('locked', locked);
+      el.classList.toggle('broke', !locked && state.coins<a.cost);
+      const cutTotal = CUTS[key] ? CUTS[key].reduce((s,c)=>s+PRODUCTS[c.id].base*c.qty,0) : 0;
+      const yieldLine = a.pid
+        ? `<div class="meta">${a.pe} sells <span class="sell ${priceClass(a.pid)}">${priceOf(a.pid,a.sell)}</span>${trendSpan(a.pid)}</div>`
+        : `<div class="meta">🔪 cuts · process for ~<b>${cutTotal}</b></div>`;
+      el.innerHTML=`<div class="e">${a.emoji}</div><div class="n">${a.name}</div>
+        <div class="meta buyline">Buy <b>${a.cost}</b> · ${a.pid?'every '+fmtTime(a.cycle/1000):'meat only'}</div>
+        ${yieldLine}
+        ${locked?`<div class="lockmsg">🔒<span>Level ${a.lvl}</span></div>`:''}`;
+    });
+  }
+  // Redraw the barnyard pens (timers, products, butcher buttons, starving state).
+  function renderPens(){
+    const pens=document.getElementById('pens'); pens.innerHTML='';
+    state.animals.forEach((an,i)=>{ const a=ANIMALS[an.type];
+      const el=document.createElement('div');
+      el.className='pen'+(an.starving?' starving':''); el.setAttribute('role','button'); el.tabIndex=0;
+      el.setAttribute('aria-label',a.name+(an.starving?' (starving)':''));
+      const act=()=>onAnimal(i,el);
+      el.addEventListener('click',act);
+      el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); act(); } });
+      const warn=an.starving?'<span class="starve">⚠️</span>':'';
+      const butcher=CUTS[an.type]?`<button class="butcher" data-butcher="${i}" title="Process into cuts" aria-label="Process ${a.name} into cuts">🔪</button>`:'';
+      if(!a.pid){  // meat-only animal (e.g. pig): no product cycle, just raising until processed
+        el.innerHTML=`${warn}${butcher}<span class="animal">${a.emoji}</span><span class="product">🔪</span>`;
+      } else if(an.ready){ el.classList.add('ready'); el.innerHTML=`${warn}${butcher}<span class="animal">${a.emoji}</span><span class="product">${a.pe}</span>`; }
+      else{ const prog=Math.min(1,an.growth/a.cycle), remain=(a.cycle-an.growth)/1000;
+        el.innerHTML=`${warn}${butcher}<span class="timer">${fmtTime(remain)}</span><span class="animal">${a.emoji}</span><span class="bar"><i style="width:${Math.round(prog*100)}%"></i></span>`; }
+      pens.appendChild(el); });
+    for(let i=state.animals.length;i<ANIMAL_CAP;i++){ const e=document.createElement('div'); e.className='pen empty'; pens.appendChild(e); }
+    // butcher buttons (stop propagation so they don't trigger the pen's collect click)
+    pens.querySelectorAll('[data-butcher]').forEach(b=>b.addEventListener('click',e=>{
+      e.stopPropagation(); butcherAnimal(+b.dataset.butcher); }));
+  }
+  // Redraw the Farm Finances panel (feed due, tax, debt, livestock).
+  function renderFinances(){
+    const wrap=document.getElementById('finances'); if(!wrap) return;
+    const feedBill=state.animals.reduce((s,a)=>s+(FEED_PER_ANIMAL[a.type]||10),0);
+    const daysToFeed=Math.max(0, state.nextFeedDay-state.lastDay);
+    const daysToTax=DAYS_PER_YEAR-state.day+1;
+    const projTax=Math.round(state.earnedThisYear*TAX_RATE);
+    const starving=state.animals.filter(a=>a.starving).length;
+    const debt = state.coins<0 ? -Math.floor(state.coins) : 0;
+    const cards=[];
+    cards.push(`<div class="fin${daysToFeed<=1?' warn':''}"><div class="lab">🌾 Weekly feed</div>
+      <div class="big">${feedBill}<span style="font-size:12px;font-weight:600"> coins</span></div>
+      <div class="small">${state.animals.length} animal${state.animals.length===1?'':'s'} · due in ${daysToFeed} day${daysToFeed===1?'':'s'}</div></div>`);
+    cards.push(`<div class="fin${daysToTax<=10?' warn':''}"><div class="lab">🧾 Yearly tax (20%)</div>
+      <div class="big">~${projTax}</div>
+      <div class="small">on ${state.earnedThisYear} earned · Day ${daysToTax} of the year left</div></div>`);
+    cards.push(`<div class="fin${starving?' danger':''}"><div class="lab">🐔 Livestock</div>
+      <div class="big">${state.animals.length}</div>
+      <div class="small">${starving?starving+' starving ⚠️':'all fed'} · foxes target 🐔🐝</div></div>`);
+    if(debt>0) cards.push(`<div class="fin danger"><div class="lab">💸 In debt</div>
+      <div class="big">-${debt}</div><div class="small">10%/day interest — earn to climb out</div></div>`);
+    wrap.innerHTML=cards.join('');
+  }
+  // Trend arrow for a commodity's price move.
+  function comTrend(id){ const c=state.commodities[id];
+    if(c.mult>c.prev+0.005) return '<span class="trend up">▲</span>';
+    if(c.mult<c.prev-0.005) return '<span class="trend down">▼</span>'; return '<span class="trend flat">—</span>'; }
+  // Redraw the commodities stall.
+  function renderCommodities(){
+    const wrap=document.getElementById('commodities');
+    wrap.innerHTML='';
+    for(const id in COMMODITIES){ const cfg=COMMODITIES[id], c=state.commodities[id], px=comPrice(id);
+      const el=document.createElement('div'); el.className='com';
+      el.innerHTML=`<div class="top"><span class="e">${cfg.emoji}</span><span class="nm">${cfg.name}</span>
+          <span class="own">Owned<br><b>${c.owned}</b></span></div>
+        <div class="px"><span class="coinmini"></span>${px} ${comTrend(id)}</div>
+        <div class="row">
+          <button class="tbtn buy" data-buy="${id}">Buy</button>
+          <button class="tbtn sell" data-sell="${id}" ${c.owned<=0?'disabled':''}>Sell</button>
+        </div>`;
+      wrap.appendChild(el);
+    }
+  }
+  // Redraw the stock exchange (prices, charts, holdings, P/L).
+  function renderStocks(){
+    const wrap=document.getElementById('stocks'); wrap.innerHTML=''; let totalShares=0, totalValue=0, totalCost=0;
+    for(const sym in STOCKS){ const cfg=STOCKS[sym], st=state.stocks[sym];
+      const chg=st.prev?((st.price-st.prev)/st.prev*100):0, up=chg>=0;
+      totalShares+=st.shares; totalValue+=st.shares*st.price; totalCost+=st.cost;
+      let holdHtml='';
+      if(st.shares>0){ const avg=st.cost/st.shares, pl=(st.price-avg)*st.shares, plUp=pl>=0;
+        const perShareProfit=st.price-avg, saleTax=perShareProfit>0?Math.round(perShareProfit*CAPGAINS_RATE):0;
+        holdHtml=`${st.shares} sh · avg ${avg.toFixed(1)} · <span class="pl ${plUp?'gain':'loss'}">${plUp?'+':''}${pl.toFixed(0)}</span>${saleTax>0?` · tax ${saleTax}/sh`:''}`; }
+      const el=document.createElement('div'); el.className='stock';
+      el.innerHTML=`<div class="sym">${cfg.emoji} ${sym}</div><div class="co">${cfg.name}</div>
+        <div class="quote"><span class="val">${st.price.toFixed(2)}</span>
+          <span class="chg ${up?'gain':'loss'}">${up?'▲':'▼'} ${Math.abs(chg).toFixed(1)}%</span></div>
+        <svg class="spark" viewBox="0 0 100 30" preserveAspectRatio="none">
+          <path d="${sparkPath(st.hist,100,30)}" fill="none" stroke="${up?'#7fe39a':'#ff9b86'}" stroke-width="2"
+            stroke-linejoin="round" stroke-linecap="round"/></svg>
+        <div class="hold">${holdHtml}</div>
+        <div class="row">
+          <button class="sbtn buy" data-buy="${sym}">Buy 1</button>
+          <button class="sbtn sell" data-sell="${sym}" ${st.shares<=0?'disabled':''}>Sell 1</button>
+        </div>`;
+      wrap.appendChild(el);
+    }
+    const pl=totalValue-totalCost, plUp=pl>=0;
+    document.getElementById('portfolio').innerHTML = totalShares>0
+      ? `Holdings: ${totalShares} sh · worth ${Math.round(totalValue)} · <span class="${plUp?'gain':'loss'}">${plUp?'+':''}${pl.toFixed(0)}</span>`
+      : 'Holdings: 0';
+  }
+  // Redraw the big-box pallet buyer (shows items you can bulk-sell).
+  function renderBigBox(){
+    const wrap=document.getElementById('bigbox'); wrap.innerHTML='';
+    // show every palletable good, ordered by value; highlight ones you can sell now
+    const ids=Object.keys(PALLETS).sort((a,b)=>itemInfo(b).base-itemInfo(a).base);
+    let any=false;
+    ids.forEach(id=>{ const p=PALLETS[id], have=invCount(id), ready=have>=p.size, info=itemInfo(id);
+      if(have<=0 && !ready) return;   // hide goods you have none of, to keep it tidy
+      any=true;
+      const val=palletPrice(id);
+      const el=document.createElement('div'); el.className='bbcard'+(ready?' ready':'');
+      el.innerHTML=`<div class="top"><span class="e">${info.emoji}</span>
+          <span class="nm">${info.name}<small>${have} / ${p.size} for a pallet</small></span></div>
+        <div class="bbar"><i style="width:${Math.min(100,Math.round(have/p.size*100))}%"></i></div>
+        <button class="bbbtn" data-pallet="${id}" ${ready?'':'disabled'}>${ready?'Sell pallet +'+val:'Need '+(p.size-have)+' more'}</button>`;
+      wrap.appendChild(el);
+    });
+    if(!any) wrap.innerHTML='<div class="bb-empty">Store produce (toggle harvesting to 📦) and stockpile a full pallet to sell here.</div>';
+  }
+  // Redraw the real-estate cards (value, rent, equity, market mood).
+  function renderEstates(){
+    const wrap=document.getElementById('estates'); wrap.innerHTML='';
+    const moodEl=document.getElementById('esMood');
+    if(state.housing>0.25){ moodEl.textContent='Market: booming ▲'; moodEl.className='mood boom'; }
+    else if(state.housing<-0.25){ moodEl.textContent='Market: slumping ▼'; moodEl.className='mood bust'; }
+    else { moodEl.textContent='Market: steady'; moodEl.className='mood flat'; }
+    for(const id in PROPERTIES){ const cfg=PROPERTIES[id], e=state.estates[id];
+      const locked=state.level<cfg.lvl;
+      const chg=e.prev?((e.value-e.prev)/e.prev*100):0, up=chg>=0;
+      const el=document.createElement('div'); el.className='prop'+(e.owned?' owned':'');
+      if(locked){
+        el.innerHTML=`<div class="top"><span class="e">${cfg.emoji}</span>
+            <span class="nm">${cfg.name}<small>Rent ${fmtMoney(cfg.rent)}/cycle</small></span></div>
+          <div class="val">${fmtMoney(e.value)}</div>
+          <div class="lockmsg">🔒<span>Level ${cfg.lvl}</span></div>`;
+        wrap.appendChild(el); continue;
+      }
+      let equityHtml='';
+      if(e.owned){ const gain=e.value-e.paid, g=gain>=0; const tax=gain>0?Math.round(gain*CAPGAINS_RATE):0;
+        equityHtml=`<div class="equity ${g?'up':'down'}">Paid ${fmtMoney(e.paid)} · equity <b>${g?'+':''}${fmtMoney(gain)}</b>${tax>0?` · sale tax ${fmtMoney(tax)}`:''}</div>`; }
+      el.innerHTML=`<div class="top"><span class="e">${cfg.emoji}</span>
+          <span class="nm">${cfg.name}<small>Rent ${fmtMoney(cfg.rent)}/cycle</small></span>
+          ${e.owned?'<span class="badge">Owned</span>':''}</div>
+        <div class="val">${fmtMoney(e.value)}<span class="chg ${up?'up':'down'}">${up?'▲':'▼'} ${Math.abs(chg).toFixed(1)}%</span></div>
+        ${equityHtml||'<div class="meta">Appreciates over time · pays rent while owned</div>'}
+        <div class="row">
+          <button class="pbtn buy" data-buy="${id}" ${e.owned?'disabled':''}>Buy<\/button>
+          <button class="pbtn sell" data-sell="${id}" ${!e.owned?'disabled':''}>Sell<\/button>
+        </div>`;
+      wrap.appendChild(el);
+    }
+  }
+  // Reflect the current Sell/Store harvest mode on the toggle.
+  function renderHarvestToggle(){
+    document.querySelectorAll('#harvestToggle .ht-opt').forEach(b=>
+      b.classList.toggle('on', b.dataset.mode===state.harvestMode));
+  }
+  // Redraw the compact crop strip inside the cellar.
+  function renderPantry(){
+    const el=document.getElementById('pantry'); const items=Object.keys(state.inventory||{}).filter(c=>CROPS[c]&&invCount(c)>0);
+    if(!items.length){ el.innerHTML='<span class="empty">No crops stored — set harvesting to 📦 Store, then collect.</span>'; return; }
+    el.innerHTML=items.map(c=>`<span class="pitem"><span class="pe">${CROPS[c].emoji}</span>${CROPS[c].name} <b>${invCount(c)}</b></span>`).join('');
+  }
+  // Redraw the full inventory grid on the Pantry page.
+  function renderInventoryView(){
+    const wrap=document.getElementById('inventoryView'); wrap.innerHTML='';
+    const items=Object.keys(state.inventory||{}).filter(id=>invCount(id)>0)
+      .sort((a,b)=>itemInfo(b).base-itemInfo(a).base);
+    document.getElementById('invSellAll').disabled = items.length===0;
+    if(!items.length){ wrap.innerHTML='<div class="pv-empty">Nothing stored yet. Toggle harvesting to 📦 Store, then collect crops, products, or meat.</div>'; return; }
+    items.forEach(id=>{ const n=invCount(id), each=itemUnitPrice(id), info=itemInfo(id);
+      const pal=PALLETS[id]; const palNote=pal?`· pallet ${n}/${pal.size}`:'';
+      const el=document.createElement('div'); el.className='pv-card';
+      el.innerHTML=`<div class="e">${info.emoji}</div><div class="nm">${info.name}</div>
+        <div class="qty">${n} stored</div>
+        <div class="each">${each} each ${palNote}</div>
+        <div class="row">
+          <button class="pv-btn one" data-invone="${id}">Sell 1</button>
+          <button class="pv-btn all" data-invall="${id}">Sell all</button>
+        </div>`;
+      wrap.appendChild(el);
+    });
+  }
+  // Redraw the kitchen recipe list (ingredient availability).
+  function renderCraftRecipes(){
+    const wrap=document.getElementById('craftRecipes'); wrap.innerHTML='';
+    const cap=kitchenCap(), full=state.kitchen.length>=cap;
+    const capEl=document.getElementById('kitchenCap');
+    capEl.textContent='Stations: '+state.kitchen.length+' / '+cap;
+    capEl.classList.toggle('full', full);
+    for(const key in CRAFT){ const r=CRAFT[key], P=PRODUCTS[key], locked=state.level<r.lvl;
+      const ingList=Object.keys(r.ing).map(id=>{ const need=r.ing[id], have=invCount(id), info=itemInfo(id);
+        return `<span class="${have>=need?'ok':'no'}">${need}× ${info.emoji} ${info.name} (${have})</span>`; }).join(', ');
+      const enough=canCraft(key);
+      const el=document.createElement('div'); el.className='recipe';
+      el.innerHTML=`<div class="nm">${P.emoji} ${P.name}${r.out>1?' ×'+r.out:''}</div>
+        <div class="req">${ingList}</div>
+        <div class="vals">Cook ${fmtTime(r.time/1000)} · sells <b>${P.base}</b> each${PALLETS[key]?` · pallet ${PALLETS[key].size}`:''}</div>
+        <button class="mk" data-craft="${key}" ${(!enough||full||locked)?'disabled':''}>${locked?'🔒 Level '+r.lvl:full?'Kitchen full':enough?'Cook':'Missing items'}</button>`;
+      wrap.appendChild(el);
+    }
+  }
+  // Redraw the kitchen cooking slots (timers, collect buttons).
+  function renderCraftSlots(){
+    const wrap=document.getElementById('craftSlots'); wrap.innerHTML='';
+    const now=Date.now();
+    state.kitchen.forEach((c,i)=>{ const P=PRODUCTS[c.key]; const el=document.createElement('div'); el.className='cask';
+      if(now<c.done){ const prog=Math.min(1,(now-c.start)/(c.done-c.start));
+        el.innerHTML=`<div class="glass">${P.emoji}</div><div class="cn">${P.name}</div>
+          <div class="st ferment">Cooking ${fmtTime((c.done-now)/1000)}</div>
+          <div class="cbar"><i style="width:${Math.round(prog*100)}%"></i></div>
+          <button class="collect" disabled>Not ready</button>`;
+      } else {
+        el.innerHTML=`<div class="glass">${P.emoji}</div><div class="cn">${P.name}</div>
+          <div class="st aging">Ready ✦</div>
+          <div class="cbar"><i style="width:100%"></i></div>
+          <button class="collect" data-craftcollect="${i}">Collect ${P.emoji}</button>`;
+      }
+      wrap.appendChild(el);
+    });
+  }
+  // Redraw the cellar recipe list (incl. Wonder Wine).
+  function renderRecipes(){
+    const wrap=document.getElementById('recipes'); wrap.innerHTML='';
+    const cap=cellarCap(), full=state.cellar.length>=cap;
+    for(const key in RECIPES){ const r=RECIPES[key], locked=state.level<r.lvl;
+      const el=document.createElement('div'); el.className='recipe'+(r.wonder?' wonder':'');
+      if(r.wonder){
+        const need=r.allCrops, cropIds=Object.keys(CROPS), haveAll=cropIds.every(c=>invCount(c)>=need);
+        const shortCount=cropIds.filter(c=>invCount(c)<need).length;
+        el.innerHTML=`<div class="nm">${r.glass}✨ ${r.name}</div>
+          <div class="req">Needs <b>${need}× of all ${cropIds.length} crops</b>${haveAll?' · ready!':' · short on '+shortCount}</div>
+          <div class="vals">Ferment ${fmtTime(r.ferment/1000)} · base <b>${fmtMoney(r.sell)}</b> · +${fmtMoney(WONDER_PER_YEAR)}/yr forever</div>
+          <button class="mk" data-brew="${key}" ${(!haveAll||full||locked)?'disabled':''}>${locked?'🔒 Level '+r.lvl:full?'Cellar full':haveAll?'Begin the Wonder':'Need '+need+' of every crop'}</button>
+          ${locked?`<div class="lockmsg">🔒 Level ${r.lvl}</div>`:''}`;
+        wrap.appendChild(el); continue;
+      }
+      const have=invCount(r.ing), enough=have>=r.qty;
+      const peak=Math.round(r.sell*(1+r.ageBonus));
+      el.innerHTML=`<div class="nm">${r.glass} ${r.name}</div>
+        <div class="req">Needs <b>${r.qty}× ${CROPS[r.ing].emoji} ${CROPS[r.ing].name}</b> · have ${have}</div>
+        <div class="vals">Ferment ${fmtTime(r.ferment/1000)} · sells <b>${r.sell}</b> → aged <b>${peak}</b></div>
+        <button class="mk" data-brew="${key}" ${(!enough||full)?'disabled':''}>${full?'Cellar full':enough?'Ferment':'Need '+r.qty+' '+CROPS[r.ing].name}</button>
+        ${locked?`<div class="lockmsg">🔒 Level ${r.lvl}</div>`:''}`;
+      wrap.appendChild(el);
+    }
+  }
+  // Redraw the cellar casks (fermenting/aging timers, sell buttons).
+  function renderCasks(){
+    const wrap=document.getElementById('casks'); wrap.innerHTML='';
+    const capEl=document.getElementById('cellarCap'), cap=cellarCap();
+    capEl.textContent='Casks: '+state.cellar.length+' / '+cap;
+    capEl.classList.toggle('full', state.cellar.length>=cap);
+    const now=Date.now();
+    state.cellar.forEach((b,i)=>{ const r=RECIPES[b.key]; const el=document.createElement('div'); el.className='cask';
+      if(now<b.done){ const prog=Math.min(1,(now-b.start)/(b.done-b.start));
+        el.innerHTML=`<div class="glass">${r.emoji}</div><div class="cn">${r.name}</div>
+          <div class="st ferment">Fermenting ${fmtTime((b.done-now)/1000)}</div>
+          <div class="cbar"><i style="width:${Math.round(prog*100)}%"></i></div>
+          <button class="collect" disabled>Not ready</button>`;
+      } else {
+        const val=bottleValue(b.key,b.done,b);
+        if(r.wonder){
+          const years=Math.max(0,(absDay()-(b.bornDay||absDay()))/DAYS_PER_YEAR);
+          el.classList.add('wondercask');
+          el.innerHTML=`<div class="glass">✨</div><div class="cn">${r.name}</div>
+            <div class="st aging">Aged ${years.toFixed(2)} yr · ${fmtMoney(val)}</div>
+            <div class="cbar"><i style="width:100%"></i></div>
+            <button class="collect" data-collect="${i}">Sell ${fmtMoney(val)}</button>`;
+        } else {
+          const ageProg=Math.min(1,(now-b.done)/r.agePeak), peak=ageProg>=1;
+          el.innerHTML=`<div class="glass">${r.glass}</div><div class="cn">${r.name}</div>
+            <div class="st aging">${peak?'Peak aged ✦':'Aging · '+val}</div>
+            <div class="cbar"><i style="width:${Math.round(ageProg*100)}%"></i></div>
+            <button class="collect" data-collect="${i}">Bottle ${val}</button>`;
+        }
+      }
+      wrap.appendChild(el);
+    });
+  }
+  // Redraw the farm plots each tick (growth, spoilage countdowns).
+  function renderField(){ let ripe=0; const speed=WEATHER[state.weather].speed;
+    state.plots.forEach((p,i)=>{ const el=plotEls[i]; el.className='plot'; el.innerHTML='';
+      if(i<GRID && i>=state.unlocked){ el.classList.add('locked'); el.innerHTML=`<span class="lock">🔒</span><span class="price">${unlockPrice()}</span>`; return; }
+      if(i>=GRID) el.classList.add('estate-plot');
+      if(!p.crop) return;
+      const c=CROPS[p.crop];
+      if(p.ready){ ripe++; el.classList.add('ready');
+        const spoilLeft=(CROP_SPOIL_MS-(p.readyMs||0))/1000;
+        const warn=spoilLeft<3600;   // under 1 real hour left
+        if(warn) el.classList.add('spoiling');
+        el.innerHTML=`<span class="timer spoil">🥀 ${fmtTime(spoilLeft)}</span><span class="crop">${c.emoji}</span>`; return; }
+      const prog=Math.min(1,p.growth/c.grow), cls=prog<0.4?'crop seed':prog<0.8?'crop mid':'crop', g=prog<0.4?'🌱':c.emoji;
+      const remain=(c.grow-p.growth)/(1000*speed);
+      el.innerHTML=`<span class="timer">${fmtTime(remain)}</span><span class="${cls}">${g}</span><span class="bar"><i style="width:${Math.round(prog*100)}%"></i></span>`;
+    });
+    return ripe;
+  }
+  // Redraw the top bar: coins, level, XP, calendar clock, debt badge.
+  function renderHUD(){
+    coinVal.textContent=Math.floor(state.coins);
+    coinsEl.classList.toggle('debt', state.coins<0);
+    document.getElementById('lvlVal').textContent=state.level;
+    const need=req(state.level);
+    document.getElementById('xpFill').style.width=Math.min(100,Math.round(state.xp/need*100))+'%';
+    document.getElementById('xpText').textContent=Math.floor(state.xp)+' / '+need+' XP';
+    const w=WEATHER[state.weather];
+    document.getElementById('wpill').innerHTML=`${w.emoji} ${w.label} · ${state._tod||'Day'} <small>(${w.mod})</small>`;
+    // calendar clock
+    const cl=calendarLabel();
+    const phase=(state.dayClock%CYCLE)/CYCLE;          // 0..1 through the day
+    const mins=Math.floor(phase*24*60), hh=Math.floor(mins/60), mm=mins%60;
+    document.getElementById('calDate').textContent=cl.month+' '+cl.dom;
+    document.getElementById('calSub').textContent='Yr '+state.year+' · '+String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0');
+  }
+  // Per-tick: ONLY things that change continuously (timers, progress bars). Cheap, no teardown
+  // of the interactive shop/market sections, so their buttons stay alive and clicks always land.
+  // Light per-tick redraw (timers/bars only) — keeps taps responsive.
+  function renderLive(){
+    renderHUD();
+    const ripe=renderField(); renderPens(); renderCasks(); renderCraftSlots();
+    const anyAnimalReady=state.animals.some(a=>a.ready);
+    document.getElementById('collectAll').disabled = ripe===0 && !anyAnimalReady;
+  }
+  // Full render: rebuilds the interactive sections. Called on player actions / state changes only.
+  // Full redraw of every interactive section (called on player actions).
+  function render(){
+    renderHUD();
+    const ripe=renderField(); renderPens(); renderShop(); renderAnimalShop();
+    renderCommodities(); renderStocks(); renderBigBox(); renderEstates();
+    renderHarvestToggle(); renderPantry(); renderInventoryView(); renderCraftRecipes(); renderCraftSlots(); renderRecipes(); renderCasks(); renderFinances();
+    const anyAnimalReady=state.animals.some(a=>a.ready);
+    document.getElementById('collectAll').disabled = ripe===0 && !anyAnimalReady;
+  }
+
+  // ---------- main loop ----------
+  // The main game loop (runs ~5x/sec): grow crops/animals, roll markets, advance calendar.
+  function tick(){
+    const now=Date.now(); let dt=Math.min(now-lastTick,60000); lastTick=now;
+    state.dayClock+=dt;
+    let marketRolled=false;
+    if(now>=state.nextWeather) rollWeather();
+    if(now>=state.nextMarket){ rollMarket(); marketRolled=true;
+      if(rentToast>0){ toast('🏘️ Collected '+rentToast+' in rent'); rentToast=0; } save(); }
+    const speed=WEATHER[state.weather].speed; let changed=false; let spoiled=0;
+    state.plots.forEach(p=>{ if(!p.crop) return;
+      if(!p.ready){ p.growth+=dt*speed; if(p.growth>=CROPS[p.crop].grow){ p.ready=true; p.readyMs=0; changed=true; } }
+      else { p.readyMs=(p.readyMs||0)+dt;          // count real time spent ripe
+        if(p.readyMs>=CROP_SPOIL_MS){ p.crop=null; p.growth=0; p.ready=false; p.readyMs=0; spoiled++; changed=true; } }
+    });
+    if(spoiled) toast('🥀 '+spoiled+' ripe crop'+(spoiled>1?'s':'')+' withered (left over 24h)', 2800);
+    state.animals.forEach(a=>{ const A=ANIMALS[a.type]; if(A.pid && !a.ready){ a.growth+=dt; if(a.growth>=A.cycle){ a.ready=true; changed=true; } }});
+    const prevDay=state.lastDay, prevAnimals=state.animals.length;
+    advanceCalendar();
+    const dayEvent = state.lastDay!==prevDay || state.animals.length!==prevAnimals;
+    skyUpdate();
+    // Full rebuild when prices changed, something became ready, or a day rolled over
+    // (feed/tax/deaths can change coins and animals); otherwise just refresh timers/bars.
+    if(marketRolled || changed || dayEvent) render(); else renderLive();
+    if(changed || dayEvent) save();
+  }
+
+  // ---------- event delegation ----------
+  // One listener per section, attached once. Survives every re-render, so taps always land
+  // even if a market tick rebuilds the cards at the same moment.
+  // Attach one click handler to a container for all its buttons (survives re-renders).
+  function delegate(containerId, attr, handler){
+    const c=document.getElementById(containerId); if(!c) return;
+    c.addEventListener('click',e=>{ const btn=e.target.closest('['+attr+']');
+      if(btn && c.contains(btn) && !btn.disabled) handler(btn.getAttribute(attr)); });
+  }
+  // Wire up all delegated button handlers once at startup.
+  function wireEvents(){
+    delegate('commodities','data-buy',  buyCommodity);
+    delegate('commodities','data-sell', sellCommodity);
+    delegate('stocks','data-buy',  buyShare);
+    delegate('stocks','data-sell', sellShare);
+    delegate('bigbox','data-pallet', sellPallet);
+    delegate('estates','data-buy',  buyProperty);
+    delegate('estates','data-sell', sellProperty);
+    delegate('craftRecipes','data-craft', startCraft);
+    delegate('craftSlots','data-craftcollect', v=>collectCraft(+v));
+    delegate('recipes','data-brew', startBrew);
+    delegate('casks','data-collect', v=>collectBrew(+v));
+    delegate('inventoryView','data-invone', sellInvOne);
+    delegate('inventoryView','data-invall', sellInvAllOf);
+  }
+
+  // ---------- boot ----------
+  (async function init(){
+    coinsEl=document.getElementById('coins'); coinVal=document.getElementById('coinVal');
+    const raw=await load();
+    // Save-folder safety: snapshot the raw loaded save BEFORE migrating, so a backup of the
+    // pre-update state always exists to roll back to.
+    if(raw && hasStore){ try{ STORE.set(BACKUP_KEY, JSON.stringify(raw)); }catch(e){} }
+    state=adopt(raw);
+    buildStars(); buildGrid(); buildShop(); buildAnimalShop();
+    wireEvents();
+    document.body.classList.toggle('raining', state.weather==='rain');
+    document.getElementById('rain').classList.toggle('on', state.weather==='rain');
+    lastTick=Date.now(); skyUpdate(); render();
+    if(state._migratedFrom!==undefined){
+      const from=state._migratedFrom; delete state._migratedFrom; save();
+      setTimeout(()=>toast('✅ Save carried over from v'+from+' — coins & resources kept',3200),600);
+    }
+    setInterval(tick,200);
+  })();
+})();
+</script>
