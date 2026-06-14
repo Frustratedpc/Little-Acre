@@ -253,6 +253,50 @@
   .pen.empty{background:repeating-linear-gradient(45deg,#bfa06c 0 7px,#b6975f 7px 14px);cursor:default}
   .pen.starving{box-shadow:inset 0 0 0 3px rgba(192,57,42,.7);animation:starvepulse 1.4s ease-in-out infinite}
   .pen .starve{position:absolute;top:3px;left:4px;font-size:.5em;z-index:2}
+  .pen-acts{position:absolute;bottom:3px;right:3px;display:flex;gap:3px;z-index:3}
+  .pen-act{font-size:13px;line-height:1;border:0;border-radius:7px;padding:3px 4px;cursor:pointer;
+    background:rgba(255,255,255,.85);box-shadow:0 1px 2px rgba(0,0,0,.3)}
+  .pen-act.feed:hover{background:#d8f0b8}.pen-act.syr:hover{background:#cfe0ff}
+  .of-tag{position:absolute;bottom:3px;left:3px;font-size:9px;font-weight:700;font-family:'Fredoka',sans-serif;
+    color:#7a4a0a;background:rgba(255,210,90,.9);border-radius:6px;padding:1px 4px;z-index:2}
+  .plot-man{position:absolute;bottom:3px;right:3px;font-size:13px;line-height:1;z-index:3;cursor:pointer;
+    background:rgba(255,255,255,.82);border-radius:7px;padding:2px 3px;box-shadow:0 1px 2px rgba(0,0,0,.3)}
+  .plot-man:hover{background:#e0d0b0}
+  .man-tag{position:absolute;top:3px;right:3px;font-size:9px;font-weight:700;font-family:'Fredoka',sans-serif;
+    color:#5a3d10;background:rgba(200,170,110,.92);border-radius:6px;padding:1px 4px;z-index:2}
+  .sy-tag{position:absolute;top:3px;right:3px;font-size:9px;font-weight:700;font-family:'Fredoka',sans-serif;
+    color:#2c4a8a;background:rgba(190,215,255,.92);border-radius:6px;padding:1px 4px;z-index:2}
+  /* feed store */
+  .feedstore{display:grid;grid-template-columns:1fr;gap:9px}
+  @media(min-width:440px){ .feedstore{grid-template-columns:1fr 1fr} }
+  .feed-card{display:flex;align-items:center;gap:11px;background:var(--cream);border:3px solid #e7d6bf;
+    border-radius:15px;padding:11px;box-shadow:0 4px 0 #e0cdb2}
+  .feed-card .fc-emoji{font-size:30px}
+  .feed-card .fc-info{flex:1;min-width:0}
+  .feed-card .fc-name{font-family:'Fredoka',sans-serif;font-weight:700;color:var(--ink);font-size:14px}
+  .feed-card .fc-desc{font-family:'Nunito',sans-serif;font-weight:600;color:var(--ink-soft);font-size:11px;margin:1px 0 3px}
+  .feed-card .fc-have{font-family:'Fredoka',sans-serif;font-weight:600;color:#5a7c3a;font-size:11.5px}
+  .fc-buy{font-family:'Fredoka',sans-serif;font-weight:700;font-size:13px;color:#163a1c;cursor:pointer;border:0;
+    border-radius:11px;padding:10px 12px;background:linear-gradient(180deg,#cfe8b0,#9fcd6e);box-shadow:0 3px 0 #6d9c43;white-space:nowrap}
+  .feed-card.broke .fc-buy{filter:grayscale(.4) brightness(.95)}
+  /* achievement unlock popup */
+  .ach-pop{position:fixed;top:14px;left:50%;transform:translateX(-50%) translateY(-140%);z-index:6000;
+    pointer-events:none;width:min(360px,92vw);opacity:0;transition:none}
+  .ach-pop.go{animation:achpop 3s ease forwards}
+  @keyframes achpop{0%{opacity:0;transform:translateX(-50%) translateY(-140%)}
+    10%{opacity:1;transform:translateX(-50%) translateY(0)}
+    90%{opacity:1;transform:translateX(-50%) translateY(0)}
+    100%{opacity:0;transform:translateX(-50%) translateY(-140%)}}
+  .ach-pop-card{position:relative;background:linear-gradient(180deg,#2f5e2a,#24471f);
+    border:3px solid #f0c659;border-radius:18px;padding:14px 16px 13px;text-align:center;
+    box-shadow:0 12px 30px rgba(0,0,0,.5),0 0 0 4px rgba(240,198,89,.25)}
+  .ach-pop-burst{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:28px;
+    filter:drop-shadow(0 2px 4px rgba(0,0,0,.4))}
+  .ach-pop-emoji{font-size:40px;line-height:1;margin-top:6px}
+  .ach-pop-label{font-family:'Fredoka',sans-serif;font-weight:700;font-size:11px;letter-spacing:.06em;
+    text-transform:uppercase;color:#ffe28a;margin-top:4px}
+  .ach-pop-name{font-family:'Fredoka',sans-serif;font-weight:700;font-size:18px;color:#fff;margin:1px 0 3px}
+  .ach-pop-reward{font-family:'Fredoka',sans-serif;font-weight:700;font-size:13px;color:#9fe07e}
   .pen .butcher{position:absolute;bottom:3px;right:3px;z-index:3;width:24px;height:24px;border-radius:50%;border:2px solid #fff;
     background:rgba(150,40,30,.92);color:#fff;font-size:12px;line-height:1;cursor:pointer;padding:0;
     display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,.35);transition:transform .1s}
@@ -772,6 +816,14 @@
   .modal-btn:active{transform:translateY(1px)}
   .modal-btn.primary{color:#1f3f28;background:linear-gradient(180deg,#ffe28a,#e9b94a);box-shadow:0 3px 0 #b88a2a}
   .modal-btn.ghost{color:#dcebd6;background:rgba(255,255,255,.12)}
+  .modal-btn:not(.primary):not(.ghost):not(.danger){color:#1f3f28;background:linear-gradient(180deg,#cfe8b0,#9fcd6e);box-shadow:0 3px 0 #6d9c43}
+  .modal-btn.danger{color:#fff;background:linear-gradient(180deg,#e86a5a,#c0392b);box-shadow:0 3px 0 #8e2a20;font-size:15px;padding:12px 22px}
+  .overlay.forced{z-index:5500;background:rgba(8,18,12,.88)}
+  .modal-title.center{text-align:center;justify-content:center;font-size:26px}
+  .bankrupt-modal{text-align:center;max-width:360px}
+  .bankrupt-modal .modal-actions{justify-content:center;margin-top:18px}
+  .bankrupt-emoji{font-size:64px;line-height:1;margin-bottom:4px;animation:bankdrop .6s ease both}
+  @keyframes bankdrop{0%{transform:translateY(-20px) rotate(-8deg);opacity:0}100%{transform:none;opacity:1}}
   .modal-fine{font-family:'Nunito',sans-serif;font-weight:600;font-size:11px;color:#9fb8a4;line-height:1.45;margin:12px 0 0}
   .modal-x{font-size:15px;cursor:pointer;border:0;border-radius:9px;padding:3px 9px;color:#fff;background:rgba(0,0,0,.3)}
   .board-modal{max-width:420px}
@@ -851,6 +903,9 @@
 
   <h2 class="sec">🏡 Buy Animals</h2>
   <div class="shop" id="animalShop"></div>
+
+  <h2 class="sec">🌾 Feed Store</h2>
+  <div class="feedstore" id="feedStore"></div>
 
   <h2 class="sec">📦 Big-Box Buyer</h2>
   <div class="bigbox">
@@ -1179,6 +1234,55 @@
   </div>
 </div>
 
+<!-- Achievement unlock popup (one at a time, auto-queues) -->
+<div class="ach-pop" id="achPop">
+  <div class="ach-pop-card">
+    <div class="ach-pop-burst">🏆</div>
+    <div class="ach-pop-emoji" id="achPopEmoji">🥕</div>
+    <div class="ach-pop-label">Achievement Unlocked!</div>
+    <div class="ach-pop-name" id="achPopName">Green Thumb</div>
+    <div class="ach-pop-reward" id="achPopReward">+300 🪙 · +30 xp</div>
+  </div>
+</div>
+
+<!-- Weekly feed bill (can't afford) popup -->
+<div class="overlay" id="feedBillOverlay" style="display:none">
+  <div class="modal">
+    <div class="modal-title">🌾 Weekly Feed Bill</div>
+    <p class="modal-text">Your animals' feed costs <b>🪙 <span id="feedBillAmt">0</span></b>, but you only have <b>🪙 <span id="feedBillCoins">0</span></b>.</p>
+    <p class="modal-text">Pay it anyway and go into <b>debt</b> (debt grows 10%/day), or skip — but unpaid animals will start <b>starving</b> and can die if not fed.</p>
+    <div class="modal-actions">
+      <button class="modal-btn" id="feedBillPay">Pay into debt</button>
+      <button class="modal-btn ghost" id="feedBillSkip">Skip — let them starve</button>
+    </div>
+  </div>
+</div>
+
+<!-- Entering-debt warning popup -->
+<div class="overlay" id="debtWarnOverlay" style="display:none">
+  <div class="modal">
+    <div class="modal-title">⚠️ You're in debt</div>
+    <p class="modal-text">Your coins have gone negative. Debt grows <b>10% per day</b>, so pay it down quickly by selling crops, animals, and goods.</p>
+    <p class="modal-text"><b>Careful:</b> if your debt ever reaches <b>🪙 <span id="debtWarnLimit">50K</span></b>, your farm goes bankrupt and you'll have to start a brand-new farm.</p>
+    <div class="modal-actions">
+      <button class="modal-btn" id="debtWarnOk">Okay, got it</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bankruptcy (game over) overlay — only New Farm proceeds -->
+<div class="overlay forced" id="bankruptOverlay" style="display:none">
+  <div class="modal bankrupt-modal">
+    <div class="bankrupt-emoji">🏚️</div>
+    <div class="modal-title center">Bankrupt!</div>
+    <p class="modal-text">Your debt reached <b>🪙 <span id="bankruptLimit">50K</span></b> and the farm has gone under. There's no climbing back from here.</p>
+    <p class="modal-text">The only way forward is a fresh start. Your nickname and leaderboard spot stay with your account.</p>
+    <div class="modal-actions">
+      <button class="modal-btn danger" id="bankruptReset">🌱 Start a New Farm</button>
+    </div>
+  </div>
+</div>
+
 <script>
 (function(){
   /* ============================================================================
@@ -1459,14 +1563,27 @@
   function globalAbsDay(){ return 1+Math.floor((Date.now()-WORLD_EPOCH)/CYCLE); }
   // Expenses & risk
   const FEED_PER_ANIMAL={chicken:100, cow:500, sheep:500, goat:500, pig:500, bee:100, iguana:500};  // weekly feed: 500 large, 100 small
-  const SMALL_ANIMALS=['chicken','bee'];      // vulnerable to foxes
+  const SMALL_ANIMALS=['chicken','bee'];      // vulnerable to foxes; eat SMALL feed bags
   const FOX_DAILY_CHANCE=0.01;                // 1% per small animal per day
   const OLDAGE_START_DAYS=730;                // animals risk old-age death after 2 in-game years (so they can reach butchering age)
   const BUTCHER_MIN_AGE=365;                  // an animal must be a full in-game year old before it can be processed for meat
+  // Feed bags you can stockpile and apply to individual animals.
+  const FEED_BAGS={ small:{emoji:'🥡', name:'Small Feed Bag', cost:120, for:'small', desc:'Feeds one small animal (chicken or bee)'},
+                    big:{emoji:'🛍️', name:'Big Feed Bag', cost:560, for:'large', desc:'Feeds one large animal (cow, sheep, goat, pig, iguana)'},
+                    manure:{emoji:'💩', name:'Manure', cost:100, for:'plant', desc:'Apply to a planted crop: +5% growth speed (max 2× per plot)'} };
+  function animalSize(type){ return SMALL_ANIMALS.includes(type)?'small':'large'; }
+  const OVERFEED_PER_BAG=0.01;   // each extra bag on a fed animal speeds aging by +1%
+  const OVERFEED_CAP=1.00;       // capped at +100% (max double-speed aging)
+  const SYRINGE_COST=1000;       // halves total aging time
+  const SYRINGE_MAX=2;           // usable twice per animal (→ down to 1/4 time)
+  const MANURE_COST=100;         // per-plot fertilizer
+  const MANURE_PER=0.05;         // +5% growth speed per application
+  const MANURE_MAX=2;            // max 2 applications per plot (→ +10%)
   const TAX_RATE=0.20;                        // 20% of gross yearly earnings
   const CAPGAINS_RATE=0.25;                   // 25% tax on PROFIT from stock & property sales
   const DEBT_DAILY_INTEREST=0.10;             // 10% compounding daily while in debt
-  const SAVE_KEY='littleacre:save'; const VERSION=54;
+  const BANKRUPT_LIMIT=50000;                 // hit -50,000 coins and the farm is bankrupt (game over)
+  const SAVE_KEY='littleacre:save'; const VERSION=57;
   const BACKUP_KEY='littleacre:save:backup';   // last-known-good snapshot ("save folder")
   const MIN_MIGRATABLE=13;                       // saves at/after this version migrate forward instead of resetting
   // Leaderboard sanity cap: scores above this are clamped before submission. This is a
@@ -1559,12 +1676,15 @@
       commodities:freshMarketStall(), stocks:freshStocks(),
       estates:freshEstates(), housing:0,
       inventory:{}, kitchen:[], cellar:[], harvestMode:'sell',
+      feedBags:{small:0, big:0, manure:0},         // stockpiled feed bags + manure
       weather:'sun', nextWeather:Date.now()+40000, nextMarket:Date.now()+22000,
       dayClock:30000,
       day:1, year:1, lastDay:1,          // calendar (day is 1..365, absolute progression)
       nextFeedDay:DAYS_PER_WEEK+1,       // first feed bill after week 1
       earnedThisYear:0,                  // gross income this year (for tax)
       inDebt:false,
+      debtWarned:false,                  // shown the 'you're in debt' warning this debt-spell?
+      bankrupt:false,                    // true once -BANKRUPT_LIMIT is reached (game over)
       stats:freshStats(),                // lifetime counters for achievements
       achievements:{},                   // id -> timestamp unlocked
       savedAt:Date.now()};
@@ -2022,6 +2142,10 @@
     if(ab) ab.addEventListener('click',()=>{ renderAchievements(); ao.style.display='flex'; });
     if(ac) ac.addEventListener('click',()=>{ ao.style.display='none'; });
     if(ao) ao.addEventListener('click',e=>{ if(e.target===ao) ao.style.display='none'; }); }
+  { const fo=document.getElementById('feedBillOverlay');
+    const pay=document.getElementById('feedBillPay'), skip=document.getElementById('feedBillSkip');
+    if(pay) pay.addEventListener('click',()=>{ const bill=fo._bill||0; spend(bill); clearStarving(); fo.style.display='none'; bumpCoins(); render(); save(); toast('🌾 Feed paid into debt: -'+fmtMoney(bill), 2800); });
+    if(skip) skip.addEventListener('click',()=>{ startStarving(); fo.style.display='none'; render(); save(); toast('⚠️ Animals are starving — feed them soon!', 3000); }); }
   document.getElementById('nickLater').addEventListener('click', hideNickPopup);
   document.getElementById('nickConfirm').addEventListener('click', async()=>{
     const raw=(nickInput.value||'').trim();
@@ -2164,12 +2288,17 @@
     if(!Array.isArray(s.cellar)) s.cellar=[];
     if(s.harvestMode!=='store') s.harvestMode='sell';
     if(!Array.isArray(s.animals)) s.animals=[];
-    s.animals.forEach(a=>{ if(typeof a.age!=='number') a.age=0; if(typeof a.starving!=='boolean') a.starving=false; });
+    s.animals.forEach(a=>{ if(typeof a.age!=='number') a.age=0; if(typeof a.starving!=='boolean') a.starving=false;
+      if(typeof a.overfeed!=='number') a.overfeed=0; if(typeof a.syringes!=='number') a.syringes=0; });
+    if(!s.feedBags||typeof s.feedBags!=='object') s.feedBags={small:0,big:0,manure:0};
+    else { if(typeof s.feedBags.small!=='number') s.feedBags.small=0; if(typeof s.feedBags.big!=='number') s.feedBags.big=0; if(typeof s.feedBags.manure!=='number') s.feedBags.manure=0; }
     if(typeof s.day!=='number') s.day=1;
     if(typeof s.year!=='number') s.year=1;
     if(typeof s.lastDay!=='number') s.lastDay=s.day;
     if(typeof s.earnedThisYear!=='number') s.earnedThisYear=0;
     if(typeof s.inDebt!=='boolean') s.inDebt=false;
+    if(typeof s.debtWarned!=='boolean') s.debtWarned=false;
+    if(typeof s.bankrupt!=='boolean') s.bankrupt=false;
     // GLOBAL CLOCK: snap this save onto the shared world calendar. The day/year are derived
     // from real time so everyone matches. We DON'T retro-charge taxes for days before now —
     // lastDay starts at "today" so no surprise back-taxes from the jump.
@@ -2300,9 +2429,19 @@
     _achChecking=false;
     if(unlockedAny){ if(typeof bumpCoins==='function') bumpCoins(); if(typeof renderAchievements==='function') renderAchievements(); }
   }
-  function achToast(a){ const r=a.reward||{};
-    const bits=[]; if(r.coins) bits.push('+'+fmtMoney(r.coins)+'🪙'); if(r.xp) bits.push('+'+r.xp+'xp');
-    toast('🏆 Achievement: '+a.emoji+' '+a.name+(bits.length?'  ('+bits.join(' ')+')':''), 3600);
+  let _achQueue=[], _achShowing=false;
+  function achToast(a){ _achQueue.push(a); if(!_achShowing) showNextAchPop(); }
+  function showNextAchPop(){
+    const pop=document.getElementById('achPop'); if(!pop){ _achQueue=[]; return; }
+    if(!_achQueue.length){ _achShowing=false; return; }
+    _achShowing=true;
+    const a=_achQueue.shift(), r=a.reward||{};
+    document.getElementById('achPopEmoji').textContent=a.emoji;
+    document.getElementById('achPopName').textContent=a.name;
+    const bits=[]; if(r.coins) bits.push('+'+fmtMoney(r.coins)+' 🪙'); if(r.xp) bits.push('+'+r.xp+' xp');
+    document.getElementById('achPopReward').textContent=bits.join(' · ')||'Unlocked';
+    pop.classList.remove('go'); void pop.offsetWidth; pop.classList.add('go');
+    setTimeout(()=>{ pop.classList.remove('go'); setTimeout(showNextAchPop, 250); }, 3000);
   }
   // Render the Achievements page: progress header + each category with locked/unlocked badges.
   function renderAchievements(){
@@ -2677,6 +2816,29 @@
   // Spend coins as a COST; pushes coins negative (into debt) if unaffordable.
   function spend(n){ // n>0 cost; pushes into debt if unaffordable (coins go negative)
     state.coins-=n; if(state.coins<0) state.inDebt=true;
+    checkDebt();
+  }
+  // Watch the debt level: warn once on entering debt, declare bankruptcy at the limit.
+  function checkDebt(){
+    if(state.bankrupt) return;
+    if(state.coins<0){
+      // first time crossing into debt this spell → one-time warning popup
+      if(!state.debtWarned){ state.debtWarned=true; showDebtWarning(); }
+      // hit the hard limit → bankrupt (game over)
+      if(state.coins <= -BANKRUPT_LIMIT){ state.bankrupt=true; save&&save(); showBankrupt(); }
+    } else {
+      // climbed back to solvency — reset the warning so it can fire again on a future debt spell
+      state.debtWarned=false;
+    }
+  }
+  function showDebtWarning(){
+    const ov=document.getElementById('debtWarnOverlay'); if(!ov) return;
+    document.getElementById('debtWarnLimit').textContent=fmtMoney(BANKRUPT_LIMIT);
+    ov.style.display='flex';
+  }
+  function showBankrupt(){
+    const ov=document.getElementById('bankruptOverlay'); if(!ov) return;
+    ov.style.display='flex';
   }
   // Roll the calendar forward to the GLOBAL day, processing each new day exactly once.
   function advanceCalendar(){
@@ -2687,7 +2849,7 @@
       state.lastDay++;
       const doy=doyOf(state.lastDay);
       state.day=doy; state.year=yearOf(state.lastDay);
-      state.animals.forEach(a=>a.age++);
+      state.animals.forEach(a=>{ a.age += 1 + Math.min(OVERFEED_CAP, (a.overfeed||0)*OVERFEED_PER_BAG); });
       rollSeasonEvent();   // maybe start/continue a visual drought or snowstorm
       processDay(offline);
       if(doy===TAX_DOY) processTaxDay(offline);          // April 14: taxes due (pay or extend)
@@ -2703,6 +2865,7 @@
       if(sm.died)    parts.push(sm.died+' to old age');
       if(sm.starved) parts.push(sm.starved+' starved');
       if(parts.length) toast('While away: '+parts.join(' · '), 4000);
+      checkDebt();   // interest accrued while away may have triggered the warning or bankruptcy
     }
   }
   let calcSummary=null;
@@ -2712,7 +2875,8 @@
     if(state.coins<0){ const interest=Math.ceil(-state.coins*DEBT_DAILY_INTEREST);
       state.coins-=interest; state.inDebt=true;
       if(offline) calcSummary.interest+=interest;
-      else toast('💸 Debt interest: -'+interest+' ('+DEBT_DAILY_INTEREST*100+'%/day)', 2600); }
+      else toast('💸 Debt interest: -'+interest+' ('+DEBT_DAILY_INTEREST*100+'%/day)', 2600);
+      if(!offline) checkDebt(); }   // interest can tip a player over the bankruptcy limit
     // 2) fox attacks on small animals (1% each per day)
     let foxed=0;
     state.animals=state.animals.filter(a=>{
@@ -2729,26 +2893,39 @@
       return true;
     });
     if(died){ if(offline) calcSummary.died+=died; else toast('🪦 '+died+' animal'+(died>1?'s':'')+' passed of old age', 2600); }
-    // 4) starving animals (from a prior unpaid feed bill) may die
+    // 4) starving animals (from a prior unpaid feed bill) may die — but only if STILL unfed.
+    //    A starving animal the player has fed (a.fedUntil >= today) is safe. Death is also gentler
+    //    now (gives time to react) and never touches an animal that isn't actually starving.
     let starved=0;
     state.animals=state.animals.filter(a=>{
-      if(a.starving && Math.random()<0.5){ starved++; return false; }
+      const stillStarving = a.starving && !(a.fedUntil && a.fedUntil>=state.lastDay);
+      if(!stillStarving){ if(a.starving && a.fedUntil && a.fedUntil>=state.lastDay) a.starving=false; return true; }
+      // grace: only after being starving for 2+ days do they risk death (30%/day), so there's time to feed
+      a.starveDays=(a.starveDays||0)+1;
+      if(a.starveDays>=2 && Math.random()<0.30){ starved++; return false; }
       return true;
     });
-    if(starved){ if(offline) calcSummary.starved+=starved; else toast('🥀 '+starved+' animal'+(starved>1?'s':'')+' starved (unpaid feed)', 2800); }
+    if(starved){ if(offline) calcSummary.starved+=starved; else toast('🥀 '+starved+' animal'+(starved>1?'s':'')+' starved — feed them to keep them alive!', 3200); }
     // 5) weekly feed bill (every DAYS_PER_WEEK days on the absolute counter)
     if(state.lastDay>=state.nextFeedDay) chargeFeed(offline);
   }
-  // Charge the weekly feed bill; unpaid = animals start starving.
+  // Charge the weekly feed bill. If affordable, auto-pay and everyone's happy. If not, online players
+  // get a popup asking whether to go into debt to pay; offline players auto-pay into debt (then can recover).
   function chargeFeed(offline){
     state.nextFeedDay=state.lastDay+DAYS_PER_WEEK;
     if(!state.animals.length) return;
     let bill=0; state.animals.forEach(a=>bill+=FEED_PER_ANIMAL[a.type]||10);
-    if(state.coins>=bill){ spend(bill); state.animals.forEach(a=>a.starving=false);
-      if(offline) calcSummary.feed+=bill; else toast('🌾 Weekly feed paid: -'+bill, 2400); }
-    else { spend(bill); state.animals.forEach(a=>a.starving=true);
-      if(offline) calcSummary.feed+=bill; else toast('⚠️ Couldn\'t afford feed (-'+bill+'). Animals are starving!', 3000); }
+    if(state.coins>=bill){ spend(bill); clearStarving();
+      if(offline) calcSummary.feed+=bill; else toast('🌾 Weekly feed paid: -'+bill, 2400); return; }
+    // can't afford
+    if(offline){ spend(bill); clearStarving(); calcSummary.feed+=bill; return; }   // offline: pay into debt, stay alive
+    // online: ask the player
+    showFeedBillPopup(bill);
   }
+  // Clear starving state on all animals (used when the bill is paid or debt recovers).
+  function clearStarving(){ state.animals.forEach(a=>{ a.starving=false; a.starveDays=0; a.fedUntil=0; }); }
+  // Mark every animal as starving (the player chose not to pay the bill).
+  function startStarving(){ state.animals.forEach(a=>{ a.starving=true; a.starveDays=0; }); }
   // April 14: tax day. The bill is 20% of everything earned since the last tax day.
   // Online: show a popup letting the player Pay now, or Extend to Oct 14 for a flat fee.
   // Offline (catch-up): just charge it (no UI possible mid-burst).
@@ -2881,11 +3058,11 @@
     if(p.ready){ const cropId=p.crop, c=CROPS[cropId];
       if(state.harvestMode==='store'){
         invAdd(cropId,1); gainXP(c.xp); bumpStat('cropsHarvested');
-        float(el,'+'+c.emoji,'gain'); p.crop=null;p.growth=0;p.ready=false;p.readyMs=0; save(); render(); return;
+        float(el,'+'+c.emoji,'gain'); p.crop=null;p.growth=0;p.ready=false;p.readyMs=0;p.manure=0; save(); render(); return;
       }
       const val=Math.round(priceOf(cropId,c.sell)*(cropInSeason(cropId)?SEASON_BONUS_PRICE:1));
       earn(val); gainXP(c.xp); bumpStat('cropsHarvested'); bumpStat('sold_total'); bumpStat('sold',1,cropId);
-      float(el,'+'+val,'gain'); p.crop=null;p.growth=0;p.ready=false;p.readyMs=0; bumpCoins(); save(); render(); return; }
+      float(el,'+'+val,'gain'); p.crop=null;p.growth=0;p.ready=false;p.readyMs=0;p.manure=0; bumpCoins(); save(); render(); return; }
     if(!p.crop){ const c=CROPS[selected];
       if(state.level<c.lvl){ toast('Reach Level '+c.lvl+' to grow '+c.name); return; }
       spend(c.cost); p.crop=selected; p.growth=0; p.ready=false; p.readyMs=0; bumpStat('cropsPlanted');
@@ -2897,8 +3074,57 @@
   function buyAnimal(key){ const a=ANIMALS[key];
     if(state.level<a.lvl){ toast('Reach Level '+a.lvl+' for a '+a.name); return; }
     if(state.animals.length>=ANIMAL_CAP){ toast('Barnyard is full'); return; }
-    spend(a.cost); state.animals.push({type:key,growth:0,ready:false,age:0,starving:false}); bumpCoins(); bumpStat('animalsBought'); save(); render();
+    spend(a.cost); state.animals.push({type:key,growth:0,ready:false,age:0,starving:false,overfeed:0,syringes:0}); bumpCoins(); bumpStat('animalsBought'); save(); render();
     toast('Welcome, new '+a.name+'! '+a.emoji);
+  }
+  // ----- Feed bags: buy a stockpile, then apply to individual animals -----
+  function buyFeedBag(kind){ const b=FEED_BAGS[kind]; if(!b) return;
+    spend(b.cost); state.feedBags[kind]=(state.feedBags[kind]||0)+1; bumpCoins(); save(); render();
+    toast(b.emoji+' Bought a '+b.name+' (-'+b.cost+')', 2200);
+  }
+  // Apply manure to a planted, still-growing crop: +5% growth speed, capped at MANURE_MAX per plot.
+  function applyManure(i){ const p=state.plots[i]; if(!p||!p.crop){ toast('Plant a crop first, then fertilize it'); return; }
+    if(p.ready){ toast('This crop is already ripe — no need to fertilize'); return; }
+    if((state.feedBags.manure||0)<=0){ toast('No manure left — buy some in the Feed Store'); return; }
+    if((p.manure||0)>=MANURE_MAX){ toast('This plot is already at max fertilizer (+'+Math.round(MANURE_MAX*MANURE_PER*100)+'%)'); return; }
+    state.feedBags.manure--; p.manure=(p.manure||0)+1;
+    const pct=Math.round(Math.min(MANURE_MAX,p.manure)*MANURE_PER*100);
+    bumpCoins(); save(); render();
+    toast('💩 Fertilized — '+CROPS[p.crop].name+' now grows +'+pct+'% faster', 2400);
+  }
+  // Apply one feed bag to an animal: clears starving, or (if already fed) overfeeds to speed aging.
+  function feedAnimal(i){ const an=state.animals[i]; if(!an) return;
+    const kind = animalSize(an.type)==='small' ? 'small' : 'big';   // small animals→small bag, large→big bag
+    const b=FEED_BAGS[kind];
+    if((state.feedBags[kind]||0)<=0){ toast('No '+b.name+'s left — buy some in the Feed Store'); return; }
+    state.feedBags[kind]--;
+    if(an.starving){ an.starving=false; an.starveDays=0; an.fedUntil=state.lastDay+DAYS_PER_WEEK;
+      toast(b.emoji+' Fed your '+ANIMALS[an.type].name+' — no longer starving!', 2600); }
+    else { // overfeed → faster aging toward butcher size, capped
+      const curPct=Math.min(OVERFEED_CAP,(an.overfeed||0)*OVERFEED_PER_BAG);
+      if(curPct>=OVERFEED_CAP){ state.feedBags[kind]++; toast('Already at max growth speed (+'+Math.round(OVERFEED_CAP*100)+'%)'); return; }
+      an.overfeed=(an.overfeed||0)+1;
+      const newPct=Math.round(Math.min(OVERFEED_CAP,(an.overfeed||0)*OVERFEED_PER_BAG)*100);
+      toast(b.emoji+' Overfed — '+ANIMALS[an.type].name+' now ages +'+newPct+'% faster', 2600); }
+    save(); render();
+  }
+  // Syringe: halve total aging time, up to SYRINGE_MAX times per animal.
+  function syringeAnimal(i){ const an=state.animals[i]; if(!an) return;
+    if((an.syringes||0)>=SYRINGE_MAX){ toast('This animal has had the max '+SYRINGE_MAX+' syringes'); return; }
+    if(!confirm('Give a growth syringe for '+SYRINGE_COST+' coins?\n\nIt halves the total time to reach butcher age. Usable '+SYRINGE_MAX+'× per animal (this will be #'+((an.syringes||0)+1)+').')) return;
+    spend(SYRINGE_COST); an.syringes=(an.syringes||0)+1;
+    // halve total aging time = double current age progress toward thresholds
+    an.age=(an.age||0)*2;
+    bumpCoins(); save(); render();
+    toast('💉 Syringe given — aging time halved!', 2800);
+  }
+  // Weekly feed bill popup (online, can't afford): pay into debt, or let them start starving.
+  function showFeedBillPopup(bill){
+    const ov=document.getElementById('feedBillOverlay'); if(!ov){ // fallback: pay into debt
+      spend(bill); clearStarving(); return; }
+    document.getElementById('feedBillAmt').textContent=fmtMoney(bill);
+    document.getElementById('feedBillCoins').textContent=fmtMoney(Math.floor(state.coins));
+    ov._bill=bill; ov.style.display='flex';
   }
   // Handle a tap on an animal pen: collect its product.
   function onAnimal(i,el){ const an=state.animals[i], a=ANIMALS[an.type];
@@ -3348,7 +3574,7 @@
     state.plots.forEach(p=>{ if(p.ready){ const c=CROPS[p.crop]; gainXP(c.xp); n++;
       if(storing){ invAdd(p.crop,1); stored++; }
       else earned+=Math.round(priceOf(p.crop,c.sell)*(cropInSeason(p.crop)?SEASON_BONUS_PRICE:1));
-      p.crop=null;p.growth=0;p.ready=false;p.readyMs=0; }});
+      p.crop=null;p.growth=0;p.ready=false;p.readyMs=0;p.manure=0; }});
     state.animals.forEach(an=>{ if(an.ready){ const a=ANIMALS[an.type]; gainXP(a.xp); n++;
       if(storing){ invAdd(a.pid,1); stored++; }
       else earned+=priceOf(a.pid,a.sell);
@@ -3357,18 +3583,24 @@
       toast('Collected '+n+(stored?' · '+stored+' to inventory':'')+(earned?' for '+earned+' coins':'')); }
     else toast('Nothing ready yet');
   });
+  // Reset the FARM while keeping identity (nickname/leaderboard). Used by "New farm" and bankruptcy.
+  function doNewFarm(){
+    const keepNick=state.nickname, keepNickKey=state.nickKey;
+    state=freshState();
+    if(keepNick){ state.nickname=keepNick; state.nickKey=keepNickKey; }
+    selected='carrot'; rollWeather();
+    const bo=document.getElementById('bankruptOverlay'); if(bo) bo.style.display='none';
+    save(); render();
+    if(cloudOn()) pushLeaderboard();
+  }
   document.getElementById('reset').addEventListener('click',()=>{
     if(confirm('Start a brand-new farm? All progress will be cleared.\n\nYour nickname and leaderboard spot stay with your account.')){
-      // New farm = reset the FARM, but keep your identity (nickname is permanently bound to
-      // your account, so it survives a reset and stays tied to the leaderboard).
-      const keepNick=state.nickname, keepNickKey=state.nickKey;
-      state=freshState();
-      if(keepNick){ state.nickname=keepNick; state.nickKey=keepNickKey; }
-      selected='carrot'; rollWeather(); save(); render();
-      // push the reset farm (coins back to 50) up under the SAME name so the board reflects it
-      if(cloudOn()) pushLeaderboard();
+      doNewFarm();
     }
   });
+  { const br=document.getElementById('bankruptReset'); if(br) br.addEventListener('click', doNewFarm); }
+  { const dw=document.getElementById('debtWarnOk'), dwo=document.getElementById('debtWarnOverlay');
+    if(dw) dw.addEventListener('click',()=>{ dwo.style.display='none'; }); }
   document.getElementById('restore').addEventListener('click',async()=>{
     const b=await loadBackup();
     if(!b){ toast('No backup found yet'); return; }
@@ -3473,18 +3705,45 @@
       const butcher = CUTS[an.type]
         ? (oldEnough
             ? `<button class="butcher" data-butcher="${i}" title="Process into cuts (1+ yr old)" aria-label="Process ${a.name} into cuts">🔪</button>`
-            : `<span class="agehint" title="Must be 1 in-game year old to process">🐣 ${an.age||0}/${BUTCHER_MIN_AGE}d</span>`)
+            : `<span class="agehint" title="Must be 1 in-game year old to process">🐣 ${Math.floor(an.age||0)}/${BUTCHER_MIN_AGE}d</span>`)
         : '';
+      // feed + syringe controls (top-right). Feed clears starving or overfeeds; syringe halves aging.
+      const ofPct=Math.round(Math.min(OVERFEED_CAP,(an.overfeed||0)*OVERFEED_PER_BAG)*100);
+      const ofTag = ofPct>0 ? `<span class="of-tag" title="Ages ${ofPct}% faster from overfeeding">⚡${ofPct}%</span>` : '';
+      const syTag = (an.syringes||0)>0 ? `<span class="sy-tag" title="${an.syringes} syringe(s) used">💉${an.syringes}</span>` : '';
+      const acts = `<div class="pen-acts">
+        <button class="pen-act feed" data-feed="${i}" title="Feed (clears starving / overfeeds)">🌾</button>
+        ${CUTS[an.type] && (an.syringes||0)<SYRINGE_MAX ? `<button class="pen-act syr" data-syringe="${i}" title="Growth syringe (${SYRINGE_COST} coins, halves aging)">💉</button>`:''}
+      </div>`;
       if(!a.pid){  // meat-only animal (e.g. pig): no product cycle, just raising until processed
-        el.innerHTML=`${warn}${butcher}<span class="animal">${a.emoji}</span><span class="product">🔪</span>`;
-      } else if(an.ready){ el.classList.add('ready'); el.innerHTML=`${warn}${butcher}<span class="animal">${a.emoji}</span><span class="product">${a.pe}</span>`; }
+        el.innerHTML=`${warn}${acts}${butcher}${ofTag}${syTag}<span class="animal">${a.emoji}</span><span class="product">🔪</span>`;
+      } else if(an.ready){ el.classList.add('ready'); el.innerHTML=`${warn}${acts}${butcher}${ofTag}${syTag}<span class="animal">${a.emoji}</span><span class="product">${a.pe}</span>`; }
       else{ const prog=Math.min(1,an.growth/a.cycle), remain=(a.cycle-an.growth)/1000;
-        el.innerHTML=`${warn}${butcher}<span class="timer">${fmtTime(remain)}</span><span class="animal">${a.emoji}</span><span class="bar"><i style="width:${Math.round(prog*100)}%"></i></span>`; }
+        el.innerHTML=`${warn}${acts}${butcher}${ofTag}${syTag}<span class="timer">${fmtTime(remain)}</span><span class="animal">${a.emoji}</span><span class="bar"><i style="width:${Math.round(prog*100)}%"></i></span>`; }
       pens.appendChild(el); });
     for(let i=state.animals.length;i<ANIMAL_CAP;i++){ const e=document.createElement('div'); e.className='pen empty'; pens.appendChild(e); }
     // butcher buttons (stop propagation so they don't trigger the pen's collect click)
     pens.querySelectorAll('[data-butcher]').forEach(b=>b.addEventListener('click',e=>{
       e.stopPropagation(); butcherAnimal(+b.dataset.butcher); }));
+    pens.querySelectorAll('[data-feed]').forEach(b=>b.addEventListener('click',e=>{
+      e.stopPropagation(); feedAnimal(+b.dataset.feed); }));
+    pens.querySelectorAll('[data-syringe]').forEach(b=>b.addEventListener('click',e=>{
+      e.stopPropagation(); syringeAnimal(+b.dataset.syringe); }));
+  }
+  // Feed Store: buy small/big feed bags (shows how many you hold).
+  function renderFeedStore(){
+    const wrap=document.getElementById('feedStore'); if(!wrap) return;
+    const cards=Object.keys(FEED_BAGS).map(kind=>{ const b=FEED_BAGS[kind]; const have=state.feedBags[kind]||0;
+      const afford=state.coins>=b.cost;
+      return `<div class="feed-card${afford?'':' broke'}">
+        <div class="fc-emoji">${b.emoji}</div>
+        <div class="fc-info"><div class="fc-name">${b.name}</div><div class="fc-desc">${b.desc}</div>
+          <div class="fc-have">You have: <b>${have}</b></div></div>
+        <button class="fc-buy" data-feedbuy="${kind}">🪙 ${b.cost}</button>
+      </div>`;
+    }).join('');
+    wrap.innerHTML=cards;
+    wrap.querySelectorAll('[data-feedbuy]').forEach(b=>b.addEventListener('click',()=>buyFeedBag(b.dataset.feedbuy)));
   }
   // Redraw the Farm Finances panel (feed due, tax, debt, livestock).
   function renderFinances(){
@@ -3824,7 +4083,15 @@
         el.innerHTML=`<span class="timer spoil">🥀 ${fmtTime(spoilLeft)}</span><span class="crop">${c.emoji}</span>`; return; }
       const prog=Math.min(1,p.growth/c.grow), cls=prog<0.4?'crop seed':prog<0.8?'crop mid':'crop', g=prog<0.4?'🌱':c.emoji;
       const remain=(c.grow-p.growth)/(1000*speed);
-      el.innerHTML=`<span class="timer">${fmtTime(remain)}</span><span class="${cls}">${g}</span><span class="bar"><i style="width:${Math.round(prog*100)}%"></i></span>`;
+      const mPct=Math.round(Math.min(MANURE_MAX,p.manure||0)*MANURE_PER*100);
+      const mTag = mPct>0 ? `<span class="man-tag" title="Fertilized +${mPct}%">💩${mPct}%</span>` : '';
+      const mBtn = (p.manure||0)<MANURE_MAX ? `<span class="plot-man" data-manure="${i}" role="button" title="Fertilize (+5% growth, ${MANURE_COST} coins)">💩</span>` : '';
+      el.innerHTML=`<span class="timer">${fmtTime(remain)}</span>${mTag}${mBtn}<span class="${cls}">${g}</span><span class="bar"><i style="width:${Math.round(prog*100)}%"></i></span>`;
+    });
+    // manure buttons (stop propagation so they don't trigger plant/harvest)
+    document.querySelectorAll('#grid [data-manure]').forEach(b=>{
+      const handler=e=>{ e.stopPropagation(); e.preventDefault(); applyManure(+b.dataset.manure); };
+      b.addEventListener('click',handler);
     });
     return ripe;
   }
@@ -3859,7 +4126,7 @@
   // Full redraw of every interactive section (called on player actions).
   function render(){
     renderHUD();
-    const ripe=renderField(); renderPens(); renderShop(); renderAnimalShop();
+    const ripe=renderField(); renderPens(); renderShop(); renderAnimalShop(); renderFeedStore();
     renderCommodities(); renderCropBuffs(); renderStocks(); renderBigBox(); renderEstates();
     renderHarvestToggle(); renderPantry(); renderInventoryView(); renderCraftRecipes(); renderCraftSlots(); renderRecipes(); renderCasks(); renderFinances();
     const anyAnimalReady=state.animals.some(a=>a.ready);
@@ -3883,7 +4150,7 @@
     const speed=WEATHER[state.weather].speed; let changed=false; let spoiled=0;
     const cropBuff=buffMult('crop'), animalBuff=buffMult('animal');
     state.plots.forEach(p=>{ if(!p.crop) return;
-      if(!p.ready){ p.growth+=dt*speed*cropBuff*dailyCropMult(p.crop)*(cropInSeason(p.crop)?SEASON_BONUS_GROWTH:1); if(p.growth>=CROPS[p.crop].grow){ p.ready=true; p.readyMs=0; changed=true; } }
+      if(!p.ready){ p.growth+=dt*speed*cropBuff*dailyCropMult(p.crop)*(cropInSeason(p.crop)?SEASON_BONUS_GROWTH:1)*(1+Math.min(MANURE_MAX,p.manure||0)*MANURE_PER); if(p.growth>=CROPS[p.crop].grow){ p.ready=true; p.readyMs=0; changed=true; } }
       else { p.readyMs=(p.readyMs||0)+dt;          // count real time spent ripe
         if(p.readyMs>=CROP_SPOIL_MS){ p.crop=null; p.growth=0; p.ready=false; p.readyMs=0; spoiled++; changed=true; } }
     });
@@ -3939,6 +4206,9 @@
     document.getElementById('rain').classList.toggle('on', state.weather==='rain');
     lastTick=Date.now(); skyUpdate(); applyEventBackground(); render();
     { const vl=document.getElementById('verLabel'); if(vl) vl.textContent='Little Acre · v'+VERSION; }
+    { const bl=document.getElementById('bankruptLimit'); if(bl) bl.textContent=fmtMoney(BANKRUPT_LIMIT); }
+    // If a bankrupt save is reloaded, the game-over screen comes right back — no escaping by refreshing.
+    if(state.bankrupt) showBankrupt();
     if(state._migratedFrom!==undefined){
       const from=state._migratedFrom; delete state._migratedFrom; save();
       setTimeout(()=>toast('✅ Save carried over from v'+from+' — coins & resources kept',3200),600);
