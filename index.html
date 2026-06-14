@@ -638,12 +638,23 @@
   .lb-refresh{font-size:16px;cursor:pointer;border:0;border-radius:10px;padding:4px 10px;color:#1f3f28;
     background:linear-gradient(180deg,#ffe28a,#e9b94a);box-shadow:0 2px 0 #b88a2a}
   .lb-refresh:active{transform:translateY(1px)}
-  .lb-row{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:9px}
+  .lb-row{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:9px;cursor:pointer;transition:background .12s}
+  .lb-row:hover{background:rgba(255,255,255,.12)}
   .lb-row:nth-child(odd){background:rgba(255,255,255,.05)}
+  .lb-row:nth-child(odd):hover{background:rgba(255,255,255,.13)}
   .lb-row.me{background:rgba(255,215,120,.18);box-shadow:inset 0 0 0 1px rgba(255,215,120,.4)}
   .lb-rank{font-family:'Fredoka',sans-serif;font-weight:700;color:#ffe28a;width:24px;text-align:center}
   .lb-name{font-family:'Nunito',sans-serif;font-weight:700;color:#eef6ea;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .lb-coins{font-family:'Fredoka',sans-serif;font-weight:700;color:#9fe07e}
+  .lb-peek{font-family:'Fredoka',sans-serif;font-weight:700;color:#9db89a;font-size:18px;width:14px;text-align:center}
+  /* player profile card */
+  .profile-modal{max-width:340px}
+  .prof-rank{font-family:'Fredoka',sans-serif;font-weight:700;color:#ffe28a;font-size:14px;margin:-4px 0 12px}
+  .prof-stats{display:flex;flex-direction:column;gap:7px}
+  .prof-stat{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.06);border-radius:11px;padding:9px 12px}
+  .prof-stat .ps-emoji{font-size:18px;width:22px;text-align:center}
+  .prof-stat .ps-lab{font-family:'Nunito',sans-serif;font-weight:700;color:#dfeeda;flex:1}
+  .prof-stat .ps-val{font-family:'Fredoka',sans-serif;font-weight:700;color:#9fe07e;font-size:15px}
   .lb-empty{text-align:center;color:#bcd3b9;font-family:'Fredoka',sans-serif;font-weight:600;padding:12px 0;font-size:13px}
   .lb-nick{display:flex;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap}
   .lb-nickin{flex:1;min-width:120px;font-family:'Nunito',sans-serif;font-weight:600;font-size:13px;border:2px solid rgba(255,255,255,.2);
@@ -1071,6 +1082,18 @@
   </div>
 </div>
 
+<!-- Read-only player profile card (opened from a leaderboard row) -->
+<div class="overlay" id="profileOverlay" style="display:none">
+  <div class="modal profile-modal">
+    <div class="modal-title">👤 <span id="profName">Farmer</span>
+      <button class="modal-x" id="profClose">✕</button>
+    </div>
+    <div class="prof-rank" id="profRank">#—</div>
+    <div class="prof-stats" id="profStats"></div>
+    <p class="modal-fine">A peek at this farmer's public stats. Farms are read-only from here.</p>
+  </div>
+</div>
+
 <script>
 (function(){
   /* ============================================================================
@@ -1358,7 +1381,7 @@
   const TAX_RATE=0.20;                        // 20% of gross yearly earnings
   const CAPGAINS_RATE=0.25;                   // 25% tax on PROFIT from stock & property sales
   const DEBT_DAILY_INTEREST=0.10;             // 10% compounding daily while in debt
-  const SAVE_KEY='littleacre:save'; const VERSION=40;
+  const SAVE_KEY='littleacre:save'; const VERSION=42;
   const BACKUP_KEY='littleacre:save:backup';   // last-known-good snapshot ("save folder")
   const MIN_MIGRATABLE=13;                       // saves at/after this version migrate forward instead of resetting
   // Leaderboard sanity cap: scores above this are clamped before submission. This is a
@@ -1713,11 +1736,18 @@
   // Push the player's coin score to the shared leaderboard — only if they've claimed a name.
   function pushLeaderboard(){ if(!cloudOn() || !hasNick()) return; clearTimeout(lbTimer);
     lbTimer=setTimeout(async()=>{ try{
-      const score=Math.max(0, Math.min(LEADERBOARD_CAP, Math.floor(state.coins||0)));
+      // allow negative scores (players in debt) — clamp only the magnitude to the cap
+      const score=Math.max(-LEADERBOARD_CAP, Math.min(LEADERBOARD_CAP, Math.floor(state.coins||0)));
+      // public profile stats (safe, non-sensitive) shown on the leaderboard profile card
+      const animals=(state.animals||[]).length;
+      const plotsPlanted=(state.plots||[]).filter(p=>p&&p.crop).length;
+      const properties=state.estates?Object.values(state.estates).filter(e=>e&&e.owned).length:0;
       await window.CLOUD.db.collection('leaderboard').doc(cloudUser.uid).set({
-        name: lbName().slice(0,20), nickKey: state.nickKey||normNick(lbName()), coins: score, updated: Date.now()
+        name: lbName().slice(0,20), nickKey: state.nickKey||normNick(lbName()), coins: score, updated: Date.now(),
+        level: state.level||1, animals, plotsPlanted, properties, year: state.year||1
       });
     }catch(e){ console.warn('pushLeaderboard',e); } }, 1200); }
+  let lbData={};   // uid -> profile data, for the profile card
   // Load and render the top scores into the board popup.
   async function loadLeaderboard(){
     const wrap=document.getElementById('lbList'); if(!wrap) return;
@@ -1725,16 +1755,43 @@
     wrap.innerHTML='<div class="lb-empty">Loading…</div>';
     try{
       const snap=await window.CLOUD.db.collection('leaderboard').orderBy('coins','desc').limit(25).get();
-      const rows=[]; let i=0;
+      const rows=[]; let i=0; lbData={};
       snap.forEach(doc=>{ i++; const d=doc.data();
         const me=cloudUser&&doc.id===cloudUser.uid;
-        rows.push('<div class="lb-row'+(me?' me':'')+'"><span class="lb-rank">'+i+'</span>'+
+        lbData[doc.id]={...d, rank:i};
+        rows.push('<div class="lb-row'+(me?' me':'')+'" data-uid="'+doc.id+'" role="button" tabindex="0"><span class="lb-rank">'+i+'</span>'+
           '<span class="lb-name">'+escapeHTML(d.name||'Farmer')+'</span>'+
-          '<span class="lb-coins">'+fmtMoney(d.coins||0)+'</span></div>');
+          '<span class="lb-coins">'+fmtMoney(d.coins||0)+'</span><span class="lb-peek">›</span></div>');
       });
       wrap.innerHTML = rows.length? rows.join('') : '<div class="lb-empty">No scores yet — be the first!</div>';
+      wrap.querySelectorAll('.lb-row').forEach(r=>{
+        const open=()=>showProfileCard(r.dataset.uid);
+        r.addEventListener('click', open);
+        r.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); open(); } });
+      });
     }catch(e){ wrap.innerHTML='<div class="lb-empty">Couldn\'t load leaderboard.</div>'; console.warn('loadLeaderboard',e); }
   }
+  // Show a read-only profile card for a leaderboard player (public stats only).
+  function showProfileCard(uid){
+    const d=lbData[uid]; if(!d) return;
+    const ov=document.getElementById('profileOverlay'); if(!ov) return;
+    const me=cloudUser&&uid===cloudUser.uid;
+    document.getElementById('profName').textContent=d.name||'Farmer';
+    document.getElementById('profRank').textContent='#'+(d.rank||'—')+(me?' · You':'');
+    const stats=[
+      ['💰','Coins', fmtMoney(d.coins||0)],
+      ['⭐','Level', d.level||1],
+      ['🐔','Animals', d.animals!=null?d.animals:'—'],
+      ['🌱','Crops growing', d.plotsPlanted!=null?d.plotsPlanted:'—'],
+      ['🏘️','Properties', d.properties!=null?d.properties:'—'],
+      ['📅','Year', d.year||1],
+    ];
+    document.getElementById('profStats').innerHTML = stats.map(s=>
+      '<div class="prof-stat"><span class="ps-emoji">'+s[0]+'</span><span class="ps-lab">'+s[1]+'</span><span class="ps-val">'+s[2]+'</span></div>'
+    ).join('');
+    ov.style.display='flex';
+  }
+  function hideProfileCard(){ const ov=document.getElementById('profileOverlay'); if(ov) ov.style.display='none'; }
   function escapeHTML(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
   // ----- nickname popup + board popup wiring -----
@@ -1840,6 +1897,8 @@
   document.getElementById('boardClose').addEventListener('click', closeBoard);
   document.getElementById('boardRefresh').addEventListener('click', loadLeaderboard);
   boardOverlay.addEventListener('click',e=>{ if(e.target===boardOverlay) closeBoard(); });
+  document.getElementById('profClose').addEventListener('click', hideProfileCard);
+  { const po=document.getElementById('profileOverlay'); po.addEventListener('click',e=>{ if(e.target===po) hideProfileCard(); }); }
   document.getElementById('nickLater').addEventListener('click', hideNickPopup);
   document.getElementById('nickConfirm').addEventListener('click', async()=>{
     const raw=(nickInput.value||'').trim();
