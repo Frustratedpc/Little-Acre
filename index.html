@@ -584,6 +584,21 @@
   .lb-open-btn{font-family:'Fredoka',sans-serif;font-weight:600;font-size:12.5px;cursor:pointer;border:0;border-radius:999px;
     padding:7px 13px;color:#3a2410;background:linear-gradient(180deg,#ffe7a8,#e9b94a);box-shadow:0 3px 0 #b88a2a;display:inline-flex;align-items:center;gap:5px}
   .lb-open-btn:active{transform:translateY(1px)}
+  .install-btn{font-family:'Fredoka',sans-serif;font-weight:600;font-size:12.5px;cursor:pointer;border:0;border-radius:999px;
+    padding:7px 13px;color:#fff;background:linear-gradient(180deg,#5bb85f,#3f9a43);box-shadow:0 3px 0 #2e7a32;display:inline-flex;align-items:center;gap:5px}
+  .install-btn:active{transform:translateY(1px)}
+  .ios-steps{margin:6px 0 4px;padding-left:22px;font-family:'Nunito',sans-serif;font-weight:600;font-size:13.5px;color:#dcebd6;line-height:1.7}
+  .ios-steps li{margin-bottom:7px}
+  .ios-steps b{color:#fff}
+  .ios-share,.ios-add{display:inline-block;background:rgba(255,255,255,.16);border-radius:6px;padding:0 6px;font-size:13px}
+  .install-nudge{position:fixed;left:12px;right:12px;bottom:14px;z-index:1100;display:flex;align-items:center;gap:10px;
+    background:linear-gradient(180deg,#2f5d3a,#234a2d);border:2px solid rgba(255,215,120,.4);border-radius:16px;
+    padding:11px 13px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+  .nudge-text{flex:1;font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;color:#eef6ea}
+  .nudge-go{font-family:'Fredoka',sans-serif;font-weight:600;font-size:13px;cursor:pointer;border:0;border-radius:999px;
+    padding:8px 15px;color:#1f3f28;background:linear-gradient(180deg,#ffe28a,#e9b94a);box-shadow:0 3px 0 #b88a2a}
+  .nudge-go:active{transform:translateY(1px)}
+  .nudge-x{font-size:14px;cursor:pointer;border:0;border-radius:8px;padding:5px 9px;color:#fff;background:rgba(0,0,0,.25)}
   /* modal overlays */
   .overlay{position:fixed;inset:0;background:rgba(8,18,12,.72);backdrop-filter:blur(3px);z-index:1000;
     display:flex;align-items:center;justify-content:center;padding:18px}
@@ -637,6 +652,7 @@
     </div>
     <div class="wpill" id="wpill">☀️ Sunny · Day</div>
     <button class="lb-open-btn" id="lbOpenBtn">🏆 Leaderboard</button>
+    <button class="install-btn" id="installBtn" style="display:none">📲 Install</button>
     <div class="acct" id="acct">
       <button class="acct-signin" id="acctSignIn">☁️ Sign in</button>
       <div class="acct-info" id="acctInfo" style="display:none">
@@ -832,6 +848,30 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- iOS "Add to Home Screen" instruction card -->
+<div class="overlay" id="iosInstallOverlay" style="display:none">
+  <div class="modal">
+    <div class="modal-title">📲 Install Little Acre</div>
+    <p class="modal-text">Add Little Acre to your home screen for a full-screen app with its own icon — no App Store needed.</p>
+    <ol class="ios-steps">
+      <li>Tap the <b>Share</b> button <span class="ios-share">􀈂</span> at the bottom of Safari.</li>
+      <li>Scroll down and tap <b>“Add to Home Screen”</b> <span class="ios-add">􀅼</span>.</li>
+      <li>Tap <b>Add</b> — the 🌻 icon appears on your home screen!</li>
+    </ol>
+    <p class="modal-fine" id="iosSafariNote">This only works in <b>Safari</b>. If you opened this in another app, tap the “···” menu and choose “Open in Safari” first.</p>
+    <div class="modal-actions">
+      <button class="modal-btn primary" id="iosInstallOk">Got it</button>
+    </div>
+  </div>
+</div>
+
+<!-- gentle first-visit install nudge -->
+<div class="install-nudge" id="installNudge" style="display:none">
+  <span class="nudge-text">🌻 Add Little Acre to your home screen for quick access!</span>
+  <button class="nudge-go" id="nudgeGo">Install</button>
+  <button class="nudge-x" id="nudgeX" aria-label="Dismiss">✕</button>
+</div>
 
 <!-- Tax season reminder popup (March 1) -->
 <div class="overlay" id="taxOverlay" style="display:none">
@@ -1153,7 +1193,7 @@
   const TAX_RATE=0.20;                        // 20% of gross yearly earnings
   const CAPGAINS_RATE=0.25;                   // 25% tax on PROFIT from stock & property sales
   const DEBT_DAILY_INTEREST=0.10;             // 10% compounding daily while in debt
-  const SAVE_KEY='littleacre:save'; const VERSION=29;
+  const SAVE_KEY='littleacre:save'; const VERSION=31;
   const BACKUP_KEY='littleacre:save:backup';   // last-known-good snapshot ("save folder")
   const MIN_MIGRATABLE=13;                       // saves at/after this version migrate forward instead of resetting
   // Leaderboard sanity cap: scores above this are clamped before submission. This is a
@@ -1386,12 +1426,15 @@
       return true;
     }catch(e){ console.warn('nickAvailable',e); return false; }
   }
-  // Claim a nickname: re-checks availability, writes the reservation + the player's save.
+  // Claim a nickname: writes the PERMANENT reservation (rules reject if taken/immutable),
+  // and only locks it locally if the server actually accepted the write.
   async function claimNick(name){
     const key=normNick(name);
-    // reserve the name doc (id = normalized form, so 'Lou' and 'lou' collide)
+    // reserve the name doc (id = normalized form, so 'Lou' and 'lou' collide). The Firestore
+    // rules only allow this create if the name is unclaimed and uid===auth.uid; once created
+    // it can never be edited or deleted — a permanent binding to this account.
     await window.CLOUD.db.collection('nicknames').doc(key).set({ uid:cloudUser.uid, name:name.trim(), at:Date.now() });
-    state.nickname=name.trim(); save();
+    state.nickname=name.trim(); state.nickKey=key; save();
     pushLeaderboard();
   }
   // Push the player's coin score to the shared leaderboard — only if they've claimed a name.
@@ -1399,7 +1442,7 @@
     lbTimer=setTimeout(async()=>{ try{
       const score=Math.max(0, Math.min(LEADERBOARD_CAP, Math.floor(state.coins||0)));
       await window.CLOUD.db.collection('leaderboard').doc(cloudUser.uid).set({
-        name: lbName().slice(0,20), coins: score, updated: Date.now()
+        name: lbName().slice(0,20), nickKey: state.nickKey||normNick(lbName()), coins: score, updated: Date.now()
       });
     }catch(e){ console.warn('pushLeaderboard',e); } }, 1200); }
   // Load and render the top scores into the board popup.
@@ -1429,11 +1472,79 @@
     if(cloudUser && cloudUser.displayName){ nickInput.value=cloudUser.displayName.split(' ')[0].slice(0,20); } }
   function hideNickPopup(){ if(nickOverlay) nickOverlay.style.display='none'; }
   // Offer the nickname popup after sign-in IF they haven't claimed one yet.
-  function maybePromptNickname(){ if(window.CLOUD && cloudUser && !hasNick()) showNickPopup(); }
+  function maybePromptNickname(){ if(window.CLOUD && cloudUser && !hasNick()) showOverlayWhenFree(showNickPopup); }
   function openBoard(){ if(!boardOverlay) return; boardOverlay.style.display='flex'; loadLeaderboard(); }
   function closeBoard(){ if(boardOverlay) boardOverlay.style.display='none'; }
 
   document.getElementById('lbOpenBtn').addEventListener('click', openBoard);
+
+  // ---------- install helper (Add to Home Screen) ----------
+  (function(){
+    const btn=document.getElementById('installBtn');
+    const nudge=document.getElementById('installNudge');
+    const iosOv=document.getElementById('iosInstallOverlay');
+    // Already installed? (running standalone) → never show install UI.
+    const standalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches
+      || window.navigator.standalone === true;
+    const ua=navigator.userAgent||'';
+    const isIOS=/iPad|iPhone|iPod/.test(ua) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
+    const isAndroid=/Android/.test(ua);
+    let deferredPrompt=null;
+
+    function showIOSCard(){ if(iosOv) iosOv.style.display='flex'; }
+    function hideIOSCard(){ if(iosOv) iosOv.style.display='none'; }
+    function hideNudge(remember){ if(nudge) nudge.style.display='none';
+      if(remember){ try{ localStorage.setItem('la_install_dismissed','1'); }catch(e){} } }
+
+    // Android/desktop Chrome: capture the install event and reveal the button.
+    window.addEventListener('beforeinstallprompt',(e)=>{
+      e.preventDefault(); deferredPrompt=e;
+      if(btn) btn.style.display='inline-flex';
+      maybeNudge();
+    });
+    // Fired after a successful install — tidy up.
+    window.addEventListener('appinstalled',()=>{ deferredPrompt=null;
+      if(btn) btn.style.display='none'; hideNudge(false); });
+
+    async function doInstall(){
+      if(deferredPrompt){                     // Android path: native prompt
+        deferredPrompt.prompt();
+        try{ await deferredPrompt.userChoice; }catch(e){}
+        deferredPrompt=null; if(btn) btn.style.display='none'; hideNudge(false);
+      } else if(isIOS){                        // iOS path: show manual instructions
+        showIOSCard();
+      } else {
+        // Fallback: some browsers don't fire the event; on iOS show card, else gentle note.
+        if(isIOS) showIOSCard(); else toast('To install: use your browser menu → “Install” or “Add to Home Screen”', 3600);
+      }
+    }
+
+    if(btn) btn.addEventListener('click', doInstall);
+    document.getElementById('nudgeGo')?.addEventListener('click', ()=>{ hideNudge(false); doInstall(); });
+    document.getElementById('nudgeX')?.addEventListener('click', ()=>hideNudge(true));
+    document.getElementById('iosInstallOk')?.addEventListener('click', hideIOSCard);
+    iosOv?.addEventListener('click',e=>{ if(e.target===iosOv) hideIOSCard(); });
+
+    // Decide what install UI to show on load.
+    function init(){
+      if(standalone) return;                   // already installed, show nothing
+      if(isIOS){
+        // iOS never fires beforeinstallprompt, so always offer the manual button + nudge.
+        if(btn) btn.style.display='inline-flex';
+        maybeNudge();
+      }
+      // Android handled by the beforeinstallprompt listener above.
+    }
+    // Gentle first-visit nudge (once; respects dismissal).
+    let nudged=false;
+    function maybeNudge(){
+      if(nudged || standalone) return; nudged=true;
+      let dismissed=false; try{ dismissed=localStorage.getItem('la_install_dismissed')==='1'; }catch(e){}
+      if(dismissed) return;
+      setTimeout(()=>{ if(nudge && !standalone) nudge.style.display='flex'; }, 8000);  // after ~8s of play
+    }
+    init();
+  })();
   (function(){ const t=document.getElementById('taxOk'); if(t) t.addEventListener('click',()=>{ document.getElementById('taxOverlay').style.display='none'; }); })();
   // April 14 popup: Pay now charges the bill; Extend pays a flat fee and defers to October.
   (function(){
@@ -1897,29 +2008,46 @@
     showTaxNotice(owed);
   }
   // Display the March 1 tax-reminder modal with a running estimate of what's owed so far.
+  // True if any full-screen modal overlay is currently visible (so we don't stack popups).
+  function anyOverlayOpen(){
+    return Array.from(document.querySelectorAll('.overlay'))
+      .some(o=>o.style.display && o.style.display!=='none');
+  }
+  // Show an overlay, but if another is already open, wait and retry so they don't overlap.
+  function showOverlayWhenFree(showFn, tries){
+    tries=tries||0;
+    if(anyOverlayOpen() && tries<40){ setTimeout(()=>showOverlayWhenFree(showFn,tries+1), 1500); return; }
+    showFn();
+  }
   function showTaxNotice(owed){
-    const ov=document.getElementById('taxOverlay'); if(!ov) return;
-    const est=document.getElementById('taxEstimate');
-    if(est) est.innerHTML = owed>0
-      ? 'So far you\'d owe about <b>'+fmtMoney(owed)+'</b> — and you have until April 14th to be ready.'
-      : 'You haven\'t earned anything taxable yet this cycle — but keep it in mind as you sell!';
-    ov.style.display='flex';
+    showOverlayWhenFree(()=>{
+      const ov=document.getElementById('taxOverlay'); if(!ov) return;
+      const est=document.getElementById('taxEstimate');
+      if(est) est.innerHTML = owed>0
+        ? 'So far you\'d owe about <b>'+fmtMoney(owed)+'</b> — and you have until April 14th to be ready.'
+        : 'You haven\'t earned anything taxable yet this cycle — but keep it in mind as you sell!';
+      ov.style.display='flex';
+    });
   }
   // April 14 tax-due modal: Pay now, or Extend to October for a flat fee.
   function showTaxDuePopup(tax, earned){
-    const ov=document.getElementById('taxDueOverlay'); if(!ov){ spend(tax); return; }
-    document.getElementById('taxDueAmt').innerHTML='You owe <b>'+fmtMoney(tax)+'</b> (20% of '+fmtMoney(earned)+' earned).';
-    document.getElementById('taxExtendBtn').innerHTML='Extend to Oct 14 ('+TAX_EXTENSION_FEE+' coins)';
-    ov._tax=tax;   // stash the bill on the element for the handlers
-    ov.style.display='flex';
+    showOverlayWhenFree(()=>{
+      const ov=document.getElementById('taxDueOverlay'); if(!ov){ spend(tax); return; }
+      document.getElementById('taxDueAmt').innerHTML='You owe <b>'+fmtMoney(tax)+'</b> (20% of '+fmtMoney(earned)+' earned).';
+      document.getElementById('taxExtendBtn').innerHTML='Extend to Oct 14 ('+TAX_EXTENSION_FEE+' coins)';
+      ov._tax=tax;
+      ov.style.display='flex';
+    });
   }
   // October 14 modal: the deferred bill is being collected now, debt or not.
   function showOctoberTaxPopup(amt){
-    const ov=document.getElementById('octTaxOverlay'); if(!ov) return;
-    const inDebt=state.coins<0;
-    document.getElementById('octTaxAmt').innerHTML='Your extended tax bill of <b>'+fmtMoney(amt)+'</b> has been collected.'+
-      (inDebt?' This pushed you into debt — pay it down fast (10%/day interest)!':'');
-    ov.style.display='flex';
+    showOverlayWhenFree(()=>{
+      const ov=document.getElementById('octTaxOverlay'); if(!ov) return;
+      const inDebt=state.coins<0;
+      document.getElementById('octTaxAmt').innerHTML='Your extended tax bill of <b>'+fmtMoney(amt)+'</b> has been collected.'+
+        (inDebt?' This pushed you into debt — pay it down fast (10%/day interest)!':'');
+      ov.style.display='flex';
+    });
   }
 
   // ---------- day / night ----------
