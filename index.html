@@ -184,6 +184,8 @@
     display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,.35);transition:transform .1s}
   .pen .butcher:hover{transform:scale(1.12)}
   .pen .butcher:active{transform:scale(.94)}
+  .pen .agehint{position:absolute;bottom:3px;right:3px;z-index:3;font-family:'Fredoka',sans-serif;font-weight:600;font-size:9px;
+    background:rgba(0,0,0,.55);color:#ffe28a;border-radius:8px;padding:2px 5px;line-height:1;white-space:nowrap}
   @keyframes starvepulse{0%,100%{filter:none}50%{filter:brightness(.8) saturate(1.3)}}
   /* ===== finances panel ===== */
   .finances{background:linear-gradient(180deg,#fbf4e4,#efe2c8);border:7px solid var(--wood);border-radius:22px;padding:13px;
@@ -561,6 +563,48 @@
   .lb-nick{display:flex;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap}
   .lb-nickin{flex:1;min-width:120px;font-family:'Nunito',sans-serif;font-weight:600;font-size:13px;border:2px solid rgba(255,255,255,.2);
     border-radius:10px;padding:7px 10px;background:rgba(255,255,255,.92);color:#234}
+  /* table-mates (recurring bot characters) */
+  .tablemates{margin-top:14px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.18);display:flex;flex-direction:column;gap:7px}
+  .tm-row{display:flex;align-items:center;gap:9px;font-family:'Nunito',sans-serif;font-size:12.5px}
+  .tm-av{width:30px;height:30px;flex:0 0 30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;
+    background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.18)}
+  .tm-name{font-weight:800;color:#eef6ea;min-width:78px}
+  .tm-name small{display:block;font-weight:600;color:#9fb8a4;font-size:10px}
+  .tm-status{flex:1;color:#d8e6d2}
+  .tm-status .win{color:#7fe39a;font-weight:800}
+  .tm-status .lose{color:#ff9b86;font-weight:800}
+  .tm-status .push{color:#ffd98a;font-weight:800}
+  .tm-status .fold{color:#9fb8a4}
+  .tm-mini{display:inline-flex;gap:3px;margin-left:4px;vertical-align:middle}
+  .tm-mc{width:18px;height:25px;border-radius:3px;background:#fff;display:inline-flex;align-items:center;justify-content:center;
+    font-family:'Fredoka',sans-serif;font-weight:700;font-size:9px;box-shadow:0 1px 2px rgba(0,0,0,.3)}
+  .tm-mc.red{color:#c0392b}.tm-mc.black{color:#222}
+  .tm-mc.back{background:repeating-linear-gradient(45deg,#3a6ea5,#3a6ea5 3px,#2c5482 3px,#2c5482 6px);color:transparent}
+  /* leaderboard top button */
+  .lb-open-btn{font-family:'Fredoka',sans-serif;font-weight:600;font-size:12.5px;cursor:pointer;border:0;border-radius:999px;
+    padding:7px 13px;color:#3a2410;background:linear-gradient(180deg,#ffe7a8,#e9b94a);box-shadow:0 3px 0 #b88a2a;display:inline-flex;align-items:center;gap:5px}
+  .lb-open-btn:active{transform:translateY(1px)}
+  /* modal overlays */
+  .overlay{position:fixed;inset:0;background:rgba(8,18,12,.72);backdrop-filter:blur(3px);z-index:1000;
+    display:flex;align-items:center;justify-content:center;padding:18px}
+  .modal{background:linear-gradient(180deg,#274d31,#1d3a25);border:3px solid #6b4423;border-radius:20px;padding:20px;
+    width:100%;max-width:380px;box-shadow:0 18px 50px rgba(0,0,0,.5)}
+  .modal-title{font-family:'Fredoka',sans-serif;font-weight:700;font-size:18px;color:#ffe28a;margin-bottom:10px;
+    display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .modal-text{font-family:'Nunito',sans-serif;font-weight:600;font-size:13.5px;color:#dcebd6;line-height:1.5;margin:0 0 14px}
+  .modal-text b{color:#fff}
+  .modal-input{width:100%;box-sizing:border-box;font-family:'Fredoka',sans-serif;font-weight:600;font-size:16px;
+    border:2px solid rgba(255,255,255,.25);border-radius:12px;padding:11px 13px;background:rgba(255,255,255,.95);color:#234}
+  .modal-err{min-height:18px;font-family:'Nunito',sans-serif;font-weight:700;font-size:12.5px;color:#ff9b86;margin:7px 2px 0}
+  .modal-actions{display:flex;gap:9px;margin-top:14px;justify-content:flex-end}
+  .modal-btn{font-family:'Fredoka',sans-serif;font-weight:600;font-size:14px;cursor:pointer;border:0;border-radius:12px;padding:10px 18px}
+  .modal-btn:active{transform:translateY(1px)}
+  .modal-btn.primary{color:#1f3f28;background:linear-gradient(180deg,#ffe28a,#e9b94a);box-shadow:0 3px 0 #b88a2a}
+  .modal-btn.ghost{color:#dcebd6;background:rgba(255,255,255,.12)}
+  .modal-fine{font-family:'Nunito',sans-serif;font-weight:600;font-size:11px;color:#9fb8a4;line-height:1.45;margin:12px 0 0}
+  .modal-x{font-size:15px;cursor:pointer;border:0;border-radius:9px;padding:3px 9px;color:#fff;background:rgba(0,0,0,.3)}
+  .board-modal{max-width:420px}
+  .board-modal .lb-list{max-height:50vh;overflow-y:auto;margin-top:4px}
 </style>
 
 <div class="sky-layer" id="sky-morning"></div>
@@ -592,6 +636,7 @@
       <span class="xptext" id="xpText">0 / 25 XP</span>
     </div>
     <div class="wpill" id="wpill">☀️ Sunny · Day</div>
+    <button class="lb-open-btn" id="lbOpenBtn">🏆 Leaderboard</button>
     <div class="acct" id="acct">
       <button class="acct-signin" id="acctSignIn">☁️ Sign in</button>
       <div class="acct-info" id="acctInfo" style="display:none">
@@ -703,18 +748,6 @@
       <span class="lede">Try your luck with in-game coins. The house has an edge — bet what you can spare.</span>
     </div>
 
-    <div class="leaderboard">
-      <div class="lb-head">
-        <span class="lb-title">🏆 World Leaderboard — Coins</span>
-        <button class="lb-refresh" id="lbRefresh">↻</button>
-      </div>
-      <div class="lb-list" id="lbList"><div class="lb-empty">Sign in (top of screen) to join the leaderboard.</div></div>
-      <div class="lb-nick">
-        <span class="cas-label">Name shown:</span>
-        <input class="lb-nickin" id="lbNick" maxlength="24" placeholder="your nickname" />
-        <button class="chip" id="lbNickSave">Save</button>
-      </div>
-    </div>
     <!-- Roulette -->
     <div class="cas-game" id="game-roulette">
       <div class="cas-table-title">🎡 Roulette</div>
@@ -754,6 +787,7 @@
           <button class="bj-btn" id="bjHit">Hit</button>
           <button class="bj-btn" id="bjStand">Stand</button>
         </div>
+        <div class="tablemates" id="bjMates"></div>
       </div>
       <div class="bj-msg" id="bjMsg">Place a bet and deal.</div>
     </div>
@@ -778,6 +812,7 @@
           <button class="bj-btn" id="heBet">Bet <span id="heBetLbl"></span></button>
           <button class="bj-btn" id="heFold">Fold</button>
         </div>
+        <div class="tablemates" id="heMates"></div>
       </div>
       <div class="bj-msg" id="heMsg">Ante up and deal. Beat the house's hand to win.</div>
     </div>
@@ -797,6 +832,71 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- Tax season reminder popup (March 1) -->
+<div class="overlay" id="taxOverlay" style="display:none">
+  <div class="modal">
+    <div class="modal-title">🧾 Tax season is here</div>
+    <p class="modal-text">It's <b>March 1st</b> in Little Acre. A friendly reminder: <b>income taxes are due April 14th.</b> You'll owe <b>20%</b> of everything you've earned since last tax day.</p>
+    <p class="modal-text" id="taxEstimate"></p>
+    <div class="modal-actions">
+      <button class="modal-btn primary" id="taxOk">Got it</button>
+    </div>
+    <p class="modal-fine">Tip: keep a cushion of coins so the April 14th bill doesn't push you into debt (debt compounds at 10%/day!).</p>
+  </div>
+</div>
+
+<!-- Tax DUE popup (April 14): pay now or extend -->
+<div class="overlay" id="taxDueOverlay" style="display:none">
+  <div class="modal">
+    <div class="modal-title">🧾 Tax day — April 14th</div>
+    <p class="modal-text" id="taxDueAmt"></p>
+    <p class="modal-text">Pay it now, or file for an extension and defer the bill until <b>October 14th</b> for a flat fee. (The October bill is locked at today's amount — but it will be collected then no matter what.)</p>
+    <div class="modal-actions">
+      <button class="modal-btn ghost" id="taxExtendBtn">Extend to Oct 14 (100 coins)</button>
+      <button class="modal-btn primary" id="taxPayNowBtn">Pay now</button>
+    </div>
+  </div>
+</div>
+
+<!-- October 14 collection popup -->
+<div class="overlay" id="octTaxOverlay" style="display:none">
+  <div class="modal">
+    <div class="modal-title">🧾 Extended tax due — October 14th</div>
+    <p class="modal-text" id="octTaxAmt"></p>
+    <div class="modal-actions">
+      <button class="modal-btn primary" id="octTaxOk">Got it</button>
+    </div>
+  </div>
+</div>
+
+<!-- Nickname setup popup (first sign-in / sync) -->
+<div class="overlay" id="nickOverlay" style="display:none">
+  <div class="modal">
+    <div class="modal-title">🏆 Choose your leaderboard name</div>
+    <p class="modal-text">Pick the name you'll appear as on the world leaderboard. <b>Choose carefully — this can only be set once and can't be changed later.</b></p>
+    <input class="modal-input" id="nickInput" maxlength="20" placeholder="e.g. SunflowerSam" autocomplete="off" />
+    <div class="modal-err" id="nickErr"></div>
+    <div class="modal-actions">
+      <button class="modal-btn ghost" id="nickLater">Maybe later</button>
+      <button class="modal-btn primary" id="nickConfirm">Claim name</button>
+    </div>
+    <p class="modal-fine">Names must be unique and appropriate. You can keep playing without one, but you won't appear on the leaderboard until you choose.</p>
+  </div>
+</div>
+
+<!-- Full leaderboard popup -->
+<div class="overlay" id="boardOverlay" style="display:none">
+  <div class="modal board-modal">
+    <div class="modal-title">🏆 World Leaderboard — Coins
+      <button class="modal-x" id="boardClose">✕</button>
+    </div>
+    <div class="lb-list" id="lbList"><div class="lb-empty">Loading…</div></div>
+    <div class="modal-actions">
+      <button class="modal-btn ghost" id="boardRefresh">↻ Refresh</button>
+    </div>
+  </div>
+</div>
 
 <script>
 (function(){
@@ -1031,15 +1131,29 @@
   const DAYS_PER_YEAR=365, DAYS_PER_WEEK=7;
   const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const MONTH_LEN=[31,28,31,30,31,30,31,31,30,31,30,31];
+  // GLOBAL SHARED CLOCK: every player derives the same in-game day from this fixed real-world
+  // epoch, so the calendar is identical worldwide (no server needed — just shared math).
+  // Day number = floor((now - WORLD_EPOCH) / CYCLE). Year rolls over every DAYS_PER_YEAR.
+  const WORLD_EPOCH=Date.UTC(2026,5,14,0,0,0);  // the shared world began Jun 14 2026 (UTC) — Year 1, Jan 1
+  const TAX_DOY=104;            // April 14 = day-of-year 104 (31+28+31+14): tax due date
+  const OCT_TAX_DOY=287;        // October 14 = day-of-year 287: extended-tax collection date
+  const TAX_EXTENSION_FEE=100;  // flat coins to defer the April bill to October
+  const MARCH1_DOY=60;          // March 1 = day-of-year 60: tax-reminder popup fires
+  // day-of-year (1..365) for a given absolute day number
+  function doyOf(absDay){ let d=((absDay-1)%DAYS_PER_YEAR)+1; return d; }
+  function yearOf(absDay){ return Math.floor((absDay-1)/DAYS_PER_YEAR)+1; }
+  // the current global absolute day (1-based), shared by all players
+  function globalAbsDay(){ return 1+Math.floor((Date.now()-WORLD_EPOCH)/CYCLE); }
   // Expenses & risk
   const FEED_PER_ANIMAL={chicken:100, cow:500, sheep:500, goat:500, pig:500, bee:100, iguana:500};  // weekly feed: 500 large, 100 small
   const SMALL_ANIMALS=['chicken','bee'];      // vulnerable to foxes
   const FOX_DAILY_CHANCE=0.01;                // 1% per small animal per day
-  const OLDAGE_START_DAYS=40;                 // animals start risking old-age death after this age (in-game days)
+  const OLDAGE_START_DAYS=730;                // animals risk old-age death after 2 in-game years (so they can reach butchering age)
+  const BUTCHER_MIN_AGE=365;                  // an animal must be a full in-game year old before it can be processed for meat
   const TAX_RATE=0.20;                        // 20% of gross yearly earnings
   const CAPGAINS_RATE=0.25;                   // 25% tax on PROFIT from stock & property sales
   const DEBT_DAILY_INTEREST=0.10;             // 10% compounding daily while in debt
-  const SAVE_KEY='littleacre:save'; const VERSION=24;
+  const SAVE_KEY='littleacre:save'; const VERSION=29;
   const BACKUP_KEY='littleacre:save:backup';   // last-known-good snapshot ("save folder")
   const MIN_MIGRATABLE=13;                       // saves at/after this version migrate forward instead of resetting
   // Leaderboard sanity cap: scores above this are clamped before submission. This is a
@@ -1240,23 +1354,61 @@
   }
   // ---------- worldwide leaderboard (coins) ----------
   let lbTimer=null;
-  // The public name a player shows on the board: their chosen nickname, else Google name.
-  function lbName(){ return (state.nickname && state.nickname.trim()) || (cloudUser&&(cloudUser.displayName||cloudUser.email)) || 'Farmer'; }
-  // Push the player's coin score to the shared leaderboard (debounced, clamped to the cap).
-  function pushLeaderboard(){ if(!cloudOn()) return; clearTimeout(lbTimer);
+  // Banned substrings for nicknames (slurs/profanity). Not exhaustive — a basic guard, not
+  // perfect moderation. Matched case-insensitively against the de-spaced, letterized name.
+  const BANNED=['nigger','nigga','faggot','fag','retard','spic','chink','kike','wetback','tranny','cunt','whore','slut',
+    'rape','rapist','nazi','hitler','beaner','coon','dyke','gook','paki','shit','fuck','bitch','dick','cock','pussy','penis','vagina','sex','porn','anus','admin','moderator'];
+  // Normalize for filtering: lowercase, strip non-letters, fold common leetspeak.
+  function normNick(s){ return String(s).toLowerCase()
+    .replace(/[1!|]/g,'i').replace(/0/g,'o').replace(/3/g,'e').replace(/4@/g,'a').replace(/5/g,'s').replace(/7/g,'t')
+    .replace(/[^a-z]/g,''); }
+  function nickIsClean(s){ const n=normNick(s); return !BANNED.some(b=>n.includes(b)); }
+  // Validate format. Returns an error string, or '' if OK.
+  function nickFormatError(s){
+    const t=s.trim();
+    if(t.length<3) return 'Too short — at least 3 characters.';
+    if(t.length>20) return 'Too long — 20 characters max.';
+    if(!/^[A-Za-z0-9 _-]+$/.test(t)) return 'Letters, numbers, spaces, _ and - only.';
+    if(!nickIsClean(t)) return 'That name isn\'t allowed. Try another.';
+    return '';
+  }
+  // The public name a player shows on the board (only set once claimed).
+  function lbName(){ return (state.nickname && state.nickname.trim()) || ''; }
+  function hasNick(){ return !!(state.nickname && state.nickname.trim()); }
+  // Check Firestore whether a nickname is already claimed by someone else.
+  // Returns true if available. (Best-effort uniqueness; not perfectly atomic without a server.)
+  async function nickAvailable(name){
+    if(!window.CLOUD) return false;
+    try{
+      const key=normNick(name);
+      const snap=await window.CLOUD.db.collection('nicknames').doc(key).get();
+      if(snap.exists){ const d=snap.data(); return cloudUser && d.uid===cloudUser.uid; } // yours = ok
+      return true;
+    }catch(e){ console.warn('nickAvailable',e); return false; }
+  }
+  // Claim a nickname: re-checks availability, writes the reservation + the player's save.
+  async function claimNick(name){
+    const key=normNick(name);
+    // reserve the name doc (id = normalized form, so 'Lou' and 'lou' collide)
+    await window.CLOUD.db.collection('nicknames').doc(key).set({ uid:cloudUser.uid, name:name.trim(), at:Date.now() });
+    state.nickname=name.trim(); save();
+    pushLeaderboard();
+  }
+  // Push the player's coin score to the shared leaderboard — only if they've claimed a name.
+  function pushLeaderboard(){ if(!cloudOn() || !hasNick()) return; clearTimeout(lbTimer);
     lbTimer=setTimeout(async()=>{ try{
       const score=Math.max(0, Math.min(LEADERBOARD_CAP, Math.floor(state.coins||0)));
       await window.CLOUD.db.collection('leaderboard').doc(cloudUser.uid).set({
-        name: lbName().slice(0,24), coins: score, updated: Date.now()
+        name: lbName().slice(0,20), coins: score, updated: Date.now()
       });
     }catch(e){ console.warn('pushLeaderboard',e); } }, 1200); }
-  // Load and render the top scores.
+  // Load and render the top scores into the board popup.
   async function loadLeaderboard(){
     const wrap=document.getElementById('lbList'); if(!wrap) return;
     if(!window.CLOUD){ wrap.innerHTML='<div class="lb-empty">Leaderboard needs an internet connection.</div>'; return; }
     wrap.innerHTML='<div class="lb-empty">Loading…</div>';
     try{
-      const snap=await window.CLOUD.db.collection('leaderboard').orderBy('coins','desc').limit(10).get();
+      const snap=await window.CLOUD.db.collection('leaderboard').orderBy('coins','desc').limit(25).get();
       const rows=[]; let i=0;
       snap.forEach(doc=>{ i++; const d=doc.data();
         const me=cloudUser&&doc.id===cloudUser.uid;
@@ -1268,6 +1420,55 @@
     }catch(e){ wrap.innerHTML='<div class="lb-empty">Couldn\'t load leaderboard.</div>'; console.warn('loadLeaderboard',e); }
   }
   function escapeHTML(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  // ----- nickname popup + board popup wiring -----
+  const nickOverlay=document.getElementById('nickOverlay'), nickInput=document.getElementById('nickInput'),
+        nickErr=document.getElementById('nickErr'), boardOverlay=document.getElementById('boardOverlay');
+  function showNickPopup(){ if(!nickOverlay) return; nickErr.textContent=''; nickInput.value=''; nickOverlay.style.display='flex';
+    // suggest their Google given name as a starting point
+    if(cloudUser && cloudUser.displayName){ nickInput.value=cloudUser.displayName.split(' ')[0].slice(0,20); } }
+  function hideNickPopup(){ if(nickOverlay) nickOverlay.style.display='none'; }
+  // Offer the nickname popup after sign-in IF they haven't claimed one yet.
+  function maybePromptNickname(){ if(window.CLOUD && cloudUser && !hasNick()) showNickPopup(); }
+  function openBoard(){ if(!boardOverlay) return; boardOverlay.style.display='flex'; loadLeaderboard(); }
+  function closeBoard(){ if(boardOverlay) boardOverlay.style.display='none'; }
+
+  document.getElementById('lbOpenBtn').addEventListener('click', openBoard);
+  (function(){ const t=document.getElementById('taxOk'); if(t) t.addEventListener('click',()=>{ document.getElementById('taxOverlay').style.display='none'; }); })();
+  // April 14 popup: Pay now charges the bill; Extend pays a flat fee and defers to October.
+  (function(){
+    const ov=document.getElementById('taxDueOverlay');
+    const payBtn=document.getElementById('taxPayNowBtn'), extBtn=document.getElementById('taxExtendBtn');
+    if(payBtn) payBtn.addEventListener('click',()=>{
+      const tax=ov._tax||0; spend(tax); ov.style.display='none';
+      bumpCoins(); render(); save();
+      toast('🧾 Tax paid: -'+fmtMoney(tax), 3000);
+    });
+    if(extBtn) extBtn.addEventListener('click',()=>{
+      const tax=ov._tax||0;
+      spend(TAX_EXTENSION_FEE);
+      state.taxDeferred=true; state.taxDeferredAmt=tax;
+      ov.style.display='none'; bumpCoins(); render(); save();
+      toast('🗓️ Extension filed (-'+TAX_EXTENSION_FEE+'). '+fmtMoney(tax)+' now due Oct 14.', 3600);
+    });
+    const oct=document.getElementById('octTaxOk'); if(oct) oct.addEventListener('click',()=>{ document.getElementById('octTaxOverlay').style.display='none'; });
+  })();
+  document.getElementById('boardClose').addEventListener('click', closeBoard);
+  document.getElementById('boardRefresh').addEventListener('click', loadLeaderboard);
+  boardOverlay.addEventListener('click',e=>{ if(e.target===boardOverlay) closeBoard(); });
+  document.getElementById('nickLater').addEventListener('click', hideNickPopup);
+  document.getElementById('nickConfirm').addEventListener('click', async()=>{
+    const raw=(nickInput.value||'').trim();
+    const fmt=nickFormatError(raw);
+    if(fmt){ nickErr.textContent=fmt; return; }
+    if(!window.CLOUD || !cloudUser){ nickErr.textContent='You need to be signed in.'; return; }
+    nickErr.textContent='Checking availability…'; nickErr.style.color='#ffd98a';
+    const ok=await nickAvailable(raw);
+    if(!ok){ nickErr.style.color=''; nickErr.textContent='“'+raw+'” is taken — try adding numbers, e.g. '+raw.replace(/\s+/g,'')+Math.floor(10+Math.random()*89)+'.'; return; }
+    try{ await claimNick(raw); nickErr.style.color=''; hideNickPopup();
+      toast('🏆 Leaderboard name set to '+raw+' — good luck!'); updateAccountUI(); }
+    catch(e){ nickErr.style.color=''; nickErr.textContent='Couldn\'t claim that name, try again.'; console.warn('claim',e); }
+  });
   // Wire the sign-in / sign-out buttons (top chip + bottom bar) and react to auth changes.
   function initCloud(){
     const doSignIn=async()=>{ try{
@@ -1296,7 +1497,7 @@
     window.CLOUD.auth.onAuthStateChanged(async(user)=>{
       cloudUser=user||null;
       updateAccountUI();
-      if(user){ await cloudPullAndMerge(); pushLeaderboard(); loadLeaderboard(); }
+      if(user){ await cloudPullAndMerge(); pushLeaderboard(); maybePromptNickname(); }
       else { setCloudStatus('☁️ Cloud saves: not signed in',''); }
     });
   }
@@ -1337,9 +1538,18 @@
     if(typeof s.day!=='number') s.day=1;
     if(typeof s.year!=='number') s.year=1;
     if(typeof s.lastDay!=='number') s.lastDay=s.day;
-    if(typeof s.nextFeedDay!=='number') s.nextFeedDay=DAYS_PER_WEEK+1;
     if(typeof s.earnedThisYear!=='number') s.earnedThisYear=0;
     if(typeof s.inDebt!=='boolean') s.inDebt=false;
+    // GLOBAL CLOCK: snap this save onto the shared world calendar. The day/year are derived
+    // from real time so everyone matches. We DON'T retro-charge taxes for days before now —
+    // lastDay starts at "today" so no surprise back-taxes from the jump.
+    const gd=globalAbsDay();
+    s.lastDay=gd; s.day=doyOf(gd); s.year=yearOf(gd);
+    if(typeof s.taxNoticeYear!=='number') s.taxNoticeYear=s.year;   // don't fire March popup retroactively
+    if(typeof s.taxedYear!=='number') s.taxedYear=s.year;
+    if(typeof s.taxDeferred!=='boolean') s.taxDeferred=false;
+    if(typeof s.taxDeferredAmt!=='number') s.taxDeferredAmt=0;
+    if(typeof s.nextFeedDay!=='number' || s.nextFeedDay<=gd) s.nextFeedDay=gd+DAYS_PER_WEEK;
     { let extra=0; for(const id in PROPERTIES){ if(s.estates&&s.estates[id]&&s.estates[id].owned) extra+=PROPERTIES[id].slots||0; }
       const need=GRID+extra; while(s.plots.length<need) s.plots.push({crop:null,growth:0,ready:false}); }
     s.weather=s.weather||'sun'; s.dayClock=s.dayClock||0;
@@ -1512,9 +1722,8 @@
   // Number of simultaneous cellar ferment slots (grows with level).
   function cellarCap(){ return CELLAR_CAP_BASE + Math.floor((state.level-1)/3); }
   // Absolute in-game day as a fraction (used for Wonder Wine aging).
-  function absDay(){ // absolute in-game day, fractional (includes progress through current day)
-    const frac=(state.dayClock%CYCLE)/CYCLE;
-    return (state.year-1)*DAYS_PER_YEAR + state.day + frac;
+  function absDay(){ // absolute in-game day, fractional — derived from the shared world clock
+    return 1+(Date.now()-WORLD_EPOCH)/CYCLE;
   }
   // Current sell value of a brew (Wonder Wine grows by year; others by aging).
   function bottleValue(key, doneAt, batch){ const r=RECIPES[key];
@@ -1587,17 +1796,20 @@
   function spend(n){ // n>0 cost; pushes into debt if unaffordable (coins go negative)
     state.coins-=n; if(state.coins<0) state.inDebt=true;
   }
-  // Roll the calendar forward, processing each new day (and offline catch-up).
+  // Roll the calendar forward to the GLOBAL day, processing each new day exactly once.
   function advanceCalendar(){
-    const totalDays=1+Math.floor(state.dayClock/CYCLE);
+    const totalDays=globalAbsDay();                 // shared world day for everyone
     if(totalDays<=state.lastDay) return;            // no new day yet
     const offline=state._offlineCatchup; if(offline) calcSummary={feed:0,tax:0,foxed:0,died:0,starved:0,interest:0};
     while(state.lastDay<totalDays){
       state.lastDay++;
-      state.day++;
+      const doy=doyOf(state.lastDay);
+      state.day=doy; state.year=yearOf(state.lastDay);
       state.animals.forEach(a=>a.age++);
       processDay(offline);
-      if(state.day>DAYS_PER_YEAR){ state.day=1; processYearEnd(offline); }
+      if(doy===TAX_DOY) processTaxDay(offline);          // April 14: taxes due (pay or extend)
+      if(doy===OCT_TAX_DOY) processOctoberTax(offline);  // October 14: collect any extended bill
+      if(doy===MARCH1_DOY) noteTaxSeason(offline);       // March 1: reminder popup
     }
     if(offline){ state._offlineCatchup=false;
       const sm=calcSummary, parts=[];
@@ -1654,20 +1866,69 @@
     else { spend(bill); state.animals.forEach(a=>a.starving=true);
       if(offline) calcSummary.feed+=bill; else toast('⚠️ Couldn\'t afford feed (-'+bill+'). Animals are starving!', 3000); }
   }
-  // On New Year: charge 20% income tax on the year's gross earnings.
-  function processYearEnd(offline){
-    state.year++;
-    const tax=Math.round(state.earnedThisYear*TAX_RATE);
-    if(tax>0){ spend(tax);
-      if(offline) calcSummary.tax+=tax; else toast('🧾 Year '+(state.year-1)+' tax: -'+tax+' (20% of '+state.earnedThisYear+' earned)', 3400); }
-    state.earnedThisYear=0;
+  // April 14: tax day. The bill is 20% of everything earned since the last tax day.
+  // Online: show a popup letting the player Pay now, or Extend to Oct 14 for a flat fee.
+  // Offline (catch-up): just charge it (no UI possible mid-burst).
+  function processTaxDay(offline){
+    const tax=Math.round((state.earnedThisYear||0)*TAX_RATE);
+    const earned=state.earnedThisYear||0;
+    state.earnedThisYear=0;                 // reset now; next cycle is taxed separately
+    state.taxedYear=state.year;
+    if(tax<=0) return;                       // nothing owed
+    if(offline){ spend(tax); calcSummary.tax+=tax; return; }
+    showTaxDuePopup(tax, earned);
+  }
+  // October 14: if the player extended in April, collect the locked bill now — no option to
+  // defer, and it WILL push them into debt if they can't cover it.
+  function processOctoberTax(offline){
+    if(!state.taxDeferred || !(state.taxDeferredAmt>0)) return;
+    const amt=state.taxDeferredAmt;
+    state.taxDeferred=false; state.taxDeferredAmt=0;
+    spend(amt);
+    if(offline){ calcSummary.tax+=amt; return; }
+    showOctoberTaxPopup(amt);
+  }
+  // March 1: pop up a reminder that taxes are due April 14 — once per year, no nagging.
+  function noteTaxSeason(offline){
+    if(state.taxNoticeYear===state.year) return;   // already shown this year
+    state.taxNoticeYear=state.year;
+    if(offline) return;                            // don't fire mid-catchup; the date has passed
+    const owed=Math.round((state.earnedThisYear||0)*TAX_RATE);
+    showTaxNotice(owed);
+  }
+  // Display the March 1 tax-reminder modal with a running estimate of what's owed so far.
+  function showTaxNotice(owed){
+    const ov=document.getElementById('taxOverlay'); if(!ov) return;
+    const est=document.getElementById('taxEstimate');
+    if(est) est.innerHTML = owed>0
+      ? 'So far you\'d owe about <b>'+fmtMoney(owed)+'</b> — and you have until April 14th to be ready.'
+      : 'You haven\'t earned anything taxable yet this cycle — but keep it in mind as you sell!';
+    ov.style.display='flex';
+  }
+  // April 14 tax-due modal: Pay now, or Extend to October for a flat fee.
+  function showTaxDuePopup(tax, earned){
+    const ov=document.getElementById('taxDueOverlay'); if(!ov){ spend(tax); return; }
+    document.getElementById('taxDueAmt').innerHTML='You owe <b>'+fmtMoney(tax)+'</b> (20% of '+fmtMoney(earned)+' earned).';
+    document.getElementById('taxExtendBtn').innerHTML='Extend to Oct 14 ('+TAX_EXTENSION_FEE+' coins)';
+    ov._tax=tax;   // stash the bill on the element for the handlers
+    ov.style.display='flex';
+  }
+  // October 14 modal: the deferred bill is being collected now, debt or not.
+  function showOctoberTaxPopup(amt){
+    const ov=document.getElementById('octTaxOverlay'); if(!ov) return;
+    const inDebt=state.coins<0;
+    document.getElementById('octTaxAmt').innerHTML='Your extended tax bill of <b>'+fmtMoney(amt)+'</b> has been collected.'+
+      (inDebt?' This pushed you into debt — pay it down fast (10%/day interest)!':'');
+    ov.style.display='flex';
   }
 
   // ---------- day / night ----------
   const SEG=[[0,'morning'],[0.30,'day'],[0.55,'dusk'],[0.75,'night'],[1,'morning']];
   // Update the day/night sky gradient and time-of-day label.
   function skyUpdate(){
-    const phase=(state.dayClock%CYCLE)/CYCLE;
+    // phase of the current day (0..1) from the shared world clock, so the sun/moon position
+    // is the same time-of-day for every player worldwide.
+    const phase=(((Date.now()-WORLD_EPOCH)%CYCLE)+CYCLE)%CYCLE/CYCLE;
     const w={morning:0,day:0,dusk:0,night:0};
     for(let i=0;i<SEG.length-1;i++){ const a=SEG[i][0],b=SEG[i+1][0];
       if(phase>=a&&phase<b){ const f=(phase-a)/((b-a)||1); w[SEG[i][1]]+=1-f; w[SEG[i+1][1]]+=f; break; } }
@@ -1744,11 +2005,15 @@
       an.growth=0; an.ready=false; bumpCoins(); save(); render(); return; }
     const left=(a.cycle-an.growth)/1000;
     if(a.pid) toast(a.name+' has '+a.pe+' in ~'+fmtTime(left));
-    else toast(a.name+' — raise it, then process with 🔪 for cuts'); }
+    else { const ageLeft=BUTCHER_MIN_AGE-(an.age||0);
+      toast(ageLeft>0 ? (a.name+' — raise it for '+ageLeft+' more day'+(ageLeft===1?'':'s')+', then process with 🔪')
+                      : (a.name+' is ready to process with 🔪 for cuts')); } }
   // Process an animal into meat cuts (permanent; ends its product income).
   function butcherAnimal(i){ const an=state.animals[i]; if(!an) return; const a=ANIMALS[an.type];
     const cuts=CUTS[an.type];
     if(!cuts){ toast(a.name+' can\'t be processed for meat'); return; }
+    if((an.age||0)<BUTCHER_MIN_AGE){ const left=BUTCHER_MIN_AGE-(an.age||0);
+      toast('🐄 '+a.name+' is too young to process — must be 1 year old ('+left+' more day'+(left===1?'':'s')+')', 3200); return; }
     const incomeNote = a.pid ? (' and its '+a.pe+' income') : '';
     const storing = state.harvestMode==='store';
     const cutList = cuts.map(c=>c.qty+'× '+PRODUCTS[c.id].name).join(', ');
@@ -1805,6 +2070,33 @@
 
   // ---------- Casino (in-game coins only) ----------
   (function(){
+    // ===== Recurring table-mate characters =====
+    // skill 1..10 = how well they play (decision quality) AND their long-run win rate.
+    // They play their OWN hands against the house, independently — never your money or odds.
+    const CHARACTERS=[
+      {name:'Lucky Lou',     emoji:'🍀', skill:3,  tag:'Eternal optimist'},
+      {name:'Granny Bea',    emoji:'👵', skill:8,  tag:'Sharp as a tack'},
+      {name:'Dusty Pete',    emoji:'🤠', skill:2,  tag:'Reckless gambler'},
+      {name:'Slick Rick',    emoji:'🕶️', skill:9,  tag:'Cool calculator'},
+      {name:'Bubbles',       emoji:'🦆', skill:4,  tag:'Easily distracted'},
+      {name:'The Professor', emoji:'🦉', skill:10, tag:'Counts every card'},
+      {name:'Mae Maple',     emoji:'🧁', skill:6,  tag:'Steady & cautious'},
+      {name:'Rowdy Rusty',   emoji:'🐓', skill:2,  tag:'All gut, no plan'},
+      {name:'Coniglio',      emoji:'🐰', skill:7,  tag:'Quick & nimble'},
+      {name:'Big Tuna',      emoji:'🐟', skill:5,  tag:'Middling luck'},
+    ];
+    // Pick 2-4 distinct characters to sit at the table this hand.
+    function pickMates(){ const pool=[...CHARACTERS], out=[], n=2+Math.floor(Math.random()*3);
+      for(let i=0;i<n && pool.length;i++){ out.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0]); }
+      return out; }
+    function miniCards(cards, hideAll){ return '<span class="tm-mini">'+cards.map(c=>{
+      if(hideAll) return '<span class="tm-mc back">?</span>';
+      const red=(c.s==='♥'||c.s==='♦'); return '<span class="tm-mc '+(red?'red':'black')+'">'+c.r+'</span>';
+    }).join('')+'</span>'; }
+    function mateRow(ch, statusHTML){ return '<div class="tm-row"><span class="tm-av">'+ch.emoji+'</span>'+
+      '<span class="tm-name">'+ch.name+'<small>'+ch.tag+'</small></span>'+
+      '<span class="tm-status">'+statusHTML+'</span></div>'; }
+
     // ----- Roulette -----
     // European-style wheel: 0 (green) + 1..36 (alternating red/black). Bets pay true-ish odds
     // minus the house edge that comes from the single green 0.
@@ -1846,10 +2138,10 @@
     }));
 
     // ----- Blackjack -----
-    let deck=[], pHand=[], dHand=[], bjBet=100, bjActive=false;
+    let deck=[], pHand=[], dHand=[], bjBet=100, bjActive=false, bjMates=[];
     const bjBetAmtEl=document.getElementById('bjBetAmt'), bjMsg=document.getElementById('bjMsg'),
           bjTable=document.getElementById('bjTable'), bjBetRow=document.getElementById('bjBetRow'),
-          bjActions=document.getElementById('bjActions');
+          bjActions=document.getElementById('bjActions'), bjMatesEl=document.getElementById('bjMates');
     function bjSetBet(v){ if(bjActive) return; bjBet=Math.max(100, bjBet+v); bjBetAmtEl.textContent=bjBet; }
     document.querySelectorAll('[data-bjadj]').forEach(b=>b.addEventListener('click',()=>bjSetBet(+b.dataset.bjadj)));
     function newDeck(){ const s=['♠','♥','♦','♣'], r=['A','2','3','4','5','6','7','8','9','10','J','Q','K']; deck=[];
@@ -1860,11 +2152,40 @@
       while(v>21&&aces>0){ v-=10; aces--; } return v; }
     function cardHTML(c,hidden){ if(hidden) return '<div class="bjcard back">?</div>';
       const red=(c.s==='♥'||c.s==='♦'); return '<div class="bjcard '+(red?'red':'black')+'">'+c.r+c.s+'</div>'; }
+    // A bot decides hit/stand. Skilled bots follow solid basic strategy; weak bots over-hit
+    // and bust far more often, so skill produces a real, visible win-rate gap.
+    function botWantsHit(hand, dealerUp, skill){
+      const v=handVal(hand), up=cardVal(dealerUp);
+      if(v>=21) return false;
+      if(v<=11) return true;          // everyone hits a hand that can't bust
+      if(skill<=3){                   // reckless: keeps hitting into dangerous totals
+        return v <= (16+Math.floor(Math.random()*2));   // hits 12-17ish, busts a lot
+      }
+      if(skill<=6){                   // casual: roughly "stand on 17", a bit loose on 16
+        if(v>=17) return false;
+        if(v===16) return Math.random()<0.4;
+        return v<=15 && (up>=7 || up===1);   // hits stiffs vs strong dealer, sometimes
+      }
+      // skilled (7-10): proper basic strategy for hard totals
+      if(v>=17) return false;
+      if(v>=13 && v<=16) return up>=7 || up===1;   // stand vs weak dealer, hit vs strong
+      if(v===12) return up>=7 || up<=3;            // hit 12 except vs 4-6
+      return false;
+    }
     function renderBJ(hideDealer){
       document.getElementById('bjPlayer').innerHTML=pHand.map(c=>cardHTML(c,false)).join('');
       document.getElementById('bjDealer').innerHTML=dHand.map((c,i)=>cardHTML(c,hideDealer&&i===1)).join('');
       document.getElementById('bjPlayerVal').textContent=handVal(pHand);
       document.getElementById('bjDealerVal').textContent=hideDealer?handVal([dHand[0]])+' +?':handVal(dHand);
+    }
+    function renderBJMates(resolved){
+      if(!bjMatesEl) return;
+      bjMatesEl.innerHTML = bjMates.map(m=>{
+        if(!resolved) return mateRow(m.ch, 'playing'+miniCards(m.hand,true));
+        const cls = m.result==='win'?'win':(m.result==='lose'?'lose':'push');
+        const word = m.result==='win'?'wins':(m.result==='lose'?(m.val>21?'busts ('+m.val+')':'loses'):'pushes');
+        return mateRow(m.ch, '<span class="'+cls+'">'+word+'</span> ('+m.val+')'+miniCards(m.hand,false));
+      }).join('');
     }
     function bjEnd(text, payoutMult){ bjActive=false;
       if(payoutMult>0){ earn(bjBet*payoutMult); }
@@ -1874,6 +2195,19 @@
     }
     function dealerPlay(){ renderBJ(false);
       while(handVal(dHand)<17) dHand.push(deck.pop());
+      // bots now play out their own hands vs the same dealer
+      const dv0=handVal(dHand);
+      bjMates.forEach(m=>{
+        let guard=0;
+        while(botWantsHit(m.hand, dHand[0], m.ch.skill) && guard++<8) m.hand.push(deck.pop());
+        m.val=handVal(m.hand);
+        if(m.val>21) m.result='lose';
+        else if(dv0>21) m.result='win';
+        else if(m.val>dv0) m.result='win';
+        else if(m.val<dv0) m.result='lose';
+        else m.result='push';
+      });
+      renderBJMates(true);
       renderBJ(false);
       const pv=handVal(pHand), dv=handVal(dHand);
       if(dv>21) bjEnd('Dealer busts — you win '+(bjBet)+'! 🎉', 2);
@@ -1885,6 +2219,9 @@
       if(bjActive) return;
       spend(bjBet); bumpCoins(); render();
       newDeck(); pHand=[deck.pop(),deck.pop()]; dHand=[deck.pop(),deck.pop()]; bjActive=true;
+      // seat 2-4 characters, each dealt 2 cards
+      bjMates=pickMates().map(ch=>({ch, hand:[deck.pop(),deck.pop()], val:0, result:null}));
+      renderBJMates(false);
       bjTable.style.display='block'; bjBetRow.style.display='none'; bjActions.style.display='flex';
       renderBJ(true); bjMsg.textContent='Hit or stand?';
       if(handVal(pHand)===21){ renderBJ(false); bjEnd('Blackjack! 🃏 +'+(Math.round(bjBet*1.5)), 2.5); }
@@ -1902,10 +2239,11 @@
     // each street (you act; house calls or checks). At showdown the best 5-of-7 hand wins.
     const RANKS='23456789TJQKA';
     function rankVal(r){ return RANKS.indexOf(r==='10'?'T':r); }
-    let heDeck=[], heYou=[], heHouse=[], heBoard=[], heAnte=100, hePot=0, heStreet=0, heActive=false, heContrib=0;
+    let heDeck=[], heYou=[], heHouse=[], heBoard=[], heAnte=100, hePot=0, heStreet=0, heActive=false, heContrib=0, heMates=[];
     const heBetAmtEl=document.getElementById('heBetAmt'), heMsg=document.getElementById('heMsg'),
           heTable=document.getElementById('heTable'), heBetRow=document.getElementById('heBetRow'),
-          heActions=document.getElementById('heActions'), hePotEl=document.getElementById('hePot');
+          heActions=document.getElementById('heActions'), hePotEl=document.getElementById('hePot'),
+          heMatesEl=document.getElementById('heMates');
     function heSetBet(v){ if(heActive) return; heAnte=Math.max(100, heAnte+v); heBetAmtEl.textContent=heAnte; }
     document.querySelectorAll('[data-headj]').forEach(b=>b.addEventListener('click',()=>heSetBet(+b.dataset.headj)));
     function heDeckNew(){ const s=['♠','♥','♦','♣']; heDeck=[];
@@ -1955,12 +2293,46 @@
     }
     function cmpHand(a,b){ for(let i=0;i<Math.max(a.length,b.length);i++){ const x=a[i]||0,y=b[i]||0; if(x!==y) return x-y; } return 0; }
     const HAND_NAMES=['High Card','Pair','Two Pair','Three of a Kind','Straight','Flush','Full House','Four of a Kind','Straight Flush'];
+    // Rough hand-strength 0..1 for a bot, given its hole cards + current board.
+    function heStrength(hole, board){
+      if(board.length===0){ // preflop: judge the two hole cards
+        const a=rankVal(hole[0].r), b=rankVal(hole[1].r), hi=Math.max(a,b), pair=a===b, suited=hole[0].s===hole[1].s;
+        let s=(hi/12)*0.5 + (Math.min(a,b)/12)*0.2;
+        if(pair) s+=0.3; if(suited) s+=0.08; if(Math.abs(a-b)===1) s+=0.05;
+        return Math.min(1,s);
+      }
+      const e=evalHand(hole.concat(board));
+      return Math.min(1, e[0]/8 + 0.04);   // category rank dominates
+    }
+    // A bot decides whether to stay in (true) or fold (false) this street, by skill.
+    function botStays(m){
+      const str=heStrength(m.hand, heBoard);
+      // skilled bots fold weak hands and stay on strong ones; weak bots stay too often.
+      const foldThreshold = 0.12 + (m.ch.skill/10)*0.33;   // skill 10 → folds under ~0.45; skill 2 → under ~0.19
+      const noise=(Math.random()-0.5)*0.18;
+      return (str+noise) >= foldThreshold;
+    }
+    function renderHEMates(reveal){
+      if(!heMatesEl) return;
+      heMatesEl.innerHTML = heMates.map(m=>{
+        if(m.folded) return mateRow(m.ch, '<span class="fold">folded</span>');
+        if(!reveal) return mateRow(m.ch, 'in the hand'+miniCards(m.hand,true));
+        const cls = m.result==='win'?'win':(m.result==='lose'?'lose':'push');
+        const word = m.result==='win'?'wins':(m.result==='lose'?'loses':'ties');
+        return mateRow(m.ch, '<span class="'+cls+'">'+word+'</span> '+HAND_NAMES[m.rankCat]+miniCards(m.hand,false));
+      }).join('');
+    }
     function heShowdown(){
       heRender(true);
       const you=evalHand(heYou.concat(heBoard)), house=evalHand(heHouse.concat(heBoard));
       const c=cmpHand(you,house);
       document.getElementById('heYouLbl').textContent=HAND_NAMES[you[0]];
       document.getElementById('heHouseLbl').textContent=HAND_NAMES[house[0]];
+      // resolve surviving mates vs the house (independently of your result)
+      heMates.forEach(m=>{ if(m.folded){ m.result='fold'; return; }
+        const mh=evalHand(m.hand.concat(heBoard)); m.rankCat=mh[0];
+        const r=cmpHand(mh,house); m.result = r>0?'win':(r<0?'lose':'push'); });
+      renderHEMates(true);
       if(c>0){ earn(hePot); heMsg.textContent='🎉 You win '+hePot+' with '+HAND_NAMES[you[0]]+'!'; }
       else if(c<0){ heMsg.textContent='😕 House wins with '+HAND_NAMES[house[0]]+'.'; }
       else { earn(Math.floor(hePot/2)); heMsg.textContent='Split pot — half returned.'; }
@@ -1973,6 +2345,9 @@
       else if(heStreet===2){ heBoard.push(heDeck.pop()); }                         // turn
       else if(heStreet===3){ heBoard.push(heDeck.pop()); }                         // river
       else { heShowdown(); return; }
+      // mates still in the hand decide whether to keep going on the new board
+      heMates.forEach(m=>{ if(!m.folded && !botStays(m)) m.folded=true; });
+      renderHEMates(false);
       heRender(false);
       document.getElementById('heBetLbl').textContent=heAnte;
       heMsg.textContent=['','Flop — bet or check.','Turn — bet or check.','River — last bet or check.'][heStreet];
@@ -1981,6 +2356,10 @@
       if(heActive) return;
       spend(heAnte); hePot=heAnte*2; heContrib=heAnte;   // you + house both ante
       heDeckNew(); heYou=[heDeck.pop(),heDeck.pop()]; heHouse=[heDeck.pop(),heDeck.pop()]; heBoard=[]; heStreet=0; heActive=true;
+      // seat 2-4 characters with hole cards; some may fold preflop
+      heMates=pickMates().map(ch=>({ch, hand:[heDeck.pop(),heDeck.pop()], folded:false, result:null, rankCat:0}));
+      heMates.forEach(m=>{ if(!botStays(m)) m.folded=true; });
+      renderHEMates(false);
       heTable.style.display='block'; heBetRow.style.display='none'; heActions.style.display='flex';
       document.getElementById('heBetLbl').textContent=heAnte;
       heRender(false); bumpCoins(); render();
@@ -1996,22 +2375,6 @@
       if(!heActive) return;
       heMsg.textContent='You folded. House takes the pot.';
       heActive=false; heActions.style.display='none'; heBetRow.style.display='flex'; save();
-    });
-
-    // leaderboard controls
-    const lbRefresh=document.getElementById('lbRefresh'), lbNick=document.getElementById('lbNick'), lbNickSave=document.getElementById('lbNickSave');
-    if(lbRefresh) lbRefresh.addEventListener('click',()=>loadLeaderboard());
-    if(lbNick){ // prefill with current shown name
-      const fill=()=>{ lbNick.value = (state && state.nickname) || ''; };
-      fill();
-      // refresh field whenever casino page is shown
-      document.querySelectorAll('#tabbar .tab').forEach(t=>{ if(t.dataset.page==='casino') t.addEventListener('click',()=>{ fill(); loadLeaderboard(); }); });
-    }
-    if(lbNickSave) lbNickSave.addEventListener('click',()=>{
-      const v=(lbNick.value||'').trim().slice(0,24);
-      state.nickname=v; save();
-      if(window.CLOUD && cloudUser){ pushLeaderboard(); setTimeout(loadLeaderboard,1400); }
-      toast(v?('Leaderboard name set to '+v):'Using your account name');
     });
   })();
 
@@ -2112,7 +2475,12 @@
       el.addEventListener('click',act);
       el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); act(); } });
       const warn=an.starving?'<span class="starve">⚠️</span>':'';
-      const butcher=CUTS[an.type]?`<button class="butcher" data-butcher="${i}" title="Process into cuts" aria-label="Process ${a.name} into cuts">🔪</button>`:'';
+      const oldEnough=(an.age||0)>=BUTCHER_MIN_AGE;
+      const butcher = CUTS[an.type]
+        ? (oldEnough
+            ? `<button class="butcher" data-butcher="${i}" title="Process into cuts (1+ yr old)" aria-label="Process ${a.name} into cuts">🔪</button>`
+            : `<span class="agehint" title="Must be 1 in-game year old to process">🐣 ${an.age||0}/${BUTCHER_MIN_AGE}d</span>`)
+        : '';
       if(!a.pid){  // meat-only animal (e.g. pig): no product cycle, just raising until processed
         el.innerHTML=`${warn}${butcher}<span class="animal">${a.emoji}</span><span class="product">🔪</span>`;
       } else if(an.ready){ el.classList.add('ready'); el.innerHTML=`${warn}${butcher}<span class="animal">${a.emoji}</span><span class="product">${a.pe}</span>`; }
@@ -2129,7 +2497,7 @@
     const wrap=document.getElementById('finances'); if(!wrap) return;
     const feedBill=state.animals.reduce((s,a)=>s+(FEED_PER_ANIMAL[a.type]||10),0);
     const daysToFeed=Math.max(0, state.nextFeedDay-state.lastDay);
-    const daysToTax=DAYS_PER_YEAR-state.day+1;
+    const daysToTax = state.day<=TAX_DOY ? (TAX_DOY-state.day) : (DAYS_PER_YEAR-state.day+TAX_DOY);
     const projTax=Math.round(state.earnedThisYear*TAX_RATE);
     const starving=state.animals.filter(a=>a.starving).length;
     const debt = state.coins<0 ? -Math.floor(state.coins) : 0;
@@ -2137,9 +2505,9 @@
     cards.push(`<div class="fin${daysToFeed<=1?' warn':''}"><div class="lab">🌾 Weekly feed</div>
       <div class="big">${feedBill}<span style="font-size:12px;font-weight:600"> coins</span></div>
       <div class="small">${state.animals.length} animal${state.animals.length===1?'':'s'} · due in ${daysToFeed} day${daysToFeed===1?'':'s'}</div></div>`);
-    cards.push(`<div class="fin${daysToTax<=10?' warn':''}"><div class="lab">🧾 Yearly tax (20%)</div>
+    cards.push(`<div class="fin${daysToTax<=10?' warn':''}"><div class="lab">🧾 Tax due Apr 14 (20%)</div>
       <div class="big">~${projTax}</div>
-      <div class="small">on ${state.earnedThisYear} earned · Day ${daysToTax} of the year left</div></div>`);
+      <div class="small">on ${state.earnedThisYear} earned · ${daysToTax} day${daysToTax===1?'':'s'} until tax day</div></div>`);
     cards.push(`<div class="fin${starving?' danger':''}"><div class="lab">🐔 Livestock</div>
       <div class="big">${state.animals.length}</div>
       <div class="small">${starving?starving+' starving ⚠️':'all fed'} · foxes target 🐔🐝</div></div>`);
