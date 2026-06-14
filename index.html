@@ -1248,7 +1248,7 @@
   const TAX_RATE=0.20;                        // 20% of gross yearly earnings
   const CAPGAINS_RATE=0.25;                   // 25% tax on PROFIT from stock & property sales
   const DEBT_DAILY_INTEREST=0.10;             // 10% compounding daily while in debt
-  const SAVE_KEY='littleacre:save'; const VERSION=33;
+  const SAVE_KEY='littleacre:save'; const VERSION=34;
   const BACKUP_KEY='littleacre:save:backup';   // last-known-good snapshot ("save folder")
   const MIN_MIGRATABLE=13;                       // saves at/after this version migrate forward instead of resetting
   // Leaderboard sanity cap: scores above this are clamped before submission. This is a
@@ -1444,6 +1444,21 @@
       }catch(e){ setCloudStatus('☁️ Cloud save failed (still saved locally)','err'); console.warn('cloudPush',e); }
     }, 800); pushLeaderboard(); }
   // Pull the cloud save and reconcile with local: newer savedAt wins.
+  // True if the local save looks brand-new / untouched (a fresh boot with no real progress).
+  // On such a device the cloud save should always win, regardless of timestamps — otherwise a
+  // freshly-created local farm (with a newer savedAt) would wrongly overwrite the real account.
+  function looksUntouched(s){
+    if(!s) return true;
+    if(s.nickname && s.nickname.trim()) return false;     // already has an identity → not fresh
+    if((s.coins||0)!==50) return false;
+    if((s.level||1)!==1 || (s.xp||0)!==0) return false;
+    if((s.animals||[]).length) return false;
+    if((s.plots||[]).some(p=>p&&p.crop)) return false;
+    if(s.inventory && Object.values(s.inventory).some(n=>n>0)) return false;
+    if((s.kitchen||[]).length || (s.cellar||[]).length) return false;
+    if(s.estates && Object.values(s.estates).some(e=>e&&e.owned)) return false;
+    return true;
+  }
   async function cloudPullAndMerge(){ if(!cloudOn()) return;
     try{
       setCloudStatus('☁️ Loading your cloud farm…','syncing');
@@ -1453,17 +1468,18 @@
         const data=snap.data();
         let cloudState=null; try{ cloudState=JSON.parse(data.save); }catch(e){}
         const cloudAt=(cloudState&&cloudState.savedAt)||data.savedAt||0;
-        if(cloudState && cloudAt>localAt){
-          // cloud is newer → adopt it (migrates forward if needed)
+        // Adopt the cloud save if it's newer, OR if this device's local farm is untouched
+        // (a fresh sign-in) — so your nickname + farm always come back on a new device.
+        if(cloudState && (cloudAt>localAt || looksUntouched(state))){
           state=adopt(cloudState);
           buildGrid(); render();
-          setCloudStatus('☁️ Loaded newer cloud save ✓','synced');
+          setCloudStatus('☁️ Loaded your cloud farm ✓','synced');
         } else {
-          // local is newer or same → keep local, push it up
+          // local has real progress and is newer → keep it and push up
           setCloudStatus('☁️ Local farm is newest — syncing up…','syncing');
         }
       }
-      // ensure cloud has the current (possibly local-newer) state
+      // ensure cloud has the current state
       await cloudDoc().set({ save: JSON.stringify(state), savedAt: state.savedAt||Date.now(),
         version: VERSION, updated: Date.now() });
       setCloudStatus('☁️ Synced as '+(cloudUser.displayName||cloudUser.email||'player'),'synced');
