@@ -199,6 +199,15 @@
   /* ===== sections ===== */
   h2.sec{font-family:'Fredoka',sans-serif;font-weight:600;color:var(--cream);font-size:18px;margin:20px 0 9px;
     text-shadow:0 1px 2px rgba(0,0,0,.28)}
+  h2.sec.sec-collapsible{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .sec-toggle{flex:0 0 auto;width:28px;height:28px;border:0;border-radius:9px;cursor:pointer;
+    font-family:'Fredoka',sans-serif;font-weight:700;font-size:18px;line-height:1;color:#3a2c14;
+    background:linear-gradient(180deg,#ffe7a3,#f0c659);box-shadow:0 2px 0 #cf9e34;
+    display:flex;align-items:center;justify-content:center;padding:0;text-shadow:none}
+  .sec-toggle:active{transform:translateY(1px);box-shadow:0 1px 0 #cf9e34}
+  h2.sec.collapsed{opacity:.82}
+  .sec-body{animation:secexpand .18s ease}
+  @keyframes secexpand{from{opacity:0}to{opacity:1}}
   .field{background:linear-gradient(180deg,var(--soil),var(--soil-dk));border:7px solid var(--wood);border-radius:22px;
     padding:13px;box-shadow:0 0 0 4px var(--wood-dk),0 14px 30px rgba(0,0,0,.3)}
   .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
@@ -253,6 +262,11 @@
   .barn{background:linear-gradient(180deg,#caa46f,#9c7547);border:7px solid var(--wood);border-radius:22px;padding:13px;
     box-shadow:0 0 0 4px var(--wood-dk),0 14px 30px rgba(0,0,0,.3)}
   .pens{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:9px}
+  .pen-cell{display:flex;flex-direction:column;gap:3px}
+  .pen-cap{text-align:center;min-height:14px}
+  .pen-age{font-family:'Fredoka',sans-serif;font-weight:600;font-size:10px;color:#f3e7cf;
+    background:rgba(0,0,0,.28);border-radius:999px;padding:1px 7px;white-space:nowrap;display:inline-block}
+  .pen-age.mature{color:#2e4b1e;background:rgba(159,224,126,.92)}
   .pen{position:relative;aspect-ratio:1/1;border-radius:12px;cursor:pointer;border:0;overflow:hidden;
     background:linear-gradient(180deg,#e7d3a8,#c9aa72);box-shadow:inset 0 -5px 8px rgba(0,0,0,.18);
     display:flex;align-items:center;justify-content:center;font-size:clamp(24px,6.5vw,42px);transition:transform .12s}
@@ -260,10 +274,10 @@
   .pen.empty{background:repeating-linear-gradient(45deg,#bfa06c 0 7px,#b6975f 7px 14px);cursor:default}
   .pen.starving{box-shadow:inset 0 0 0 3px rgba(192,57,42,.7);animation:starvepulse 1.4s ease-in-out infinite}
   .pen .starve{position:absolute;bottom:3px;left:4px;font-size:.5em;z-index:2}
-  .pen-acts{position:absolute;top:3px;right:3px;display:flex;gap:3px;z-index:3}
+  .pen-acts{position:absolute;top:3px;right:3px;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:3px;z-index:3;max-width:60%}
   .pen-act{font-size:13px;line-height:1;border:0;border-radius:7px;padding:3px 4px;cursor:pointer;
     background:rgba(255,255,255,.85);box-shadow:0 1px 2px rgba(0,0,0,.3)}
-  .pen-act.feed:hover{background:#d8f0b8}.pen-act.syr:hover{background:#cfe0ff}
+  .pen-act.feed:hover{background:#d8f0b8}.pen-act.syr:hover{background:#cfe0ff}.pen-act.sell:hover{background:#ffe7a3}
   .of-tag{position:absolute;bottom:3px;left:3px;font-size:9px;font-weight:700;font-family:'Fredoka',sans-serif;
     color:#7a4a0a;background:rgba(255,210,90,.9);border-radius:6px;padding:1px 4px;z-index:2}
   .plot-man{position:absolute;top:3px;right:3px;font-size:13px;line-height:1;z-index:3;cursor:pointer;
@@ -1591,7 +1605,7 @@
   const CAPGAINS_RATE=0.25;                   // 25% tax on PROFIT from stock & property sales
   const DEBT_DAILY_INTEREST=0.10;             // 10% compounding daily while in debt
   const BANKRUPT_LIMIT=50000;                 // hit -50,000 coins and the farm is bankrupt (game over)
-  const SAVE_KEY='littleacre:save'; const VERSION=59;
+  const SAVE_KEY='littleacre:save'; const VERSION=62;
   const BACKUP_KEY='littleacre:save:backup';   // last-known-good snapshot ("save folder")
   const MIN_MIGRATABLE=13;                       // saves at/after this version migrate forward instead of resetting
   // Leaderboard sanity cap: scores above this are clamped before submission. This is a
@@ -1668,6 +1682,18 @@
   // ---------- state ----------
   // Build the starting price-multiplier table for every sellable item.
   function freshMarket(){ const m={}; SELLABLE.forEach(id=>m[id]={mult:1,prev:1}); return m; }
+  // Fluctuating resale market for live animals (one drifting multiplier per animal type).
+  function freshAnimalMarket(){ const m={}; for(const t in ANIMALS) m[t]={mult:1,prev:1}; return m; }
+  // Base resale value of an animal type (before market swing + age bonus). Tied to its purchase cost.
+  const ANIMAL_RESALE_BASE={}; (function(){ for(const t in ANIMALS) ANIMAL_RESALE_BASE[t]=Math.round(ANIMALS[t].cost*0.8); })();
+  // Current fluctuating resale value for an animal type.
+  function animalResale(type){ const m=state.animalMarket&&state.animalMarket[type];
+    return Math.max(1, Math.round((ANIMAL_RESALE_BASE[type]||50)*(m?m.mult:1))); }
+  // Age bonus: +1 per day up to 364; at 365+ days it's a flat +500 instead.
+  const ANIMAL_AGE_BONUS_FLAT=500;
+  function animalAgeBonus(age){ age=Math.floor(age||0); return age>=365 ? ANIMAL_AGE_BONUS_FLAT : Math.max(0,Math.min(364,age)); }
+  // Full sell price for a specific animal = fluctuating resale + age bonus.
+  function animalSellPrice(an){ return animalResale(an.type) + animalAgeBonus(an.age); }
   // Build the starting state for the buyers' market (deals + optional buff offer + active buffs).
   function freshMarketStall(){ return {deals:[], buffOffer:null, buffs:{crop:[],animal:[]}, dailyBuff:null, dailyBuffDay:0, nextDeal:0, seeded:false}; }
   // Build the starting state for the stock market (prices + history).
@@ -1680,7 +1706,7 @@
   function freshState(){
     return {version:VERSION, coins:50, level:1, xp:0, unlocked:START_UNLOCKED,
       plots:Array.from({length:GRID},()=>({crop:null,growth:0,ready:false})),
-      animals:[], market:freshMarket(),
+      animals:[], market:freshMarket(), animalMarket:freshAnimalMarket(),
       commodities:freshMarketStall(), stocks:freshStocks(),
       estates:freshEstates(), housing:0,
       inventory:{}, kitchen:[], cellar:[], harvestMode:'sell',
@@ -1701,7 +1727,7 @@
   function freshStats(){
     return {
       cropsHarvested:0, cropsPlanted:0, plotsUnlocked:0,
-      animalsBought:0, animalsButchered:0,
+      animalsBought:0, animalsButchered:0, animalsSold:0,
       crafted:{}, crafted_total:0,        // crafted[itemId] = count
       brewed:{}, brewed_total:0,          // brewed[recipeId] = count
       sold_total:0,                       // total individual goods sold (any channel)
@@ -2267,6 +2293,7 @@
     const s=saved;
     // backfill any missing pieces defensively
     if(!s.market) s.market=freshMarket(); else SELLABLE.forEach(id=>{ if(!s.market[id]) s.market[id]={mult:1,prev:1}; });
+    if(!s.animalMarket) s.animalMarket=freshAnimalMarket(); else for(const t in ANIMALS){ if(!s.animalMarket[t]) s.animalMarket[t]={mult:1,prev:1}; }
     // buyers' market: replace any old commodities structure with the new stall state
     if(!s.commodities || !('deals' in s.commodities)) s.commodities=freshMarketStall();
     // Buffs now STACK (arrays). Migrate older saves where each kind held a single object (or null).
@@ -2509,6 +2536,9 @@
   function rollMarket(){
     SELLABLE.forEach(id=>{ const m=state.market[id]; m.prev=m.mult;
       m.mult=Math.max(0.6, Math.min(1.5, m.mult+(Math.random()*0.36-0.18))); });
+    // live-animal resale market drifts a bit more gently
+    if(state.animalMarket) for(const t in ANIMALS){ const m=state.animalMarket[t]; if(!m) continue; m.prev=m.mult;
+      m.mult=Math.max(0.7, Math.min(1.4, m.mult+(Math.random()*0.24-0.12))); }
     // (buyers' market deals rotate on their own schedule — see advanceStall)
     // stocks drift with occasional jumps
     for(const sym in STOCKS){ const cfg=STOCKS[sym], st=state.stocks[sym]; st.prev=st.price;
@@ -3171,6 +3201,16 @@
     bumpCoins(); save(); render();
     toast('Processed '+a.name+' → '+cutList+' for '+val+' coins', 2800);
   }
+  // Sell a live animal for its fluctuating resale value + age bonus (asks to confirm — permanent).
+  function sellAnimal(i){ const an=state.animals[i]; if(!an) return; const a=ANIMALS[an.type];
+    const resale=animalResale(an.type), bonus=animalAgeBonus(an.age), price=resale+bonus;
+    const ageDesc = (an.age||0)>=365 ? 'aged 1+ year: +'+ANIMAL_AGE_BONUS_FLAT : 'age '+Math.floor(an.age||0)+'d: +'+bonus;
+    const incomeNote = a.pid ? (' and its '+a.pe+' income') : '';
+    if(!confirm('Sell this '+a.name+'?\n\nResale value: '+resale+'\nAge bonus ('+ageDesc+')\n= '+price+' coins total\n\nThis permanently removes the animal'+incomeNote+'.')) return;
+    earn(price); state.animals.splice(i,1); bumpStat('animalsSold');
+    bumpCoins(); save(); render();
+    toast('🐾 Sold '+a.name+' for '+price+' coins', 2800);
+  }
 
   document.querySelectorAll('#harvestToggle .ht-opt').forEach(b=>
     b.addEventListener('click',()=>{ state.harvestMode=b.dataset.mode; save(); renderHarvestToggle();
@@ -3702,6 +3742,8 @@
   function renderPens(){
     const pens=document.getElementById('pens'); pens.innerHTML='';
     state.animals.forEach((an,i)=>{ const a=ANIMALS[an.type];
+      // each barnyard cell = the square tile + a small caption line beneath it
+      const cell=document.createElement('div'); cell.className='pen-cell';
       const el=document.createElement('div');
       el.className='pen'+(an.starving?' starving':''); el.setAttribute('role','button'); el.tabIndex=0;
       el.setAttribute('aria-label',a.name+(an.starving?' (starving)':''));
@@ -3710,11 +3752,9 @@
       el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); act(); } });
       const warn=an.starving?'<span class="starve">⚠️</span>':'';
       const oldEnough=(an.age||0)>=BUTCHER_MIN_AGE;
-      const butcher = CUTS[an.type]
-        ? (oldEnough
-            ? `<button class="butcher" data-butcher="${i}" title="Process into cuts (1+ yr old)" aria-label="Process ${a.name} into cuts">🔪</button>`
-            : `<span class="agehint" title="Must be 1 in-game year old to process">🐣 ${Math.floor(an.age||0)}/${BUTCHER_MIN_AGE}d</span>`)
-        : '';
+      // butcher action stays in the tile; the age/progress text moves to the caption below.
+      const butcher = (CUTS[an.type] && oldEnough)
+        ? `<button class="butcher" data-butcher="${i}" title="Process into cuts (1+ yr old)" aria-label="Process ${a.name} into cuts">🔪</button>` : '';
       // status tags
       const ofPct=Math.round(Math.min(OVERFEED_CAP,(an.overfeed||0)*OVERFEED_PER_BAG)*100);
       const ofTag = ofPct>0 ? `<span class="of-tag" title="Ages ${ofPct}% faster from overfeeding">⚡${ofPct}%</span>` : '';
@@ -3727,14 +3767,23 @@
       const actBtns = [];
       if(canFeed) actBtns.push(`<button class="pen-act feed" data-feed="${i}" title="Feed (clears starving / overfeeds)">🌾</button>`);
       if(canSyringe) actBtns.push(`<button class="pen-act syr" data-syringe="${i}" title="Growth syringe (halves aging)">💉</button>`);
+      const sellPx=animalSellPrice(an);
+      actBtns.push(`<button class="pen-act sell" data-sell="${i}" title="Sell this ${a.name} for ${sellPx} coins (resale + age bonus)">💰</button>`);
       const acts = actBtns.length ? `<div class="pen-acts">${actBtns.join('')}</div>` : '';
       if(!a.pid){  // meat-only animal (e.g. pig): no product cycle, just raising until processed
         el.innerHTML=`${warn}${acts}${butcher}${ofTag}${syTag}<span class="animal">${a.emoji}</span><span class="product">🔪</span>`;
       } else if(an.ready){ el.classList.add('ready'); el.innerHTML=`${warn}${acts}${butcher}${ofTag}${syTag}<span class="animal">${a.emoji}</span><span class="product">${a.pe}</span>`; }
       else{ const prog=Math.min(1,an.growth/a.cycle), remain=(a.cycle-an.growth)/1000;
         el.innerHTML=`${warn}${acts}${butcher}${ofTag}${syTag}<span class="animal">${a.emoji}</span><span class="bar"><i style="width:${Math.round(prog*100)}%"></i></span><span class="timer-tl">${fmtTime(remain)}</span>`; }
-      pens.appendChild(el); });
-    for(let i=state.animals.length;i<ANIMAL_CAP;i++){ const e=document.createElement('div'); e.className='pen empty'; pens.appendChild(e); }
+      // caption under the square: age toward butcher age (or 'mature' once old enough)
+      const ageCap = CUTS[an.type]
+        ? (oldEnough ? '<span class="pen-age mature">🐄 mature · 1yr+</span>'
+                     : `<span class="pen-age">🐣 ${Math.floor(an.age||0)}/${BUTCHER_MIN_AGE}d</span>`)
+        : `<span class="pen-age">🐣 ${Math.floor(an.age||0)}d</span>`;
+      cell.appendChild(el);
+      const cap=document.createElement('div'); cap.className='pen-cap'; cap.innerHTML=ageCap; cell.appendChild(cap);
+      pens.appendChild(cell); });
+    for(let i=state.animals.length;i<ANIMAL_CAP;i++){ const c=document.createElement('div'); c.className='pen-cell'; const e=document.createElement('div'); e.className='pen empty'; c.appendChild(e); pens.appendChild(c); }
     // butcher buttons (stop propagation so they don't trigger the pen's collect click)
     pens.querySelectorAll('[data-butcher]').forEach(b=>b.addEventListener('click',e=>{
       e.stopPropagation(); butcherAnimal(+b.dataset.butcher); }));
@@ -3742,6 +3791,8 @@
       e.stopPropagation(); feedAnimal(+b.dataset.feed); }));
     pens.querySelectorAll('[data-syringe]').forEach(b=>b.addEventListener('click',e=>{
       e.stopPropagation(); syringeAnimal(+b.dataset.syringe); }));
+    pens.querySelectorAll('[data-sell]').forEach(b=>b.addEventListener('click',e=>{
+      e.stopPropagation(); sellAnimal(+b.dataset.sell); }));
   }
   // Feed Store: buy small/big feed bags (shows how many you hold).
   function renderFeedStore(){
@@ -4191,6 +4242,40 @@
       if(btn && c.contains(btn) && !btn.disabled) handler(btn.getAttribute(attr)); });
   }
   // Wire up all delegated button handlers once at startup.
+  // Make every section (each <h2 class="sec">) collapsible with a minus/plus button.
+  // The collapsed state is remembered per-section in localStorage so it survives reloads.
+  const COLLAPSE_KEY='littleacre:collapsed';
+  let collapsedSet=new Set();
+  function loadCollapsed(){ try{ const raw=window.localStorage.getItem(COLLAPSE_KEY); if(raw) collapsedSet=new Set(JSON.parse(raw)); }catch(e){} }
+  function saveCollapsed(){ try{ window.localStorage.setItem(COLLAPSE_KEY, JSON.stringify([...collapsedSet])); }catch(e){} }
+  function secKey(h){ return (h.textContent||'').replace(/[^a-z0-9]/gi,'').toLowerCase().slice(0,24) || 'sec'; }
+  function setupCollapsibles(){
+    loadCollapsed();
+    document.querySelectorAll('h2.sec').forEach(h=>{
+      if(h.dataset.collapsibleReady) return; h.dataset.collapsibleReady='1';
+      const key=secKey(h);
+      // gather following siblings until the next section header
+      const body=[];
+      let n=h.nextElementSibling;
+      while(n && !(n.tagName==='H2' && n.classList.contains('sec'))){ const next=n.nextElementSibling; body.push(n); n=next; }
+      // wrap them in a collapsible container
+      const wrap=document.createElement('div'); wrap.className='sec-body';
+      h.parentNode.insertBefore(wrap, body[0]||h.nextElementSibling);
+      body.forEach(elm=>wrap.appendChild(elm));
+      // build the toggle button
+      const btn=document.createElement('button'); btn.className='sec-toggle'; btn.type='button';
+      btn.setAttribute('aria-label','Collapse or expand section');
+      h.classList.add('sec-collapsible'); h.appendChild(btn);
+      const apply=(collapsed)=>{ wrap.style.display=collapsed?'none':''; h.classList.toggle('collapsed',collapsed);
+        btn.textContent=collapsed?'+':'–'; };
+      apply(collapsedSet.has(key));
+      btn.addEventListener('click',e=>{ e.stopPropagation();
+        const nowCollapsed=!collapsedSet.has(key);
+        if(nowCollapsed) collapsedSet.add(key); else collapsedSet.delete(key);
+        apply(nowCollapsed); saveCollapsed();
+      });
+    });
+  }
   function wireEvents(){
     delegate('commodities','data-deal',    i=>fulfillDeal(+i));
     delegate('commodities','data-buybuff', ()=>buyBuff());
@@ -4217,6 +4302,7 @@
     state=adopt(raw);
     buildStars(); buildGrid(); buildShop(); buildAnimalShop();
     wireEvents();
+    setupCollapsibles();
     document.body.classList.toggle('raining', state.weather==='rain');
     document.getElementById('rain').classList.toggle('on', state.weather==='rain');
     lastTick=Date.now(); skyUpdate(); applyEventBackground(); render();
