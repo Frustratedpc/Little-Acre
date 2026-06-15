@@ -261,7 +261,7 @@
   /* barnyard */
   .barn{background:linear-gradient(180deg,#caa46f,#9c7547);border:7px solid var(--wood);border-radius:22px;padding:13px;
     box-shadow:0 0 0 4px var(--wood-dk),0 14px 30px rgba(0,0,0,.3)}
-  .pens{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:9px}
+  .pens{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
   .pen-cell{display:flex;flex-direction:column;gap:3px}
   .pen-cap{display:flex;flex-direction:column;align-items:center;gap:2px;min-height:14px}
   .pen-prod{font-family:'Fredoka',sans-serif;font-weight:600;font-size:10px;color:#f3e7cf;
@@ -275,7 +275,7 @@
   .pen-age.mature{color:#2e4b1e;background:rgba(159,224,126,.92)}
   .pen{position:relative;aspect-ratio:1/1;border-radius:12px;cursor:pointer;border:0;overflow:hidden;
     background:linear-gradient(180deg,#e7d3a8,#c9aa72);box-shadow:inset 0 -5px 8px rgba(0,0,0,.18);
-    display:flex;align-items:center;justify-content:center;font-size:clamp(24px,6.5vw,42px);transition:transform .12s}
+    display:flex;align-items:center;justify-content:center;font-size:clamp(24px,6.6vw,46px);transition:transform .12s}
   .pen:active{transform:scale(.96)}.pen:focus-visible{outline:3px solid #fff;outline-offset:2px}
   .pen.empty{background:repeating-linear-gradient(45deg,#bfa06c 0 7px,#b6975f 7px 14px);cursor:default}
   .pen.starving{box-shadow:inset 0 0 0 3px rgba(192,57,42,.7);animation:starvepulse 1.4s ease-in-out infinite}
@@ -1611,7 +1611,7 @@
   const CAPGAINS_RATE=0.25;                   // 25% tax on PROFIT from stock & property sales
   const DEBT_DAILY_INTEREST=0.10;             // 10% compounding daily while in debt
   const BANKRUPT_LIMIT=50000;                 // hit -50,000 coins and the farm is bankrupt (game over)
-  const SAVE_KEY='littleacre:save'; const VERSION=63;
+  const SAVE_KEY='littleacre:save'; const VERSION=64;
   const BACKUP_KEY='littleacre:save:backup';   // last-known-good snapshot ("save folder")
   const MIN_MIGRATABLE=13;                       // saves at/after this version migrate forward instead of resetting
   // Leaderboard sanity cap: scores above this are clamped before submission. This is a
