@@ -242,6 +242,9 @@
   .plot .timer-bottom,.pen .timer-bottom{position:absolute;bottom:3px;left:50%;transform:translateX(-50%);
     font-family:'Fredoka',sans-serif;font-weight:600;font-size:11px;color:#fff;background:rgba(0,0,0,.5);
     padding:1px 8px;border-radius:999px;line-height:1.4;letter-spacing:.3px;white-space:nowrap;z-index:2}
+  .pen .timer-tl{position:absolute;top:3px;left:3px;font-family:'Fredoka',sans-serif;font-weight:600;
+    font-size:11px;color:#fff;background:rgba(0,0,0,.5);padding:1px 7px;border-radius:999px;
+    line-height:1.4;letter-spacing:.3px;white-space:nowrap;z-index:2}
   .plot:has(.timer-bottom) .bar,.pen:has(.timer-bottom) .bar{bottom:20px}
   .bar{position:absolute;left:6px;right:6px;bottom:6px;height:6px;border-radius:6px;background:rgba(0,0,0,.32);overflow:hidden}
   .bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,#aed581,#7cb342);transition:width .2s linear}
@@ -256,12 +259,12 @@
   .pen:active{transform:scale(.96)}.pen:focus-visible{outline:3px solid #fff;outline-offset:2px}
   .pen.empty{background:repeating-linear-gradient(45deg,#bfa06c 0 7px,#b6975f 7px 14px);cursor:default}
   .pen.starving{box-shadow:inset 0 0 0 3px rgba(192,57,42,.7);animation:starvepulse 1.4s ease-in-out infinite}
-  .pen .starve{position:absolute;top:3px;left:4px;font-size:.5em;z-index:2}
+  .pen .starve{position:absolute;bottom:3px;left:4px;font-size:.5em;z-index:2}
   .pen-acts{position:absolute;top:3px;right:3px;display:flex;gap:3px;z-index:3}
   .pen-act{font-size:13px;line-height:1;border:0;border-radius:7px;padding:3px 4px;cursor:pointer;
     background:rgba(255,255,255,.85);box-shadow:0 1px 2px rgba(0,0,0,.3)}
   .pen-act.feed:hover{background:#d8f0b8}.pen-act.syr:hover{background:#cfe0ff}
-  .of-tag{position:absolute;top:3px;left:3px;font-size:9px;font-weight:700;font-family:'Fredoka',sans-serif;
+  .of-tag{position:absolute;bottom:3px;left:3px;font-size:9px;font-weight:700;font-family:'Fredoka',sans-serif;
     color:#7a4a0a;background:rgba(255,210,90,.9);border-radius:6px;padding:1px 4px;z-index:2}
   .plot-man{position:absolute;top:3px;right:3px;font-size:13px;line-height:1;z-index:3;cursor:pointer;
     background:rgba(255,255,255,.82);border-radius:7px;padding:2px 3px;box-shadow:0 1px 2px rgba(0,0,0,.3)}
@@ -1588,7 +1591,7 @@
   const CAPGAINS_RATE=0.25;                   // 25% tax on PROFIT from stock & property sales
   const DEBT_DAILY_INTEREST=0.10;             // 10% compounding daily while in debt
   const BANKRUPT_LIMIT=50000;                 // hit -50,000 coins and the farm is bankrupt (game over)
-  const SAVE_KEY='littleacre:save'; const VERSION=58;
+  const SAVE_KEY='littleacre:save'; const VERSION=59;
   const BACKUP_KEY='littleacre:save:backup';   // last-known-good snapshot ("save folder")
   const MIN_MIGRATABLE=13;                       // saves at/after this version migrate forward instead of resetting
   // Leaderboard sanity cap: scores above this are clamped before submission. This is a
@@ -3729,7 +3732,7 @@
         el.innerHTML=`${warn}${acts}${butcher}${ofTag}${syTag}<span class="animal">${a.emoji}</span><span class="product">🔪</span>`;
       } else if(an.ready){ el.classList.add('ready'); el.innerHTML=`${warn}${acts}${butcher}${ofTag}${syTag}<span class="animal">${a.emoji}</span><span class="product">${a.pe}</span>`; }
       else{ const prog=Math.min(1,an.growth/a.cycle), remain=(a.cycle-an.growth)/1000;
-        el.innerHTML=`${warn}${acts}${butcher}${ofTag}${syTag}<span class="animal">${a.emoji}</span><span class="bar"><i style="width:${Math.round(prog*100)}%"></i></span><span class="timer-bottom">${fmtTime(remain)}</span>`; }
+        el.innerHTML=`${warn}${acts}${butcher}${ofTag}${syTag}<span class="animal">${a.emoji}</span><span class="bar"><i style="width:${Math.round(prog*100)}%"></i></span><span class="timer-tl">${fmtTime(remain)}</span>`; }
       pens.appendChild(el); });
     for(let i=state.animals.length;i<ANIMAL_CAP;i++){ const e=document.createElement('div'); e.className='pen empty'; pens.appendChild(e); }
     // butcher buttons (stop propagation so they don't trigger the pen's collect click)
