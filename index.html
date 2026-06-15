@@ -239,6 +239,10 @@
   .plot .timer,.pen .timer{position:absolute;top:5px;left:50%;transform:translateX(-50%);font-family:'Fredoka',sans-serif;
     font-weight:600;font-size:12px;color:#fff;background:rgba(0,0,0,.45);padding:1px 8px;border-radius:999px;
     line-height:1.5;letter-spacing:.3px;white-space:nowrap}
+  .plot .timer-bottom,.pen .timer-bottom{position:absolute;bottom:3px;left:50%;transform:translateX(-50%);
+    font-family:'Fredoka',sans-serif;font-weight:600;font-size:11px;color:#fff;background:rgba(0,0,0,.5);
+    padding:1px 8px;border-radius:999px;line-height:1.4;letter-spacing:.3px;white-space:nowrap;z-index:2}
+  .plot:has(.timer-bottom) .bar,.pen:has(.timer-bottom) .bar{bottom:20px}
   .bar{position:absolute;left:6px;right:6px;bottom:6px;height:6px;border-radius:6px;background:rgba(0,0,0,.32);overflow:hidden}
   .bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,#aed581,#7cb342);transition:width .2s linear}
 
@@ -253,18 +257,18 @@
   .pen.empty{background:repeating-linear-gradient(45deg,#bfa06c 0 7px,#b6975f 7px 14px);cursor:default}
   .pen.starving{box-shadow:inset 0 0 0 3px rgba(192,57,42,.7);animation:starvepulse 1.4s ease-in-out infinite}
   .pen .starve{position:absolute;top:3px;left:4px;font-size:.5em;z-index:2}
-  .pen-acts{position:absolute;bottom:3px;right:3px;display:flex;gap:3px;z-index:3}
+  .pen-acts{position:absolute;top:3px;right:3px;display:flex;gap:3px;z-index:3}
   .pen-act{font-size:13px;line-height:1;border:0;border-radius:7px;padding:3px 4px;cursor:pointer;
     background:rgba(255,255,255,.85);box-shadow:0 1px 2px rgba(0,0,0,.3)}
   .pen-act.feed:hover{background:#d8f0b8}.pen-act.syr:hover{background:#cfe0ff}
-  .of-tag{position:absolute;bottom:3px;left:3px;font-size:9px;font-weight:700;font-family:'Fredoka',sans-serif;
+  .of-tag{position:absolute;top:3px;left:3px;font-size:9px;font-weight:700;font-family:'Fredoka',sans-serif;
     color:#7a4a0a;background:rgba(255,210,90,.9);border-radius:6px;padding:1px 4px;z-index:2}
-  .plot-man{position:absolute;bottom:3px;right:3px;font-size:13px;line-height:1;z-index:3;cursor:pointer;
+  .plot-man{position:absolute;top:3px;right:3px;font-size:13px;line-height:1;z-index:3;cursor:pointer;
     background:rgba(255,255,255,.82);border-radius:7px;padding:2px 3px;box-shadow:0 1px 2px rgba(0,0,0,.3)}
   .plot-man:hover{background:#e0d0b0}
-  .man-tag{position:absolute;top:3px;right:3px;font-size:9px;font-weight:700;font-family:'Fredoka',sans-serif;
+  .man-tag{position:absolute;top:3px;left:3px;font-size:9px;font-weight:700;font-family:'Fredoka',sans-serif;
     color:#5a3d10;background:rgba(200,170,110,.92);border-radius:6px;padding:1px 4px;z-index:2}
-  .sy-tag{position:absolute;top:3px;right:3px;font-size:9px;font-weight:700;font-family:'Fredoka',sans-serif;
+  .sy-tag{position:absolute;top:21px;right:3px;font-size:9px;font-weight:700;font-family:'Fredoka',sans-serif;
     color:#2c4a8a;background:rgba(190,215,255,.92);border-radius:6px;padding:1px 4px;z-index:2}
   /* feed store */
   .feedstore{display:grid;grid-template-columns:1fr;gap:9px}
@@ -1570,7 +1574,8 @@
   // Feed bags you can stockpile and apply to individual animals.
   const FEED_BAGS={ small:{emoji:'🥡', name:'Small Feed Bag', cost:120, for:'small', desc:'Feeds one small animal (chicken or bee)'},
                     big:{emoji:'🛍️', name:'Big Feed Bag', cost:560, for:'large', desc:'Feeds one large animal (cow, sheep, goat, pig, iguana)'},
-                    manure:{emoji:'💩', name:'Manure', cost:100, for:'plant', desc:'Apply to a planted crop: +5% growth speed (max 2× per plot)'} };
+                    manure:{emoji:'💩', name:'Manure', cost:100, for:'plant', desc:'Apply to a planted crop: +5% growth speed (max 2× per plot)'},
+                    syringe:{emoji:'💉', name:'Growth Syringe', cost:1000, for:'animal', desc:'Halves an animal\'s total time to butcher age (max 2× per animal)'} };
   function animalSize(type){ return SMALL_ANIMALS.includes(type)?'small':'large'; }
   const OVERFEED_PER_BAG=0.01;   // each extra bag on a fed animal speeds aging by +1%
   const OVERFEED_CAP=1.00;       // capped at +100% (max double-speed aging)
@@ -1583,7 +1588,7 @@
   const CAPGAINS_RATE=0.25;                   // 25% tax on PROFIT from stock & property sales
   const DEBT_DAILY_INTEREST=0.10;             // 10% compounding daily while in debt
   const BANKRUPT_LIMIT=50000;                 // hit -50,000 coins and the farm is bankrupt (game over)
-  const SAVE_KEY='littleacre:save'; const VERSION=57;
+  const SAVE_KEY='littleacre:save'; const VERSION=58;
   const BACKUP_KEY='littleacre:save:backup';   // last-known-good snapshot ("save folder")
   const MIN_MIGRATABLE=13;                       // saves at/after this version migrate forward instead of resetting
   // Leaderboard sanity cap: scores above this are clamped before submission. This is a
@@ -1676,7 +1681,7 @@
       commodities:freshMarketStall(), stocks:freshStocks(),
       estates:freshEstates(), housing:0,
       inventory:{}, kitchen:[], cellar:[], harvestMode:'sell',
-      feedBags:{small:0, big:0, manure:0},         // stockpiled feed bags + manure
+      feedBags:{small:0, big:0, manure:0, syringe:0},         // stockpiled feed bags, manure & syringes
       weather:'sun', nextWeather:Date.now()+40000, nextMarket:Date.now()+22000,
       dayClock:30000,
       day:1, year:1, lastDay:1,          // calendar (day is 1..365, absolute progression)
@@ -2290,8 +2295,8 @@
     if(!Array.isArray(s.animals)) s.animals=[];
     s.animals.forEach(a=>{ if(typeof a.age!=='number') a.age=0; if(typeof a.starving!=='boolean') a.starving=false;
       if(typeof a.overfeed!=='number') a.overfeed=0; if(typeof a.syringes!=='number') a.syringes=0; });
-    if(!s.feedBags||typeof s.feedBags!=='object') s.feedBags={small:0,big:0,manure:0};
-    else { if(typeof s.feedBags.small!=='number') s.feedBags.small=0; if(typeof s.feedBags.big!=='number') s.feedBags.big=0; if(typeof s.feedBags.manure!=='number') s.feedBags.manure=0; }
+    if(!s.feedBags||typeof s.feedBags!=='object') s.feedBags={small:0,big:0,manure:0,syringe:0};
+    else { if(typeof s.feedBags.small!=='number') s.feedBags.small=0; if(typeof s.feedBags.big!=='number') s.feedBags.big=0; if(typeof s.feedBags.manure!=='number') s.feedBags.manure=0; if(typeof s.feedBags.syringe!=='number') s.feedBags.syringe=0; }
     if(typeof s.day!=='number') s.day=1;
     if(typeof s.year!=='number') s.year=1;
     if(typeof s.lastDay!=='number') s.lastDay=s.day;
@@ -3111,11 +3116,11 @@
   // Syringe: halve total aging time, up to SYRINGE_MAX times per animal.
   function syringeAnimal(i){ const an=state.animals[i]; if(!an) return;
     if((an.syringes||0)>=SYRINGE_MAX){ toast('This animal has had the max '+SYRINGE_MAX+' syringes'); return; }
-    if(!confirm('Give a growth syringe for '+SYRINGE_COST+' coins?\n\nIt halves the total time to reach butcher age. Usable '+SYRINGE_MAX+'× per animal (this will be #'+((an.syringes||0)+1)+').')) return;
-    spend(SYRINGE_COST); an.syringes=(an.syringes||0)+1;
+    if((state.feedBags.syringe||0)<=0){ toast('No syringes left — buy one in the Feed Store'); return; }
+    state.feedBags.syringe--; an.syringes=(an.syringes||0)+1;
     // halve total aging time = double current age progress toward thresholds
     an.age=(an.age||0)*2;
-    bumpCoins(); save(); render();
+    save(); render();
     toast('💉 Syringe given — aging time halved!', 2800);
   }
   // Weekly feed bill popup (online, can't afford): pay into debt, or let them start starving.
@@ -3707,19 +3712,24 @@
             ? `<button class="butcher" data-butcher="${i}" title="Process into cuts (1+ yr old)" aria-label="Process ${a.name} into cuts">🔪</button>`
             : `<span class="agehint" title="Must be 1 in-game year old to process">🐣 ${Math.floor(an.age||0)}/${BUTCHER_MIN_AGE}d</span>`)
         : '';
-      // feed + syringe controls (top-right). Feed clears starving or overfeeds; syringe halves aging.
+      // status tags
       const ofPct=Math.round(Math.min(OVERFEED_CAP,(an.overfeed||0)*OVERFEED_PER_BAG)*100);
       const ofTag = ofPct>0 ? `<span class="of-tag" title="Ages ${ofPct}% faster from overfeeding">⚡${ofPct}%</span>` : '';
       const syTag = (an.syringes||0)>0 ? `<span class="sy-tag" title="${an.syringes} syringe(s) used">💉${an.syringes}</span>` : '';
-      const acts = `<div class="pen-acts">
-        <button class="pen-act feed" data-feed="${i}" title="Feed (clears starving / overfeeds)">🌾</button>
-        ${CUTS[an.type] && (an.syringes||0)<SYRINGE_MAX ? `<button class="pen-act syr" data-syringe="${i}" title="Growth syringe (${SYRINGE_COST} coins, halves aging)">💉</button>`:''}
-      </div>`;
+      // action buttons — only shown when the player OWNS the relevant item AND it can still help.
+      const bagKind = animalSize(an.type)==='small' ? 'small' : 'big';
+      const atOverfeedCap = Math.min(OVERFEED_CAP,(an.overfeed||0)*OVERFEED_PER_BAG) >= OVERFEED_CAP;
+      const canFeed = (state.feedBags[bagKind]||0)>0 && (an.starving || !atOverfeedCap);
+      const canSyringe = CUTS[an.type] && (an.syringes||0)<SYRINGE_MAX && (state.feedBags.syringe||0)>0;
+      const actBtns = [];
+      if(canFeed) actBtns.push(`<button class="pen-act feed" data-feed="${i}" title="Feed (clears starving / overfeeds)">🌾</button>`);
+      if(canSyringe) actBtns.push(`<button class="pen-act syr" data-syringe="${i}" title="Growth syringe (halves aging)">💉</button>`);
+      const acts = actBtns.length ? `<div class="pen-acts">${actBtns.join('')}</div>` : '';
       if(!a.pid){  // meat-only animal (e.g. pig): no product cycle, just raising until processed
         el.innerHTML=`${warn}${acts}${butcher}${ofTag}${syTag}<span class="animal">${a.emoji}</span><span class="product">🔪</span>`;
       } else if(an.ready){ el.classList.add('ready'); el.innerHTML=`${warn}${acts}${butcher}${ofTag}${syTag}<span class="animal">${a.emoji}</span><span class="product">${a.pe}</span>`; }
       else{ const prog=Math.min(1,an.growth/a.cycle), remain=(a.cycle-an.growth)/1000;
-        el.innerHTML=`${warn}${acts}${butcher}${ofTag}${syTag}<span class="timer">${fmtTime(remain)}</span><span class="animal">${a.emoji}</span><span class="bar"><i style="width:${Math.round(prog*100)}%"></i></span>`; }
+        el.innerHTML=`${warn}${acts}${butcher}${ofTag}${syTag}<span class="animal">${a.emoji}</span><span class="bar"><i style="width:${Math.round(prog*100)}%"></i></span><span class="timer-bottom">${fmtTime(remain)}</span>`; }
       pens.appendChild(el); });
     for(let i=state.animals.length;i<ANIMAL_CAP;i++){ const e=document.createElement('div'); e.className='pen empty'; pens.appendChild(e); }
     // butcher buttons (stop propagation so they don't trigger the pen's collect click)
@@ -4085,8 +4095,10 @@
       const remain=(c.grow-p.growth)/(1000*speed);
       const mPct=Math.round(Math.min(MANURE_MAX,p.manure||0)*MANURE_PER*100);
       const mTag = mPct>0 ? `<span class="man-tag" title="Fertilized +${mPct}%">💩${mPct}%</span>` : '';
-      const mBtn = (p.manure||0)<MANURE_MAX ? `<span class="plot-man" data-manure="${i}" role="button" title="Fertilize (+5% growth, ${MANURE_COST} coins)">💩</span>` : '';
-      el.innerHTML=`<span class="timer">${fmtTime(remain)}</span>${mTag}${mBtn}<span class="${cls}">${g}</span><span class="bar"><i style="width:${Math.round(prog*100)}%"></i></span>`;
+      // manure button only shows if the player OWNS manure AND the plot isn't already maxed
+      const mBtn = ((state.feedBags.manure||0)>0 && (p.manure||0)<MANURE_MAX)
+        ? `<span class="plot-man" data-manure="${i}" role="button" title="Fertilize (+5% growth)">💩</span>` : '';
+      el.innerHTML=`${mTag}${mBtn}<span class="${cls}">${g}</span><span class="bar"><i style="width:${Math.round(prog*100)}%"></i></span><span class="timer-bottom">${fmtTime(remain)}</span>`;
     });
     // manure buttons (stop propagation so they don't trigger plant/harvest)
     document.querySelectorAll('#grid [data-manure]').forEach(b=>{
